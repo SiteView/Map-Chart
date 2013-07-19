@@ -21,11 +21,13 @@
 @property (nonatomic, assign) id authenticateDelegate;
 @property (nonatomic, assign) id chatDelegate;
 @property (nonatomic, assign) id messageDelegate;
+@property (nonatomic, strong) id roomsDelegate;
 @property (nonatomic, strong) NSString *server_;
 
 @property (nonatomic, readonly) BOOL isOnline;
 
 - (BOOL)connect:(NSString *)userId password:(NSString *)password serverName:(NSString *)serverName server:(NSString *)server;
 - (void)disconnect;
+- (BOOL)querySupportMUC;
 
 @end

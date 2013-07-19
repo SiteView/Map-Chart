@@ -65,8 +65,18 @@ static NSString *SERVER = @"server";
     
     AppDelegate *del = [self appDelegate];
     del.messageDelegate = self;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self loadHistoryRecord];
+    });
+
 }
 
+- (void)loadHistoryRecord
+{
+    // 加载聊天记录
+    
+}
 - (void)viewWillDisappear:(BOOL)animated
 {
     AppDelegate *del = [self appDelegate];
@@ -83,6 +93,8 @@ static NSString *SERVER = @"server";
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
+
+#pragma mark - Table view data source
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     

@@ -10,10 +10,11 @@
 #import "XMPPChatDelegate.h"
 #import "LoginViewController.h"
 #import <GoogleMaps/GoogleMaps.h>
+#import "RoomsViewController.h"
 
 @interface PositionViewController : UIViewController<XMPPChatDelegate, GMSMapViewDelegate>
 
 @property (strong, nonatomic) LoginViewController *loginViewController;
-
+@property (strong, nonatomic) RoomsViewController *roomsViewController;
 
 @end

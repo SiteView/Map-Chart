@@ -7,12 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		32020DE817978EB90068473D /* MessageDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 32020DE717978EB90068473D /* MessageDatabase.m */; };
+		32020DEA17978EF00068473D /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 32020DE917978EF00068473D /* libsqlite3.dylib */; };
 		32138121178F968000C2A780 /* MessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 32138120178F968000C2A780 /* MessageViewController.m */; };
 		32138124178F989300C2A780 /* MessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 32138123178F989300C2A780 /* MessageCell.m */; };
 		3213812A178FA9D400C2A780 /* aqua.png in Resources */ = {isa = PBXBuildFile; fileRef = 32138126178FA9D400C2A780 /* aqua.png */; };
 		3213812B178FA9D400C2A780 /* BlueBubble2.png in Resources */ = {isa = PBXBuildFile; fileRef = 32138127178FA9D400C2A780 /* BlueBubble2.png */; };
 		3213812C178FA9D400C2A780 /* GreenBubble2.png in Resources */ = {isa = PBXBuildFile; fileRef = 32138128178FA9D400C2A780 /* GreenBubble2.png */; };
 		3213812D178FA9D400C2A780 /* orange.png in Resources */ = {isa = PBXBuildFile; fileRef = 32138129178FA9D400C2A780 /* orange.png */; };
+		327F6B501797B929001DEF6A /* RoomsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 327F6B4F1797B929001DEF6A /* RoomsViewController.m */; };
 		3295DF37178D249C00EF9156 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3295DF36178D249C00EF9156 /* UIKit.framework */; };
 		3295DF39178D249C00EF9156 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3295DF38178D249C00EF9156 /* Foundation.framework */; };
 		3295DF3B178D249C00EF9156 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3295DF3A178D249C00EF9156 /* CoreGraphics.framework */; };
@@ -45,6 +48,7 @@
 		32A6A95F178E51C0001233C5 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A6A95E178E51C0001233C5 /* Security.framework */; };
 		32A6A962178E52AB001233C5 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 32A6A961178E52AB001233C5 /* ChatViewController.m */; };
 		32A6A965178E5763001233C5 /* FriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 32A6A964178E5763001233C5 /* FriendsViewController.m */; };
+		32EEDA4F17990EDD00721FD2 /* RoomModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 32EEDA4E17990EDD00721FD2 /* RoomModel.m */; };
 		32EF26A8178EB728006BE056 /* XMPPAnonymousAuthentication.m in Sources */ = {isa = PBXBuildFile; fileRef = 32EF2646178EB727006BE056 /* XMPPAnonymousAuthentication.m */; };
 		32EF26A9178EB728006BE056 /* XMPPDeprecatedDigestAuthentication.m in Sources */ = {isa = PBXBuildFile; fileRef = 32EF2649178EB727006BE056 /* XMPPDeprecatedDigestAuthentication.m */; };
 		32EF26AA178EB728006BE056 /* XMPPDeprecatedPlainAuthentication.m in Sources */ = {isa = PBXBuildFile; fileRef = 32EF264C178EB727006BE056 /* XMPPDeprecatedPlainAuthentication.m */; };
@@ -86,6 +90,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		32020DE617978EB90068473D /* MessageDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageDatabase.h; sourceTree = "<group>"; };
+		32020DE717978EB90068473D /* MessageDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageDatabase.m; sourceTree = "<group>"; };
+		32020DE917978EF00068473D /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		3213811D178F943000C2A780 /* XMPPMessageDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XMPPMessageDelegate.h; sourceTree = "<group>"; };
 		3213811E178F947200C2A780 /* XMPPChatDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XMPPChatDelegate.h; sourceTree = "<group>"; };
 		3213811F178F967F00C2A780 /* MessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageViewController.h; sourceTree = "<group>"; };
@@ -96,6 +103,8 @@
 		32138127178FA9D400C2A780 /* BlueBubble2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BlueBubble2.png; sourceTree = "<group>"; };
 		32138128178FA9D400C2A780 /* GreenBubble2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GreenBubble2.png; sourceTree = "<group>"; };
 		32138129178FA9D400C2A780 /* orange.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = orange.png; sourceTree = "<group>"; };
+		327F6B4E1797B929001DEF6A /* RoomsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoomsViewController.h; sourceTree = "<group>"; };
+		327F6B4F1797B929001DEF6A /* RoomsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoomsViewController.m; sourceTree = "<group>"; };
 		3295DF33178D249C00EF9156 /* ChatTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3295DF36178D249C00EF9156 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		3295DF38178D249C00EF9156 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -137,6 +146,9 @@
 		32A6A961178E52AB001233C5 /* ChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatViewController.m; sourceTree = "<group>"; };
 		32A6A963178E5763001233C5 /* FriendsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendsViewController.h; sourceTree = "<group>"; };
 		32A6A964178E5763001233C5 /* FriendsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendsViewController.m; sourceTree = "<group>"; };
+		32DD03901797EC6B00886B90 /* XMPPRoomsDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XMPPRoomsDelegate.h; sourceTree = "<group>"; };
+		32EEDA4D17990EDD00721FD2 /* RoomModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoomModel.h; sourceTree = "<group>"; };
+		32EEDA4E17990EDD00721FD2 /* RoomModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoomModel.m; sourceTree = "<group>"; };
 		32EF2400178E9CD2006BE056 /* XMPPAuthenticateDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XMPPAuthenticateDelegate.h; sourceTree = "<group>"; };
 		32EF2645178EB727006BE056 /* XMPPAnonymousAuthentication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPAnonymousAuthentication.h; sourceTree = "<group>"; };
 		32EF2646178EB727006BE056 /* XMPPAnonymousAuthentication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPAnonymousAuthentication.m; sourceTree = "<group>"; };
@@ -227,6 +239,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				32020DEA17978EF00068473D /* libsqlite3.dylib in Frameworks */,
 				32A6A95B178E51AE001233C5 /* libresolv.dylib in Frameworks */,
 				32A6A95F178E51C0001233C5 /* Security.framework in Frameworks */,
 				32A6A95D178E51B7001233C5 /* CFNetwork.framework in Frameworks */,
@@ -280,6 +293,7 @@
 		3295DF35178D249C00EF9156 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				32020DE917978EF00068473D /* libsqlite3.dylib */,
 				32A6A95E178E51C0001233C5 /* Security.framework */,
 				32A6A95C178E51B7001233C5 /* CFNetwork.framework */,
 				32A6A95A178E51AE001233C5 /* libresolv.dylib */,
@@ -328,6 +342,13 @@
 				32138120178F968000C2A780 /* MessageViewController.m */,
 				32138122178F989300C2A780 /* MessageCell.h */,
 				32138123178F989300C2A780 /* MessageCell.m */,
+				32020DE617978EB90068473D /* MessageDatabase.h */,
+				32020DE717978EB90068473D /* MessageDatabase.m */,
+				327F6B4E1797B929001DEF6A /* RoomsViewController.h */,
+				327F6B4F1797B929001DEF6A /* RoomsViewController.m */,
+				32DD03901797EC6B00886B90 /* XMPPRoomsDelegate.h */,
+				32EEDA4D17990EDD00721FD2 /* RoomModel.h */,
+				32EEDA4E17990EDD00721FD2 /* RoomModel.m */,
 			);
 			path = ChatTest;
 			sourceTree = "<group>";
@@ -694,6 +715,9 @@
 				32EF26CB178EB728006BE056 /* DDXMLNode.m in Sources */,
 				32138121178F968000C2A780 /* MessageViewController.m in Sources */,
 				32138124178F989300C2A780 /* MessageCell.m in Sources */,
+				32020DE817978EB90068473D /* MessageDatabase.m in Sources */,
+				327F6B501797B929001DEF6A /* RoomsViewController.m in Sources */,
+				32EEDA4F17990EDD00721FD2 /* RoomModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

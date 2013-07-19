@@ -259,7 +259,15 @@ static CGFloat randf() {
     
     [self.navigationController popViewControllerAnimated:NO];
     
+    if (self.roomsViewController == nil) {
+        self.roomsViewController = [[RoomsViewController alloc] init];
+    }
+    
+    [self.navigationItem.backBarButtonItem setTitle:@""];
+    [self.navigationItem setHidesBackButton:YES];
+    [self.navigationController pushViewController:self.roomsViewController animated:YES];
 }
+
 - (void)logout
 {
     AppDelegate *app = [self appDelegate];
