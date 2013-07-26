@@ -10,7 +10,10 @@
 #import "XMPP.h"
 @protocol XMPPAuthenticateDelegate <NSObject>
 
+- (void)didConnect:(XMPPStream *)sender;
 - (void)didAuthenticate:(XMPPStream *)sender;
 - (void)didNotAuthenticate:(NSXMLElement *)authResponse;
+- (void)didRegister:(XMPPStream *)sender;
+- (void)didNotRegister:(NSXMLElement *)error;
 
 @end

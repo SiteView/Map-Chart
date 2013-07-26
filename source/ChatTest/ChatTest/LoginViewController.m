@@ -9,6 +9,9 @@
 #import "LoginViewController.h"
 #import "AppDelegate.h"
 
+#define DOMAIN_NAME @"192.168.9.11"
+#define DOMAIN_URL  @"siteviewwzp"
+
 @implementation LoginViewController {
     UITextField                     * accountTextField_;
     UITextField                     * passwordTextField_;
@@ -29,6 +32,24 @@
     NSString *serverName = [defaults objectForKey:@"serverName"];
     NSString *serverAddress = [defaults objectForKey:@"serverAddress"];
     
+    if (account == @"" || password == @"")
+    {
+        AppDelegate *app = [self appDelegate];
+    
+        NSString *uuid = [[app uuid] substringToIndex:8];
+        account = uuid;
+        password = uuid;
+        serverAddress = DOMAIN_NAME;
+        serverName = DOMAIN_URL;
+        
+        [defaults setObject:account forKey:@"account"];
+        [defaults setObject:password forKey:@"password"];
+        [defaults setObject:serverName forKey:@"serverName"];
+        [defaults setObject:serverAddress forKey:@"serverAddress"];
+        [defaults synchronize];
+
+    
+    }
     self.title = @"Login";
 
     view_ = [[UIControl alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];

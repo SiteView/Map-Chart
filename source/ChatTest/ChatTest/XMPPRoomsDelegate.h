@@ -12,4 +12,7 @@
 
 -(void)newRoomsReceived:(NSArray *)roomsContent;
 
+- (void)didJoinRoomSuccess;
+- (void)didJoinRoomFailure:(NSString *)errorMsg;
+
 @end

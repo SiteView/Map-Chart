@@ -10,6 +10,9 @@
 #import "AppDelegate.h"
 #import "MessageViewController.h"
 
+#define DOMAIN_NAME @"192.168.9.11"
+#define DOMAIN_URL  @"siteviewwzp"
+
 static int kMarkerCount = 0;
 
 // Returns a random value from 0-1.0f.
@@ -21,20 +24,27 @@ static CGFloat randf() {
     GMSMapView *mapView_;
     BOOL firstLocationUpdate_;
     UIBarButtonItem *loginButton_;
+    UIBarButtonItem *roomLists_;
     BOOL m_isCertified;
-
+    // 用户是否已注册
+    BOOL isRegistry_;
     // Online users
     NSMutableArray *onlineUsers_;
 
     // GSMaker
     NSMutableDictionary *onlineMaker_;
 }
+
+@synthesize roomsViewController;
+@synthesize roomMessageViewController;
+
 - (id) init
 {
     self = [super init];
     if (self)
     {
         m_isCertified = NO;
+        isRegistry_ = NO;
     }
     return self;
 }
@@ -64,7 +74,7 @@ static CGFloat randf() {
     self.view = mapView_;
 
 #if TARGET_IPHONE_SIMULATOR
-#elif TARGET_OS_IPHONE
+//#elif TARGET_OS_IPHONE
     // Ask for My Location data after the map has already been added to the UI.
     dispatch_async(dispatch_get_main_queue(), ^{
         mapView_.myLocationEnabled = YES;
@@ -92,21 +102,44 @@ static CGFloat randf() {
     onlineUsers_ = [NSMutableArray array];
     
     onlineMaker_ = [NSMutableDictionary dictionary];
-    
-    loginButton_ =
+
+/*    loginButton_ =
     [[UIBarButtonItem alloc] initWithTitle:@"Login"
                                      style:UIBarButtonItemStyleBordered
                                     target:self
                                     action:@selector(login)];
     [self.navigationItem setLeftBarButtonItem:loginButton_];
+*/
+    roomLists_ =
+    [[UIBarButtonItem alloc] initWithTitle:@"Rooms"
+                                     style:UIBarButtonItemStyleBordered
+                                    target:self
+                                    action:@selector(roomLists)];
+    [self.navigationItem setLeftBarButtonItem:roomLists_];
+ 
+    UIBarButtonItem* groupChatBtn =
+    [[UIBarButtonItem alloc] initWithTitle:@"GrouChat"
+                                     style:UIBarButtonItemStyleBordered
+                                    target:self
+                                    action:@selector(GroupChatMessage)];
+    [self.navigationItem setRightBarButtonItem:groupChatBtn];
 
     AppDelegate *app = [self appDelegate];
+    app.authenticateDelegate = self;
     app.chatDelegate = self;
 
 //        CLLocationCoordinate2D position = CLLocationCoordinate2DMake(28.17523, 112.9703);
 //        [self addMarkerInBounds:position stringWithTitle:@"Test"];
 
 //    [self didTapAdd];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self loginRequest];
+        [self appDelegate].isXMPPRegister = YES;
+//        [self registery];
+//        [[self appDelegate] connect:@"anonymous" password:@"" serverName:DOMAIN_URL server:DOMAIN_URL];
+    });
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -240,6 +273,23 @@ static CGFloat randf() {
     
 }
 
+- (void)roomLists
+{
+    if (self.roomsViewController == nil) {
+        self.roomsViewController = [[RoomsViewController alloc] init];
+    }
+    
+    [self.navigationController pushViewController:self.roomsViewController animated:YES];
+
+}
+
+- (void)GroupChatMessage
+{
+    if (self.roomMessageViewController == nil) {
+        self.roomMessageViewController = [[RoomMessageViewController alloc] init];
+    }
+    [self.navigationController pushViewController:self.roomMessageViewController animated:YES];
+}
 
 - (void) setNaviItemLeftBtnTitle
 {
@@ -330,4 +380,103 @@ static CGFloat randf() {
     [self.navigationController pushViewController:messageView animated:YES ];
 
 }
+
+
+- (void)didAuthenticate:(XMPPStream *)sender {
+    // 获得聊天室列表
+    
+}
+- (void)didConnect:(XMPPStream *)sender
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self registery];
+    });
+}
+
+- (void)registery
+{
+    if (isRegistry_ == NO) {
+        
+        // Get the stored data before the view loads
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *account = [defaults objectForKey:@"account"];
+        NSString *password = [defaults objectForKey:@"password"];
+        NSString *serverName = [defaults objectForKey:@"serverName"];
+        NSString *serverAddress = [defaults objectForKey:@"serverAddress"];
+        
+        if (account == @"" || password == @"")
+        {
+            AppDelegate *app = [self appDelegate];
+            
+            NSString *uuid = [[app uuid] substringToIndex:8];
+            account = uuid;
+            password = uuid;
+            serverAddress = DOMAIN_NAME;
+            serverName = DOMAIN_URL;
+            
+            [defaults setObject:account forKey:@"account"];
+            [defaults setObject:password forKey:@"password"];
+            [defaults setObject:serverName forKey:@"serverName"];
+            [defaults setObject:serverAddress forKey:@"serverAddress"];
+            [defaults synchronize];
+            
+            
+        }
+        // 用户的注册
+        [[self appDelegate] registery:account password:password serverName:serverName server:serverAddress];
+        
+    }
+
+}
+
+- (void)loginRequest
+{
+    // Get the stored data before the view loads
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *account = [defaults objectForKey:@"account"];
+    NSString *password = [defaults objectForKey:@"password"];
+    NSString *serverName = [defaults objectForKey:@"serverName"];
+    NSString *serverAddress = [defaults objectForKey:@"serverAddress"];
+    
+    if (account == @"" || password == @"")
+    {
+        AppDelegate *app = [self appDelegate];
+        
+        NSString *uuid = [[app uuid] substringToIndex:8];
+        account = uuid;
+        password = uuid;
+        serverAddress = DOMAIN_NAME;
+        serverName = DOMAIN_URL;
+        
+        [defaults setObject:account forKey:@"account"];
+        [defaults setObject:password forKey:@"password"];
+        [defaults setObject:serverName forKey:@"serverName"];
+        [defaults setObject:serverAddress forKey:@"serverAddress"];
+        [defaults synchronize];
+        
+        
+    }
+    // 用户的登录
+    [[self appDelegate] connect:account password:password serverName:serverName server:serverAddress];
+
+}
+
+- (void)didNotAuthenticate:(NSXMLElement *)authResponse {
+    
+}
+- (void)didRegister:(XMPPStream *)sender
+{
+    [[self appDelegate] disconnect];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self loginRequest];
+    });
+}
+
+- (void)didNotRegister:(NSXMLElement *)error
+{
+    
+//    [self loginRequest];
+}
+
 @end
