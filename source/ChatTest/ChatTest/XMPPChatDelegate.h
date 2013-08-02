@@ -12,6 +12,5 @@
 
 -(void)newBuddyOnline:(NSString *)buddyName;
 -(void)buddyWentOffline:(NSString *)buddyName;
--(void)didDisconnect;
 
 @end

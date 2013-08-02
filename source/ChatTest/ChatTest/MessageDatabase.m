@@ -92,7 +92,6 @@ char *errorMsg_;
 
 - (BOOL)addMessage:(NSString *)name message:(NSString *)message time:(NSString *)timer
 {
-    char *errorMsg = NULL;
     NSString *insertSql = [NSString stringWithFormat:@"INSERT INTO Message (name_, time_, message_) VALUES('%@', '%@', '%@')", name, timer, message];
     if (sqlite3_exec(database_, [insertSql UTF8String], NULL, NULL, &errorMsg_) != SQLITE_OK) {
         sqlite3_free(errorMsg_);
@@ -104,7 +103,7 @@ char *errorMsg_;
 }
 
 // 获取指定top条记录
-- (BOOL)getMessageRecord:(NSInteger *)top array:(NSMutableDictionary *)records
+- (BOOL)getMessageRecord:(NSInteger)top array:(NSMutableDictionary *)records
 {
     if (records == nil) {
         return NO;
@@ -126,5 +125,6 @@ char *errorMsg_;
         [records setObject:array forKey:name];
     }
     sqlite3_finalize(statement);
+    return YES;
 }
 @end

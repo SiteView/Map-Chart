@@ -26,12 +26,21 @@ static NSString *USERID = @"userId";
     UIControl                       * view_;
     NSString *from_;
     NSString *to_;
+    int messageRightPosition;
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 
+    float messageTextFieldWidth = 229;
+    float sendBtnLeft = 235;
+    messageRightPosition = 320;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        messageTextFieldWidth = 610;
+        sendBtnLeft = 615;
+        messageRightPosition = 768;
+    }
     self.view.backgroundColor =
     [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.8];
     
@@ -39,7 +48,7 @@ static NSString *USERID = @"userId";
     [view_ addTarget:self action:@selector(backgroundTap:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:view_];
 
-    messageTextField = [[UITextField alloc] initWithFrame:CGRectMake(3, 3, 229, 29)];
+    messageTextField = [[UITextField alloc] initWithFrame:CGRectMake(3, 3, messageTextFieldWidth, 29)];
     messageTextField.borderStyle = UITextBorderStyleRoundedRect;
     messageTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     messageTextField.delegate = self;
@@ -51,7 +60,7 @@ static NSString *USERID = @"userId";
     [self.view addSubview:messageTextField];
     
     UIButton *sendBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    sendBtn.frame = CGRectMake(235, 3, 70, 29);
+    sendBtn.frame = CGRectMake(sendBtnLeft, 3, 70, 29);
     sendBtn.titleLabel.font = [UIFont boldSystemFontOfSize:18.0f];
     [sendBtn setTitle:@"Send" forState:UIControlStateNormal];
     sendBtn.titleLabel.textAlignment = NSTextAlignmentLeft;
@@ -60,7 +69,7 @@ static NSString *USERID = @"userId";
       forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:sendBtn];
     
-    tView = [[UITableView alloc] initWithFrame:CGRectMake(0, 40, self.view.frame.size.width, self.view.frame.size.height - 30)];
+    tView = [[UITableView alloc] initWithFrame:CGRectMake(0, 40, self.view.frame.size.width, self.view.frame.size.height - 90)];
     tView.delegate = self;
     tView.dataSource = self;
     tView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -69,7 +78,8 @@ static NSString *USERID = @"userId";
     AppDelegate *app = [self appDelegate];
     app.roomMessageDelegate = self;
 
-    messages = [app.groupChatMessage copy];
+//    messages = [[NSMutableArray alloc] init];
+    messages = [[NSMutableArray alloc] initWithArray:app.groupChatMessage];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -77,7 +87,30 @@ static NSString *USERID = @"userId";
     AppDelegate *app = [self appDelegate];
     app.roomMessageDelegate = nil;
 }
+/*
+// for ios 4 and 5
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return YES;
+}
 
+// begin for ios6
+-(NSUInteger)supportedInterfaceOrientations{
+    return UIInterfaceOrientationMaskLandscape;
+}
+
+- (BOOL)shouldAutorotate
+{
+    return YES;
+}
+
+// end for ios 6
+*/
+-(BOOL) textFieldShouldReturn:(UITextField *)textField
+{
+    [messageTextField resignFirstResponder];
+    return YES;
+}
 -(AppDelegate *)appDelegate{
     
     return (AppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -99,9 +132,10 @@ static NSString *USERID = @"userId";
     
 }
 
-- (void)newMessageReceived:(NSArray *)array from:(NSString *)from to:(NSString *)to
+- (void)newMessageReceived:(NSDictionary *)array from:(NSString *)from to:(NSString *)to
 {
-    messages = [array copy];
+//    messages = [array copy];
+    [messages addObject:array];
     from_ = [from copy];
     to_ = [to copy];
     [tView reloadData];
@@ -132,7 +166,7 @@ static NSString *USERID = @"userId";
         cell = [[MessageCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:identifier];
     }
     
-    NSMutableDictionary *dict = [messages objectAtIndex:indexPath.row];
+    NSDictionary *dict = [messages objectAtIndex:indexPath.row];
     
     //发送者
     NSArray *array = [[dict objectForKey:@"SendUser"] componentsSeparatedByString:@"/"];
@@ -154,6 +188,7 @@ static NSString *USERID = @"userId";
     
     UIImage *bgImage = nil;
     
+    cell.senderAndTimeLabel.text = [NSString stringWithFormat:@"%@ %@", sender, time];
     //发送消息
     if ([sender isEqualToString:@"you"]) {
         //背景图
@@ -162,15 +197,14 @@ static NSString *USERID = @"userId";
         
         [cell.bgImageView setFrame:CGRectMake(cell.messageContentView.frame.origin.x - padding/2, cell.messageContentView.frame.origin.y - padding/2, size.width + padding, size.height + padding)];
     }else {
-        
+    
         bgImage = [[UIImage imageNamed:@"GreenBubble2.png"] stretchableImageWithLeftCapWidth:14 topCapHeight:15];
         
-        [cell.messageContentView setFrame:CGRectMake(320-size.width - padding, padding*2, size.width + 5, size.height)];
+        [cell.messageContentView setFrame:CGRectMake(messageRightPosition - size.width - padding, padding*2, size.width + 5, size.height)];
         [cell.bgImageView setFrame:CGRectMake(cell.messageContentView.frame.origin.x - padding/2, cell.messageContentView.frame.origin.y - padding/2, size.width + padding, size.height + padding)];
     }
     
     cell.bgImageView.image = bgImage;
-    cell.senderAndTimeLabel.text = [NSString stringWithFormat:@"%@ %@", sender, time];
     
     return cell;
     

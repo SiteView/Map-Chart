@@ -13,5 +13,6 @@
 @synthesize name;
 @synthesize jid;
 @synthesize isMucPasswordProtocted;
+@synthesize coordinate;
 
 @end

@@ -9,6 +9,7 @@
 #import "PositionViewController.h"
 #import "AppDelegate.h"
 #import "MessageViewController.h"
+//#import <MapKit/MapKit.h>
 
 #define DOMAIN_NAME @"192.168.9.11"
 #define DOMAIN_URL  @"siteviewwzp"
@@ -22,6 +23,11 @@ static CGFloat randf() {
 
 @implementation PositionViewController {
     GMSMapView *mapView_;
+/*    CLLocationManager *locationManager;
+    CLLocationCoordinate2D coordinate;
+    CLLocationDistance altitude;
+    MKMapView *mapView;
+*/    
     BOOL firstLocationUpdate_;
     UIBarButtonItem *loginButton_;
     UIBarButtonItem *roomLists_;
@@ -52,10 +58,36 @@ static CGFloat randf() {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+/*
+    mapView = [[MKMapView alloc] initWithFrame:self.view.bounds];
     
+    mapView.mapType = MKMapTypeStandard;
+    
+    coordinate.latitude = 39.90809;
+    coordinate.longitude = 116.34333;
+    
+    MKCoordinateSpan span;
+    span.latitudeDelta = 0.05;
+    span.longitudeDelta = 0.05;
+    
+    MKCoordinateRegion region = {coordinate, span};
+    [mapView setRegion:region];
+    mapView.showsUserLocation = YES;
+
+    locationManager = [[CLLocationManager alloc] init];
+    if (![CLLocationManager locationServicesEnabled]) {
+        NSLog(@"定位不可用");
+    } else {
+        [locationManager setDelegate:self];
+        [locationManager setDesiredAccuracy:kCLLocationAccuracyBest];
+        [locationManager startUpdatingLocation];
+        
+    }
+*/
+
     GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:28.17523
                                                             longitude:112.9803
-                                                                 zoom:20];
+                                                                 zoom:10];
     
     mapView_ = [GMSMapView mapWithFrame:CGRectZero camera:camera];
     mapView_.delegate = self;
@@ -73,13 +105,6 @@ static CGFloat randf() {
 
     self.view = mapView_;
 
-#if TARGET_IPHONE_SIMULATOR
-//#elif TARGET_OS_IPHONE
-    // Ask for My Location data after the map has already been added to the UI.
-    dispatch_async(dispatch_get_main_queue(), ^{
-        mapView_.myLocationEnabled = YES;
-    });
-#endif
 /*
     GMSMarker *sydneyMarker = [[GMSMarker alloc] init];
     sydneyMarker.title = @"Sydney";
@@ -95,10 +120,12 @@ static CGFloat randf() {
     
     // Set the marker in Sydney to be selected
     mapView_.selectedMarker = sydneyMarker;
-*/
+
     self.view = [[UIView alloc] initWithFrame:CGRectZero];
     [self.view addSubview:mapView_];
-    
+//    [self.view addSubview:mapView];
+*/    
+
     onlineUsers_ = [NSMutableArray array];
     
     onlineMaker_ = [NSMutableDictionary dictionary];
@@ -135,11 +162,18 @@ static CGFloat randf() {
 
     dispatch_async(dispatch_get_main_queue(), ^{
         [self loginRequest];
-        [self appDelegate].isXMPPRegister = YES;
+//        [self appDelegate].isXMPPRegister = YES;
 //        [self registery];
 //        [[self appDelegate] connect:@"anonymous" password:@"" serverName:DOMAIN_URL server:DOMAIN_URL];
     });
 
+    //#if TARGET_IPHONE_SIMULATOR
+    //#elif TARGET_OS_IPHONE
+    // Ask for My Location data after the map has already been added to the UI.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        mapView_.myLocationEnabled = YES;
+    });
+    //#endif
 }
 
 - (void)didReceiveMemoryWarning
@@ -149,9 +183,11 @@ static CGFloat randf() {
 }
 
 - (void)dealloc {
+
     [mapView_ removeObserver:self
                   forKeyPath:@"myLocation"
                      context:NULL];
+
 }
 
 
@@ -247,7 +283,31 @@ static CGFloat randf() {
     }
 }
 
+/*
+#pragma mark-
+#pragma locationManagerDelegate methods
+- (void)locationManager:(CLLocationManager *)manager
+    didUpdateToLocation:(CLLocation *)newLocation
+           fromLocation:(CLLocation *)oldLocation
+{
+    coordinate = [newLocation coordinate];
+    altitude = [newLocation altitude];
+    
+    MKCoordinateSpan span;
+    span.latitudeDelta = 0.05;
+    span.longitudeDelta = 0.05;
+    
+    MKCoordinateRegion region = {coordinate, span};
+    [mapView setRegion:region];
+    mapView.showsUserLocation = YES;
+}
 
+- (void)locationmanager:(CLLocationManager *)manager
+       didFailWithError:(NSError *)error
+{
+    // 定位失败
+}
+*/
 - (void)login
 {
     if (m_isCertified) {
@@ -404,7 +464,8 @@ static CGFloat randf() {
         NSString *serverName = [defaults objectForKey:@"serverName"];
         NSString *serverAddress = [defaults objectForKey:@"serverAddress"];
         
-        if (account == @"" || password == @"")
+//        if (account == @"" || password == @"")
+        if (account == nil || password == nil)
         {
             AppDelegate *app = [self appDelegate];
             
@@ -438,7 +499,9 @@ static CGFloat randf() {
     NSString *serverName = [defaults objectForKey:@"serverName"];
     NSString *serverAddress = [defaults objectForKey:@"serverAddress"];
     
-    if (account == @"" || password == @"")
+//    if (account == nil || account == @"" ||
+//        password == nil || password == @"")
+    if (account == nil || password == nil)
     {
         AppDelegate *app = [self appDelegate];
         
@@ -461,8 +524,12 @@ static CGFloat randf() {
 
 }
 
-- (void)didNotAuthenticate:(NSXMLElement *)authResponse {
-    
+- (void)didNotAuthenticate:(NSXMLElement *)authResponse
+{
+    // 认证失败，没有注册
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self registery];
+    });
 }
 - (void)didRegister:(XMPPStream *)sender
 {

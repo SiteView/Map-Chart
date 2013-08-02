@@ -87,6 +87,12 @@
 	return self;
 }
 
+- (id)copyWithZone:(NSZone *)zone
+{
+    NSXMLElement *element = [super copyWithZone:zone];
+    return [XMPPPresence presenceFromElement:element];
+}
+
 - (NSString *)type
 {
 	NSString *type = [self attributeStringValueForName:@"type"];
@@ -131,6 +137,5 @@
 {
 	return [[self type] isEqualToString:@"error"];
 }
-
 
 @end

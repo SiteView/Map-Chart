@@ -32,7 +32,8 @@
     NSString *serverName = [defaults objectForKey:@"serverName"];
     NSString *serverAddress = [defaults objectForKey:@"serverAddress"];
     
-    if (account == @"" || password == @"")
+    if (account == nil || ([account length] == 0) ||
+        password == nil || ([password length] == 0))
     {
         AppDelegate *app = [self appDelegate];
     

@@ -20,10 +20,14 @@
 @property (nonatomic, strong, readonly) XMPPStream *xmppStream;
 @property (nonatomic, strong, readonly) XMPPReconnect *xmppReconnect;
 @property (nonatomic, strong, readonly) XMPPRoster *xmppRoster;
-@property (nonatomic, strong, readonly) XMPPRosterCoreDataStorage *xmppRosterStorage;
-@property (nonatomic, strong, readonly) XMPPRoomCoreDataStorage *rosterstorage;
+@property (nonatomic, strong, readonly) XMPPRosterCoreDataStorage *rosterstorage;
+
+@property (nonatomic, strong, readonly) XMPPRoomCoreDataStorage *roomstorage;
 @property (nonatomic, strong, readonly) XMPPRoom *xmppRoom;
 @property (nonatomic, strong, readonly) XMPPMUC *xmppMuc;
+@property (nonatomic, strong, readonly) XMPPvCardCoreDataStorage *xmppvCardStorage;
+@property (nonatomic, strong, readonly) XMPPvCardTempModule *xmppvCardTempModule;
+@property (nonatomic, strong, readonly) XMPPvCardAvatarModule *xmppvCardAvatarModule;
 @property (nonatomic, strong, readonly) XMPPCapabilities *xmppCapabilities;
 @property (nonatomic, strong, readonly) XMPPCapabilitiesCoreDataStorage *xmppCapabilitiesStorage;
 
@@ -34,6 +38,7 @@
 @property (nonatomic, strong) id roomMessageDelegate;
 @property (nonatomic, strong) NSString *server_;
 @property (nonatomic, strong, readonly) NSMutableArray *groupChatMessage;
+@property (nonatomic, strong, readonly) NSMutableDictionary *friendsChatMessage;
 
 @property (nonatomic, readonly) BOOL isOnline;
 @property (nonatomic) BOOL isXMPPRegister;
@@ -43,7 +48,7 @@
 
 - (BOOL)connect:(NSString *)userId password:(NSString *)password serverName:(NSString *)serverName server:(NSString *)server;
 - (void)disconnect;
-- (BOOL)querySupportMUC;
+- (void)querySupportMUC;
 - (BOOL)registery:(NSString *)userId password:(NSString *)password serverName:(NSString *)serverName server:(NSString *)server;
 - (void)joinRoom:(NSString *)roomjid password:(NSString *)password;
 

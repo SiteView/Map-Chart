@@ -133,18 +133,30 @@
     [alertView show];
 }
 
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
     switch (alertView.alertViewStyle) {
         case UIAlertViewStyleSecureTextInput:
         {
-            UITextField *textField = [alertView textFieldAtIndex:0];
-            roomPassword_ = textField.text;
-            
-            AppDelegate *app = [self appDelegate];
-            app.roomsDelegate = self;
-            
-            [self joinRoom:roomjid_ password:roomPassword_];
-            NSLog(@"Secure text input: %@", textField.text);
+            switch (buttonIndex) {
+                case 0:
+                    break;
+                case 1:
+                {
+                    UITextField *textField = [alertView textFieldAtIndex:0];
+                    roomPassword_ = textField.text;
+                    
+                    AppDelegate *app = [self appDelegate];
+                    app.roomsDelegate = self;
+                    
+                    [self joinRoom:roomjid_ password:roomPassword_];
+                    NSLog(@"Secure text input: %@", textField.text);
+                    
+                }
+                    break;
+                default:
+                    break;
+            }
         }
             break;
             

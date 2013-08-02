@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "XMPPAuthenticateDelegate.h"
-@interface LoginViewController : UIViewController<UITextFieldDelegate, XMPPAuthenticateDelegate> {
+@interface LoginViewController : UIViewController<UITextFieldDelegate> {
     id                              m_target_login;//assign   local login callback
     SEL                             m_selector_login;
 

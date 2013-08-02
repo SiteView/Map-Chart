@@ -7,11 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreLocation/CoreLocation.h>
 
 @interface RoomModel : NSObject
 
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSString *jid;
 @property (nonatomic) BOOL isMucPasswordProtocted;
-
+@property (nonatomic) CLLocationCoordinate2D coordinate;
 @end

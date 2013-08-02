@@ -13,7 +13,9 @@
 #import "RoomsViewController.h"
 #import "RoomMessageViewController.h"
 
-@interface PositionViewController : UIViewController<XMPPChatDelegate, GMSMapViewDelegate>
+@interface PositionViewController : UIViewController<XMPPChatDelegate
+    , GMSMapViewDelegate>
+    //, CLLocationManagerDelegate>
 
 @property (strong, nonatomic) LoginViewController *loginViewController;
 @property (strong, nonatomic) RoomsViewController *roomsViewController;

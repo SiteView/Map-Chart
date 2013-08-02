@@ -34,6 +34,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     NSMutableArray *roomModel_;
     BOOL isRoomInfo_;
     int rooms_;
+    NSMutableDictionary *dictUser;
 }
 
 #define DISCO_INFO  @"http://jabber.org/protocol/disco#info"
@@ -45,10 +46,13 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 @synthesize xmppStream;
 @synthesize xmppReconnect;
 @synthesize xmppRoster;
-@synthesize xmppRosterStorage;
 @synthesize rosterstorage;
+@synthesize roomstorage;
 @synthesize xmppRoom;
 @synthesize xmppMuc;
+@synthesize xmppvCardStorage;
+@synthesize xmppvCardAvatarModule;
+@synthesize xmppvCardTempModule;
 @synthesize xmppCapabilities;
 @synthesize xmppCapabilitiesStorage;
 
@@ -58,6 +62,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 @synthesize roomsDelegate;
 @synthesize roomMessageDelegate;
 @synthesize groupChatMessage;
+@synthesize friendsChatMessage;
 
 @synthesize server_;
 @synthesize isOnline;
@@ -163,7 +168,17 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 	// There's a bunch more information in the XMPPReconnect header file.
 	
 //	xmppReconnect = [[XMPPReconnect alloc] init];
+    
+    // Setup vCard support
+	//
+	// The vCard Avatar module works in conjuction with the standard vCard Temp module to download user avatars.
+	// The XMPPRoster will automatically integrate with XMPPvCardAvatarModule to cache roster photos in the roster.
 	
+	xmppvCardStorage = [XMPPvCardCoreDataStorage sharedInstance];
+	xmppvCardTempModule = [[XMPPvCardTempModule alloc] initWithvCardStorage:xmppvCardStorage];
+	
+	xmppvCardAvatarModule = [[XMPPvCardAvatarModule alloc] initWithvCardTempModule:xmppvCardTempModule];
+
     xmppMuc = [[XMPPMUC alloc] init];
 
     xmppCapabilitiesStorage = [XMPPCapabilitiesCoreDataStorage sharedInstance];
@@ -177,6 +192,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 //	[xmppReconnect         activate:xmppStream];
 	[xmppRoster            activate:xmppStream];
     [xmppMuc               activate:xmppStream];
+	[xmppvCardTempModule   activate:xmppStream];
+	[xmppvCardAvatarModule activate:xmppStream];
 	[xmppCapabilities      activate:xmppStream];
 
     [xmppCapabilities addDelegate:self delegateQueue:dispatch_get_main_queue()];
@@ -191,6 +208,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 	
 //	[xmppReconnect         deactivate];
 	[xmppRoster            deactivate];
+	[xmppvCardTempModule   deactivate];
+	[xmppvCardAvatarModule deactivate];
     [xmppCapabilities      deactivate];
 	
 	[xmppStream disconnect];
@@ -198,7 +217,10 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 	xmppStream = nil;
 //	xmppReconnect = nil;
     xmppRoster = nil;
-	xmppRosterStorage = nil;
+	rosterstorage = nil;
+	xmppvCardStorage = nil;
+    xmppvCardTempModule = nil;
+	xmppvCardAvatarModule = nil;
 	xmppCapabilities = nil;
 	xmppCapabilitiesStorage = nil;
 }
@@ -223,7 +245,6 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     password_ = password;
     server_ = serverName;
     
-    NSTimeInterval ti = 50 * 1000;
     NSError *error = nil;
     
     if (![xmppStream registerWithPassword:password error:&error])
@@ -276,6 +297,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     jabberID_ = jabberID;
     XMPPJID *xmppJid = [XMPPJID jidWithString:jabberID];
     [xmppStream setMyJID:xmppJid];
+    [xmppStream setHostName:server];
+    
     password_ = password;
     server_ = serverName;
     
@@ -387,6 +410,17 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     //消息接收到的时间
     [dict setObject:[self getCurrentTime] forKey:@"time"];
     
+    if (friendsChatMessage == nil) {
+        friendsChatMessage = [NSMutableDictionary dictionary];
+    }
+    
+    NSMutableArray *friend = [friendsChatMessage objectForKey:from];
+    if (friend == nil) {
+        friend = [NSMutableArray array];
+    }
+    
+    [friend addObject:dict];
+    
     [messageDelegate newMessageReceived:dict];
     
 }
@@ -404,8 +438,15 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         <hash>1531beb3a56bb3216a012bc3806522cc7c50782e</hash>
         </x>
     </presence>
+     
+     <presence xmlns="jabber:client" id="l34Ic-6" from="test1@siteviewwzp/Spark 2.6.3" to="57787d89@siteviewwzp">
+     <status>在线</status>
+     <priority>1</priority>
+     <x xmlns="vcard-temp:x:update"><photo>1531beb3a56bb3216a012bc3806522cc7c50782e</photo></x>
+     <x xmlns="jabber:x:avatar"><hash>1531beb3a56bb3216a012bc3806522cc7c50782e</hash></x>
+     </presence>
+     
     // 出错
-    /*
      <presence xmlns="jabber:client"
      to="fc6a3ed6@siteviewwzp/e18735a9"
      from="liu@conference.siteviewwzp/FC6A3ED6@siteviewwzp"
@@ -417,21 +458,38 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
      <not-authorized xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/>
      </error>
      </presence>
+     
+     <presence xmlns="jabber:client" 
+     to="ff398ab1@siteviewwzp/2709ecb0" 
+     from="a@conference.siteviewwzp/FF398AB1@siteviewwzp" 
+     type="error">
+     <x xmlns="http://jabber.org/protocol/muc"/>
+     <c xmlns="http://jabber.org/protocol/caps" hash="sha-1" node="http://code.google.com/p/xmppframework" ver="k6gP4Ua5m4uu9YorAG0LRXM+kZY="/>
+     <error code="407" type="auth">
+        <registration-required xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/>
+     </error>
+     </presence>
     */
     if ([presence isErrorPresence]) {
-        NSXMLElement *x = [presence elementForName:@"x" xmlns:XMPPMUCNamespace];
         // process error
-        NSXMLElement *node = [presence elementForName:@"error"];
-        if (node) {
-            int32_t code = [node attributeInt32ValueForName:@"code"];
-            NSString *type = [node attributeStringValueForName:@"type"];
+        NSXMLElement *error = [presence elementForName:@"error"];
+        if (error) {
+            int32_t code = [error attributeInt32ValueForName:@"code"];
+            NSString *type = [error attributeStringValueForName:@"type"];
             if ([type isEqualToString:@"auth"]) {
                 switch (code) {
                     case 401:
                         // 密码认证失败
                         [roomsDelegate didJoinRoomFailure:@"密码认证失败"];
                         break;
-                        
+                    case 404:
+                        // 远程服务器未找到
+                        [roomsDelegate didJoinRoomFailure:@"远程服务器未找到"];
+                        break;
+                    case 407:
+                        // 需要注册
+                        [roomsDelegate didJoinRoomFailure:@"密码认证失败"];
+                        break;
                     default:
                         break;
                 }
@@ -439,18 +497,28 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         }
         return;
     }
+    NSXMLElement *x = [presence elementForName:@"x" xmlns:XMPPMUCUserNamespace];
+    if (x) {
+        NSXMLElement *item = [presence elementForName:@"item"];
+        [item attributeStringValueForName:@"affiliation"];
+        [item attributeStringValueForName:@"role"];
+        NSXMLElement *status = [presence elementForName:@"status"];
+        if (status) {
+            //
+        } else {
+            NSLog(@"New user: %@", [[presence to] user]);
+        }
+    }
     //取得好友状态
     NSString *presenceType = [presence type]; //online/offline
     //当前用户
     NSString *userId = [[sender myJID] user];
     //在线用户
     NSString *presenceFromUser = [[presence from] user];
-    
     if (![presenceFromUser isEqualToString:userId]) {
         
         //在线状态
         if ([presenceType isEqualToString:@"available"]) {
-            
             //用户列表委托
             [chatDelegate newBuddyOnline:[NSString stringWithFormat:@"%@@%@", presenceFromUser, server_]];
             
@@ -474,8 +542,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         } else if ([iq elementForName:@"query" xmlns:DISCO_INFO]) {
             NSXMLElement *identity = [query elementForName:@"identity"];
             if ([[identity attributeStringValueForName:@"category"] isEqualToString:@"conference"]) {
-                NSString *groupChatDomain;
-                groupChatDomain = [identity attributeStringValueForName:@"category"];
+                NSString *groupChatDomain = [identity attributeStringValueForName:@"category"];
                 NSLog(groupChatDomain);
             }
             if ([[iq fromStr] isEqualToString:server_]) {
@@ -517,7 +584,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 #pragma mark DiscoInfo
 
-- (BOOL)querySupportMUC
+- (void)querySupportMUC
 {
     /*
      用户向服务器询问是否支持muc的协议
@@ -561,7 +628,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         for (RoomModel *room in roomModel_) {
             if ([room.jid isEqualToString:[jid description]]) {
                 // 设置Room的属性
-                NSLog([caps description]);
+//                NSLog([caps description]);
                 [self parseDiscoInfoWithRoom:caps roomid:room.jid];
                 
                 rooms_ --;
@@ -736,7 +803,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
      </query>
      </iq>
      */
-    NSMutableArray *array = [NSMutableArray array];
+    
+//    NSMutableArray *array = [NSMutableArray array];
     NSArray *items = [query children];
     
     if (roomModel_ == nil) {
@@ -766,6 +834,10 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     //        [self queryRoomsInfo:key.jid];
         }
 //    [roomsDelegate newRoomsReceived:roomModel_];
+     
+    
+    // 房间用户列表
+    
 }
 
 // 查询房间信息
@@ -802,32 +874,82 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 // 获得指定房间的房间属性：是否加密房间
 - (void)parseDiscoInfoWithRoom:(NSXMLElement *)query roomid:(NSString *)room
 {
+    /*
+     <iq xmlns="jabber:client" type="result" id="3F60A4D6-8C20-4147-B8F9-CAF6D0F25834" from="test@conference.siteviewwzp" to="57787d89@siteviewwzp/172701e8">
+         <query xmlns="http://jabber.org/protocol/disco#info">
+             <identity category="conference" name="&#x5218;&#x4E66;&#x8BB0;" type="text"/>
+             <feature var="http://jabber.org/protocol/muc"/>
+             <feature var="muc_public"/><feature var="muc_open"/>
+             <feature var="muc_unmoderated"/>
+             <feature var="muc_semianonymous"/>
+             <feature var="muc_passwordprotected"/>
+             <feature var="muc_persistent"/>
+             <feature var="http://jabber.org/protocol/disco#info"/>
+             <x xmlns="jabber:x:data" type="result">
+                <field var="FORM_TYPE" type="hidden"><value>http://jabber.org/protocol/muc#roominfo</value></field>
+                <field var="muc#roominfo_description" label="&#x63CF;&#x8FF0;">
+                    <value>{location:[28.17806753017430,112.97742276057580]}</value>
+                </field>
+                <field var="muc#roominfo_subject" label="&#x4E3B;&#x9898;"><value>刘书记</value></field>
+                <field var="muc#roominfo_occupants" label="&#x5360;&#x6709;&#x8005;&#x4EBA;&#x6570;"><value>0</value></field>
+                <field var="x-muc#roominfo_creationdate" label="&#x521B;&#x5EFA;&#x65E5;&#x671F;"><value>20130718T08:52:29</value></field>
+             </x>
+         </query>
+     </iq>
+    */
+
     NSArray *elemets = [query children];
     
-    BOOL isMucPasswordProtected = NO;
-    for (NSXMLNode *node in elemets) {
-        NSXMLElement *ele = [[NSXMLElement alloc] initWithXMLString:[node description] error:nil];
-        NSXMLNode *href = [ele attributeForName:@"var"];
-        if (href != nil) {
-            NSLog([href stringValue]);
-            
-            NSString *value = [href stringValue];
-            if ([value compare:PROTOCOL_MUC_PASSWORDPROTECTED] == NSOrderedSame) {
-                //
-                href = nil;
-                ele = nil;
+    for (NSXMLElement *node in elemets) {
+        if ([[node name] isEqualToString:@"feature"])
+        {
+            NSXMLElement *ele = [[NSXMLElement alloc] initWithXMLString:[node description] error:nil];
+            NSXMLNode *href = [ele attributeForName:@"var"];
+            if (href != nil) {
+//                NSLog([href stringValue]);
                 
-                for (RoomModel *key in roomModel_) {
-                    if ([key.jid compare:room] == NSOrderedSame) {
-                        key.isMucPasswordProtocted = YES;
-                        break;
+                NSString *value = [href stringValue];
+                if ([value compare:PROTOCOL_MUC_PASSWORDPROTECTED] == NSOrderedSame) {
+                    //
+                    href = nil;
+                    ele = nil;
+                    
+                    for (RoomModel *key in roomModel_) {
+                        if ([key.jid compare:room] == NSOrderedSame) {
+                            key.isMucPasswordProtocted = YES;
+                            break;
+                        }
                     }
+                    break;
                 }
-                break;
+            }
+            href = nil;
+            ele = nil;
+        } else if ([[node name] isEqualToString:@"x"]) {//[node elementForName:@"x" xmlns:@"jabber:x:data"]) {
+            NSArray *fields = [node children];
+            
+            for (NSXMLElement *field in fields) {
+                NSString *var = [field attributeStringValueForName:@"var"];
+                if ([var isEqualToString:@"muc#roominfo_description"])
+                {
+                    NSXMLNode *value = [field elementForName:@"value"];//[[field childAtIndex:0] description];
+                    NSString *location = [value stringValue];
+                    if ([location compare:@"{location"] == NSOrderedAscending) {
+                        continue;
+                    }
+                    CLLocationCoordinate2D coordinate;
+                    sscanf([[value stringValue] UTF8String], "{location:[%lf,%lf]}", &coordinate.latitude, &coordinate.longitude);
+                    
+                    for (RoomModel *key in roomModel_) {
+                        if ([key.jid isEqualToString:room]) {
+                            key.coordinate = coordinate;
+                            break;
+                        }
+                    }
+
+                }
             }
         }
-        href = nil;
-        ele = nil;
     }
     
 }
@@ -862,15 +984,14 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     if (room != nil) {
         room = nil;
     }
-*/
-    XMPPRoomCoreDataStorage *roomstorage = [XMPPRoomCoreDataStorage sharedInstance];
-    
-//    XMPPRoomMemoryStorage *roomMemoryStorage = [[XMPPRoomMemoryStorage alloc] init];
+ 
     if (xmppRoom != nil) {
         [xmppRoom removeDelegate:self];
         [xmppRoom deactivate];
         xmppRoom = nil;
     }
+ */
+    roomstorage = [XMPPRoomCoreDataStorage sharedInstance];
     xmppRoom = [[XMPPRoom alloc] initWithRoomStorage:roomstorage
                                                            jid:[XMPPJID jidWithString:roomjid]
                                                  dispatchQueue:dispatch_get_main_queue()];
@@ -889,8 +1010,11 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 - (NSManagedObjectContext *)managedObjectContext_room
 {
+    if (roomstorage == nil) {
+        nil;
+    }
 	DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
-//	return [rosterstorage mainThreadManagedObjectContext];
+	return [roomstorage mainThreadManagedObjectContext];
 }
 
 
@@ -907,11 +1031,23 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 - (void)xmppRoomDidJoin:(XMPPRoom *)sender
 {
 	DDLogInfo(@"%@: %@", THIS_FILE, THIS_METHOD);
-	
-	[xmppRoom fetchConfigurationForm];
-	[xmppRoom fetchBanList];
-	[xmppRoom fetchMembersList];
-	[xmppRoom fetchModeratorsList];
+//    [sender fetchMembersList];
+    
+    /*
+     <iq to='staff158@chat.fayfox'
+     type='get'
+     id='userlist' xmlns='jabber:client'>
+     <query xmlns='http://jabber.org/protocol/disco#items'/>
+     </iq>
+    */
+    NSString *fetchID = [xmppStream generateUUID];
+    
+    NSXMLElement *query = [NSXMLElement elementWithName:@"query" xmlns:DISCO_ITEMS];
+    
+    XMPPIQ *iq = [XMPPIQ iqWithType:@"get" to:[sender roomJID] elementID:fetchID child:query];
+    
+    [xmppStream sendElement:iq];
+
 }
 
 
@@ -938,6 +1074,16 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 - (void)xmppRoom:(XMPPRoom *)sender didNotFetchMembersList:(XMPPIQ *)iqError
 {
 	DDLogInfo(@"%@: %@", THIS_FILE, THIS_METHOD);
+    /*
+    <iq xmlns="jabber:client" type="error" id="F683DD2A-30D2-4308-8956-68EED29E8359" from="&#x6D4B;&#x8BD5;@conference.siteviewwzp" to="ff398ab1@siteviewwzp/ff2d8f53">
+    <query xmlns="http://jabber.org/protocol/muc#admin">
+    <item affiliation="member"/>
+    </query>
+    <error code="403" type="auth">
+    <forbidden xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/>
+    </error>
+    </iq>
+    */
 }
 
 - (void)xmppRoom:(XMPPRoom *)sender didFetchModeratorsList:(NSArray *)items
@@ -962,7 +1108,9 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 //收到群聊消息
 - (void)xmppRoom:(XMPPRoom *)sender didReceiveMessage:(XMPPMessage *)message fromOccupant:(XMPPJID *)occupantJID
 {
-	NSLog(@"%@  xmppRoom:didReceiveMessage:%@",[[self class] description], message);
+    DDLogInfo(@"%@: %@", THIS_FILE, THIS_METHOD);
+    
+	NSLog(@"%@", message);
     
 //    NSString *type = [message isChatMessage];
     NSString *body = [[message elementForName:@"body"] stringValue];
@@ -970,19 +1118,18 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         return;
     }
     
-    // location:[28.1767081,112.9779156]
-    if ([body hasPrefix:@"location"]) {
-        CLLocationCoordinate2D *location;
-        double latitude, longitude;
-        
-        sscanf([body UTF8String], "location:[%lf,%lf]", &latitude, &longitude);
-     
-        NSString *log = [NSString stringWithFormat:@"%lf, %lf", latitude, longitude];
-        NSLog(log);
-    }
-    
     NSString *from = [[message attributeForName:@"from"] stringValue];
     NSString *to = [[message attributeForName:@"to"] stringValue];
+    
+    // location:[28.1767081,112.9779156]
+    if ([body hasPrefix:@"location"]) {
+        CLLocationCoordinate2D location;
+        
+        sscanf([body UTF8String], "location:[%lf,%lf]", &location.latitude, &location.longitude);
+     
+        NSString *log = [NSString stringWithFormat:@"%lf, %lf", location.latitude, location.longitude];
+        NSLog(log);
+    }
     
     if ([message isGroupChatMessage]) {
         NSMutableDictionary *dict = [NSMutableDictionary dictionary];
@@ -1016,16 +1163,25 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
             [dict setObject:from forKey:@"SendUser"];
         }
         
-        [groupChatMessage addObject:dict];
+        NSString *SendLocation = [dict objectForKey:@"SendLocation"];
+        if ( SendLocation != nil) {
+            // {location:[28.1767439,112.9779327]}
+            CLLocationCoordinate2D location;
+            
+            sscanf([SendLocation UTF8String], "{location:[%lf,%lf]}", &location.latitude, &location.longitude);
+
+        }
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setObject:to forKey:@"userId"];
         [defaults setObject:from forKey:@"JoinRoom"];
         [defaults synchronize];
         
+        [groupChatMessage addObject:[dict copy]];
         // 群聊天消息
-        [roomMessageDelegate newMessageReceived:[groupChatMessage mutableCopy] from:from to:to];
+        [roomMessageDelegate newMessageReceived:[dict copy] from:from to:to];
         
+    
     } else {
         NSMutableDictionary *dict = [NSMutableDictionary dictionary];
         [dict setObject:body forKey:@"msg"];
@@ -1033,7 +1189,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         //消息接收到的时间
         [dict setObject:[self getCurrentTime] forKey:@"time"];
         
-        [messageDelegate newMessageReceived:dict];
+//        [messageDelegate newMessageReceived:dict];
     }
     
 
@@ -1041,10 +1197,13 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 - (void)xmppRoom:(XMPPRoom *)room didReceiveMessage:(NSString*)message fromNick:(NSString*)nick
 {
+	DDLogInfo(@"%@: %@", THIS_FILE, THIS_METHOD);
 	NSLog(@"xmppRoom:didReceiveMessage:%@",message);
 }
 //房间人员列表发生变化
--(void)xmppRoom:(XMPPRoom*)room didChangeOccupants:(NSDictionary*)occupants{
+-(void)xmppRoom:(XMPPRoom*)room didChangeOccupants:(NSDictionary*)occupants
+{
+	DDLogInfo(@"%@: %@", THIS_FILE, THIS_METHOD);
 	NSLog(@"%@",@"didChangeOccupants");
 }
 

@@ -87,6 +87,8 @@
 		322DC23F179E780A0076CCE0 /* XMPPCapsCoreDataStorageObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 322DC238179E780A0076CCE0 /* XMPPCapsCoreDataStorageObject.m */; };
 		322DC240179E780A0076CCE0 /* XMPPCapsResourceCoreDataStorageObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 322DC23A179E780A0076CCE0 /* XMPPCapsResourceCoreDataStorageObject.m */; };
 		322DC241179E780A0076CCE0 /* XMPPCapabilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 322DC23C179E780A0076CCE0 /* XMPPCapabilities.m */; };
+		322FC17117A64E5000E656A3 /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 322FC17017A64E5000E656A3 /* GoogleMaps.bundle */; };
+		322FC17317A64EEC00E656A3 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 322FC17217A64EEC00E656A3 /* libc++.dylib */; };
 		327F6B501797B929001DEF6A /* RoomsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 327F6B4F1797B929001DEF6A /* RoomsViewController.m */; };
 		3295DF37178D249C00EF9156 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3295DF36178D249C00EF9156 /* UIKit.framework */; };
 		3295DF39178D249C00EF9156 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3295DF38178D249C00EF9156 /* Foundation.framework */; };
@@ -105,21 +107,32 @@
 		3295DF73178D278000EF9156 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3295DF72178D278000EF9156 /* CoreData.framework */; };
 		3295DF75178D278700EF9156 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3295DF74178D278700EF9156 /* CoreLocation.framework */; };
 		3295DF77178D279A00EF9156 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3295DF76178D279A00EF9156 /* CoreText.framework */; };
-		3295DF79178D27B800EF9156 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3295DF78178D27B800EF9156 /* libc++.dylib */; };
 		3295DF7B178D27C300EF9156 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3295DF7A178D27C300EF9156 /* libicucore.dylib */; };
 		3295DF7D178D27CA00EF9156 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3295DF7C178D27CA00EF9156 /* libz.dylib */; };
 		3295DF81178D297F00EF9156 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3295DF80178D297F00EF9156 /* ImageIO.framework */; };
 		3295DF84178D2B9200EF9156 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3295DF83178D2B9200EF9156 /* LoginViewController.m */; };
 		32A6A8C2178D4027001233C5 /* PositionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 32A6A8C1178D4027001233C5 /* PositionViewController.m */; };
 		32A6A8C8178D4B8D001233C5 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A6A8C7178D4B8D001233C5 /* GoogleMaps.framework */; };
-		32A6A8CA178D4B9B001233C5 /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 32A6A8C9178D4B9A001233C5 /* GoogleMaps.bundle */; };
-		32A6A8CC178D4D3C001233C5 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A6A8CB178D4D3C001233C5 /* libstdc++.dylib */; };
 		32A6A959178E51A6001233C5 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A6A958178E51A6001233C5 /* libxml2.dylib */; };
 		32A6A95B178E51AE001233C5 /* libresolv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A6A95A178E51AE001233C5 /* libresolv.dylib */; };
 		32A6A95D178E51B7001233C5 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A6A95C178E51B7001233C5 /* CFNetwork.framework */; };
 		32A6A95F178E51C0001233C5 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A6A95E178E51C0001233C5 /* Security.framework */; };
 		32A6A962178E52AB001233C5 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 32A6A961178E52AB001233C5 /* ChatViewController.m */; };
 		32A6A965178E5763001233C5 /* FriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 32A6A964178E5763001233C5 /* FriendsViewController.m */; };
+		32A7165F17A8A9FF002E04CF /* XMPPvCard.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 32A7164517A8A9FF002E04CF /* XMPPvCard.xcdatamodeld */; };
+		32A7166017A8A9FF002E04CF /* XMPPvCardAvatarCoreDataStorageObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 32A7164817A8A9FF002E04CF /* XMPPvCardAvatarCoreDataStorageObject.m */; };
+		32A7166117A8A9FF002E04CF /* XMPPvCardCoreDataStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 32A7164A17A8A9FF002E04CF /* XMPPvCardCoreDataStorage.m */; };
+		32A7166217A8A9FF002E04CF /* XMPPvCardCoreDataStorageObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 32A7164C17A8A9FF002E04CF /* XMPPvCardCoreDataStorageObject.m */; };
+		32A7166317A8A9FF002E04CF /* XMPPvCardTempCoreDataStorageObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 32A7164E17A8A9FF002E04CF /* XMPPvCardTempCoreDataStorageObject.m */; };
+		32A7166417A8A9FF002E04CF /* XMPPvCardTemp.m in Sources */ = {isa = PBXBuildFile; fileRef = 32A7165017A8A9FF002E04CF /* XMPPvCardTemp.m */; };
+		32A7166517A8A9FF002E04CF /* XMPPvCardTempAdr.m in Sources */ = {isa = PBXBuildFile; fileRef = 32A7165217A8A9FF002E04CF /* XMPPvCardTempAdr.m */; };
+		32A7166617A8A9FF002E04CF /* XMPPvCardTempAdrTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 32A7165417A8A9FF002E04CF /* XMPPvCardTempAdrTypes.m */; };
+		32A7166717A8A9FF002E04CF /* XMPPvCardTempBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 32A7165617A8A9FF002E04CF /* XMPPvCardTempBase.m */; };
+		32A7166817A8A9FF002E04CF /* XMPPvCardTempEmail.m in Sources */ = {isa = PBXBuildFile; fileRef = 32A7165817A8A9FF002E04CF /* XMPPvCardTempEmail.m */; };
+		32A7166917A8A9FF002E04CF /* XMPPvCardTempLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 32A7165A17A8A9FF002E04CF /* XMPPvCardTempLabel.m */; };
+		32A7166A17A8A9FF002E04CF /* XMPPvCardTempModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 32A7165C17A8A9FF002E04CF /* XMPPvCardTempModule.m */; };
+		32A7166B17A8A9FF002E04CF /* XMPPvCardTempTel.m in Sources */ = {isa = PBXBuildFile; fileRef = 32A7165E17A8A9FF002E04CF /* XMPPvCardTempTel.m */; };
+		32A7166F17A8AA58002E04CF /* XMPPvCardAvatarModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 32A7166E17A8AA58002E04CF /* XMPPvCardAvatarModule.m */; };
 		32EEDA4F17990EDD00721FD2 /* RoomModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 32EEDA4E17990EDD00721FD2 /* RoomModel.m */; };
 /* End PBXBuildFile section */
 
@@ -293,6 +306,8 @@
 		322DC23A179E780A0076CCE0 /* XMPPCapsResourceCoreDataStorageObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPCapsResourceCoreDataStorageObject.m; sourceTree = "<group>"; };
 		322DC23B179E780A0076CCE0 /* XMPPCapabilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPCapabilities.h; sourceTree = "<group>"; };
 		322DC23C179E780A0076CCE0 /* XMPPCapabilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPCapabilities.m; sourceTree = "<group>"; };
+		322FC17017A64E5000E656A3 /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
+		322FC17217A64EEC00E656A3 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		327F6B4E1797B929001DEF6A /* RoomsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoomsViewController.h; sourceTree = "<group>"; };
 		327F6B4F1797B929001DEF6A /* RoomsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoomsViewController.m; sourceTree = "<group>"; };
 		3295DF33178D249C00EF9156 /* ChatTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -317,7 +332,6 @@
 		3295DF72178D278000EF9156 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		3295DF74178D278700EF9156 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		3295DF76178D279A00EF9156 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
-		3295DF78178D27B800EF9156 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		3295DF7A178D27C300EF9156 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		3295DF7C178D27CA00EF9156 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		3295DF80178D297F00EF9156 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
@@ -326,7 +340,6 @@
 		32A6A8C0178D4027001233C5 /* PositionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PositionViewController.h; sourceTree = "<group>"; };
 		32A6A8C1178D4027001233C5 /* PositionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PositionViewController.m; sourceTree = "<group>"; };
 		32A6A8C7178D4B8D001233C5 /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
-		32A6A8C9178D4B9A001233C5 /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
 		32A6A8CB178D4D3C001233C5 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
 		32A6A958178E51A6001233C5 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		32A6A95A178E51AE001233C5 /* libresolv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libresolv.dylib; path = usr/lib/libresolv.dylib; sourceTree = SDKROOT; };
@@ -336,6 +349,33 @@
 		32A6A961178E52AB001233C5 /* ChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatViewController.m; sourceTree = "<group>"; };
 		32A6A963178E5763001233C5 /* FriendsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendsViewController.h; sourceTree = "<group>"; };
 		32A6A964178E5763001233C5 /* FriendsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendsViewController.m; sourceTree = "<group>"; };
+		32A7164617A8A9FF002E04CF /* XMPPvCard.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = XMPPvCard.xcdatamodel; sourceTree = "<group>"; };
+		32A7164717A8A9FF002E04CF /* XMPPvCardAvatarCoreDataStorageObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPvCardAvatarCoreDataStorageObject.h; sourceTree = "<group>"; };
+		32A7164817A8A9FF002E04CF /* XMPPvCardAvatarCoreDataStorageObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPvCardAvatarCoreDataStorageObject.m; sourceTree = "<group>"; };
+		32A7164917A8A9FF002E04CF /* XMPPvCardCoreDataStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPvCardCoreDataStorage.h; sourceTree = "<group>"; };
+		32A7164A17A8A9FF002E04CF /* XMPPvCardCoreDataStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPvCardCoreDataStorage.m; sourceTree = "<group>"; };
+		32A7164B17A8A9FF002E04CF /* XMPPvCardCoreDataStorageObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPvCardCoreDataStorageObject.h; sourceTree = "<group>"; };
+		32A7164C17A8A9FF002E04CF /* XMPPvCardCoreDataStorageObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPvCardCoreDataStorageObject.m; sourceTree = "<group>"; };
+		32A7164D17A8A9FF002E04CF /* XMPPvCardTempCoreDataStorageObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPvCardTempCoreDataStorageObject.h; sourceTree = "<group>"; };
+		32A7164E17A8A9FF002E04CF /* XMPPvCardTempCoreDataStorageObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPvCardTempCoreDataStorageObject.m; sourceTree = "<group>"; };
+		32A7164F17A8A9FF002E04CF /* XMPPvCardTemp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPvCardTemp.h; sourceTree = "<group>"; };
+		32A7165017A8A9FF002E04CF /* XMPPvCardTemp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPvCardTemp.m; sourceTree = "<group>"; };
+		32A7165117A8A9FF002E04CF /* XMPPvCardTempAdr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPvCardTempAdr.h; sourceTree = "<group>"; };
+		32A7165217A8A9FF002E04CF /* XMPPvCardTempAdr.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPvCardTempAdr.m; sourceTree = "<group>"; };
+		32A7165317A8A9FF002E04CF /* XMPPvCardTempAdrTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPvCardTempAdrTypes.h; sourceTree = "<group>"; };
+		32A7165417A8A9FF002E04CF /* XMPPvCardTempAdrTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPvCardTempAdrTypes.m; sourceTree = "<group>"; };
+		32A7165517A8A9FF002E04CF /* XMPPvCardTempBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPvCardTempBase.h; sourceTree = "<group>"; };
+		32A7165617A8A9FF002E04CF /* XMPPvCardTempBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPvCardTempBase.m; sourceTree = "<group>"; };
+		32A7165717A8A9FF002E04CF /* XMPPvCardTempEmail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPvCardTempEmail.h; sourceTree = "<group>"; };
+		32A7165817A8A9FF002E04CF /* XMPPvCardTempEmail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPvCardTempEmail.m; sourceTree = "<group>"; };
+		32A7165917A8A9FF002E04CF /* XMPPvCardTempLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPvCardTempLabel.h; sourceTree = "<group>"; };
+		32A7165A17A8A9FF002E04CF /* XMPPvCardTempLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPvCardTempLabel.m; sourceTree = "<group>"; };
+		32A7165B17A8A9FF002E04CF /* XMPPvCardTempModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPvCardTempModule.h; sourceTree = "<group>"; };
+		32A7165C17A8A9FF002E04CF /* XMPPvCardTempModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPvCardTempModule.m; sourceTree = "<group>"; };
+		32A7165D17A8A9FF002E04CF /* XMPPvCardTempTel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPvCardTempTel.h; sourceTree = "<group>"; };
+		32A7165E17A8A9FF002E04CF /* XMPPvCardTempTel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPvCardTempTel.m; sourceTree = "<group>"; };
+		32A7166D17A8AA58002E04CF /* XMPPvCardAvatarModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPvCardAvatarModule.h; sourceTree = "<group>"; };
+		32A7166E17A8AA58002E04CF /* XMPPvCardAvatarModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPvCardAvatarModule.m; sourceTree = "<group>"; };
 		32DD03901797EC6B00886B90 /* XMPPRoomsDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XMPPRoomsDelegate.h; sourceTree = "<group>"; };
 		32EEDA4D17990EDD00721FD2 /* RoomModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoomModel.h; sourceTree = "<group>"; };
 		32EEDA4E17990EDD00721FD2 /* RoomModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoomModel.m; sourceTree = "<group>"; };
@@ -347,16 +387,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				322FC17317A64EEC00E656A3 /* libc++.dylib in Frameworks */,
 				32020DEA17978EF00068473D /* libsqlite3.dylib in Frameworks */,
 				32A6A95B178E51AE001233C5 /* libresolv.dylib in Frameworks */,
 				32A6A95F178E51C0001233C5 /* Security.framework in Frameworks */,
 				32A6A95D178E51B7001233C5 /* CFNetwork.framework in Frameworks */,
 				32A6A959178E51A6001233C5 /* libxml2.dylib in Frameworks */,
-				32A6A8CC178D4D3C001233C5 /* libstdc++.dylib in Frameworks */,
 				3295DF81178D297F00EF9156 /* ImageIO.framework in Frameworks */,
 				3295DF7D178D27CA00EF9156 /* libz.dylib in Frameworks */,
 				3295DF7B178D27C300EF9156 /* libicucore.dylib in Frameworks */,
-				3295DF79178D27B800EF9156 /* libc++.dylib in Frameworks */,
 				3295DF39178D249C00EF9156 /* Foundation.framework in Frameworks */,
 				3295DF77178D279A00EF9156 /* CoreText.framework in Frameworks */,
 				3295DF75178D278700EF9156 /* CoreLocation.framework in Frameworks */,
@@ -502,6 +541,8 @@
 		322DC16C179D11600076CCE0 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				32A7166C17A8AA58002E04CF /* XEP-0153 */,
+				32A7164317A8A9FF002E04CF /* XEP-0054 */,
 				322DC232179E78090076CCE0 /* XEP-0115 */,
 				322DC22A179D14E00076CCE0 /* XEP-0082 */,
 				322DC225179D133B0076CCE0 /* XEP-0203 */,
@@ -826,18 +867,18 @@
 		3295DF35178D249C00EF9156 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				322FC17217A64EEC00E656A3 /* libc++.dylib */,
+				322FC17017A64E5000E656A3 /* GoogleMaps.bundle */,
 				32020DE917978EF00068473D /* libsqlite3.dylib */,
 				32A6A95E178E51C0001233C5 /* Security.framework */,
 				32A6A95C178E51B7001233C5 /* CFNetwork.framework */,
 				32A6A95A178E51AE001233C5 /* libresolv.dylib */,
 				32A6A958178E51A6001233C5 /* libxml2.dylib */,
 				32A6A8CB178D4D3C001233C5 /* libstdc++.dylib */,
-				32A6A8C9178D4B9A001233C5 /* GoogleMaps.bundle */,
 				32A6A8C7178D4B8D001233C5 /* GoogleMaps.framework */,
 				3295DF80178D297F00EF9156 /* ImageIO.framework */,
 				3295DF7C178D27CA00EF9156 /* libz.dylib */,
 				3295DF7A178D27C300EF9156 /* libicucore.dylib */,
-				3295DF78178D27B800EF9156 /* libc++.dylib */,
 				3295DF76178D279A00EF9156 /* CoreText.framework */,
 				3295DF74178D278700EF9156 /* CoreLocation.framework */,
 				3295DF72178D278000EF9156 /* CoreData.framework */,
@@ -908,6 +949,55 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		32A7164317A8A9FF002E04CF /* XEP-0054 */ = {
+			isa = PBXGroup;
+			children = (
+				32A7164417A8A9FF002E04CF /* CoreDataStorage */,
+				32A7164F17A8A9FF002E04CF /* XMPPvCardTemp.h */,
+				32A7165017A8A9FF002E04CF /* XMPPvCardTemp.m */,
+				32A7165117A8A9FF002E04CF /* XMPPvCardTempAdr.h */,
+				32A7165217A8A9FF002E04CF /* XMPPvCardTempAdr.m */,
+				32A7165317A8A9FF002E04CF /* XMPPvCardTempAdrTypes.h */,
+				32A7165417A8A9FF002E04CF /* XMPPvCardTempAdrTypes.m */,
+				32A7165517A8A9FF002E04CF /* XMPPvCardTempBase.h */,
+				32A7165617A8A9FF002E04CF /* XMPPvCardTempBase.m */,
+				32A7165717A8A9FF002E04CF /* XMPPvCardTempEmail.h */,
+				32A7165817A8A9FF002E04CF /* XMPPvCardTempEmail.m */,
+				32A7165917A8A9FF002E04CF /* XMPPvCardTempLabel.h */,
+				32A7165A17A8A9FF002E04CF /* XMPPvCardTempLabel.m */,
+				32A7165B17A8A9FF002E04CF /* XMPPvCardTempModule.h */,
+				32A7165C17A8A9FF002E04CF /* XMPPvCardTempModule.m */,
+				32A7165D17A8A9FF002E04CF /* XMPPvCardTempTel.h */,
+				32A7165E17A8A9FF002E04CF /* XMPPvCardTempTel.m */,
+			);
+			path = "XEP-0054";
+			sourceTree = "<group>";
+		};
+		32A7164417A8A9FF002E04CF /* CoreDataStorage */ = {
+			isa = PBXGroup;
+			children = (
+				32A7164517A8A9FF002E04CF /* XMPPvCard.xcdatamodeld */,
+				32A7164717A8A9FF002E04CF /* XMPPvCardAvatarCoreDataStorageObject.h */,
+				32A7164817A8A9FF002E04CF /* XMPPvCardAvatarCoreDataStorageObject.m */,
+				32A7164917A8A9FF002E04CF /* XMPPvCardCoreDataStorage.h */,
+				32A7164A17A8A9FF002E04CF /* XMPPvCardCoreDataStorage.m */,
+				32A7164B17A8A9FF002E04CF /* XMPPvCardCoreDataStorageObject.h */,
+				32A7164C17A8A9FF002E04CF /* XMPPvCardCoreDataStorageObject.m */,
+				32A7164D17A8A9FF002E04CF /* XMPPvCardTempCoreDataStorageObject.h */,
+				32A7164E17A8A9FF002E04CF /* XMPPvCardTempCoreDataStorageObject.m */,
+			);
+			path = CoreDataStorage;
+			sourceTree = "<group>";
+		};
+		32A7166C17A8AA58002E04CF /* XEP-0153 */ = {
+			isa = PBXGroup;
+			children = (
+				32A7166D17A8AA58002E04CF /* XMPPvCardAvatarModule.h */,
+				32A7166E17A8AA58002E04CF /* XMPPvCardAvatarModule.m */,
+			);
+			path = "XEP-0153";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -963,13 +1053,13 @@
 				3295DF49178D249C00EF9156 /* Default.png in Resources */,
 				3295DF4B178D249C00EF9156 /* Default@2x.png in Resources */,
 				3295DF4D178D249C00EF9156 /* Default-568h@2x.png in Resources */,
-				32A6A8CA178D4B9B001233C5 /* GoogleMaps.bundle in Resources */,
 				3213812A178FA9D400C2A780 /* aqua.png in Resources */,
 				3213812B178FA9D400C2A780 /* BlueBubble2.png in Resources */,
 				3213812C178FA9D400C2A780 /* GreenBubble2.png in Resources */,
 				3213812D178FA9D400C2A780 /* orange.png in Resources */,
 				322DC1C2179D11600076CCE0 /* README.txt in Resources */,
 				322DC1C7179D11600076CCE0 /* build-libidn.sh in Resources */,
+				322FC17117A64E5000E656A3 /* GoogleMaps.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1060,6 +1150,20 @@
 				322DC240179E780A0076CCE0 /* XMPPCapsResourceCoreDataStorageObject.m in Sources */,
 				322DC241179E780A0076CCE0 /* XMPPCapabilities.m in Sources */,
 				3211DDF7179FBE01000C64F2 /* RoomMessageViewController.m in Sources */,
+				32A7165F17A8A9FF002E04CF /* XMPPvCard.xcdatamodeld in Sources */,
+				32A7166017A8A9FF002E04CF /* XMPPvCardAvatarCoreDataStorageObject.m in Sources */,
+				32A7166117A8A9FF002E04CF /* XMPPvCardCoreDataStorage.m in Sources */,
+				32A7166217A8A9FF002E04CF /* XMPPvCardCoreDataStorageObject.m in Sources */,
+				32A7166317A8A9FF002E04CF /* XMPPvCardTempCoreDataStorageObject.m in Sources */,
+				32A7166417A8A9FF002E04CF /* XMPPvCardTemp.m in Sources */,
+				32A7166517A8A9FF002E04CF /* XMPPvCardTempAdr.m in Sources */,
+				32A7166617A8A9FF002E04CF /* XMPPvCardTempAdrTypes.m in Sources */,
+				32A7166717A8A9FF002E04CF /* XMPPvCardTempBase.m in Sources */,
+				32A7166817A8A9FF002E04CF /* XMPPvCardTempEmail.m in Sources */,
+				32A7166917A8A9FF002E04CF /* XMPPvCardTempLabel.m in Sources */,
+				32A7166A17A8A9FF002E04CF /* XMPPvCardTempModule.m in Sources */,
+				32A7166B17A8A9FF002E04CF /* XMPPvCardTempTel.m in Sources */,
+				32A7166F17A8AA58002E04CF /* XMPPvCardAvatarModule.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1232,6 +1336,16 @@
 			);
 			currentVersion = 322DC1F4179D12180076CCE0 /* XMPPRoomHybrid.xcdatamodel */;
 			path = XMPPRoomHybrid.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+		32A7164517A8A9FF002E04CF /* XMPPvCard.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				32A7164617A8A9FF002E04CF /* XMPPvCard.xcdatamodel */,
+			);
+			currentVersion = 32A7164617A8A9FF002E04CF /* XMPPvCard.xcdatamodel */;
+			path = XMPPvCard.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

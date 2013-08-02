@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "XMPPMessageDelegate.h"
 
-@interface MessageViewController : UIViewController<UITableViewDelegate, UITableViewDataSource, XMPPMessageDelegate>
+@interface MessageViewController : UIViewController<UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, XMPPMessageDelegate>
 
 @property(nonatomic, retain) NSString *chatWithUser;
 

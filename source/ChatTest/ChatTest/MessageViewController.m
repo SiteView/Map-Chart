@@ -13,8 +13,8 @@
 #define padding 20
 
 static NSString *USERID = @"userId";
-static NSString *PASS= @"pass";
-static NSString *SERVER = @"server";
+//static NSString *PASS= @"pass";
+//static NSString *SERVER = @"server";
 
 @implementation MessageViewController {
     UITableView *tView;
@@ -61,14 +61,10 @@ static NSString *SERVER = @"server";
     tView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:tView];
     
-    messages = [NSMutableArray array];
-    
     AppDelegate *del = [self appDelegate];
     del.messageDelegate = self;
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self loadHistoryRecord];
-    });
+    [self loadHistoryRecord];
 
 }
 
@@ -76,7 +72,20 @@ static NSString *SERVER = @"server";
 {
     // 加载聊天记录
     
+    AppDelegate *del = [self appDelegate];
+
+    if (del.friendsChatMessage != nil) {
+        NSMutableArray *friend = [del.friendsChatMessage objectForKey:chatWithUser];
+        if (friend) {
+            messages = [[NSMutableArray alloc] initWithArray:friend];
+        } else {
+            messages = [NSMutableArray array];
+        }
+    } else {
+        messages = [NSMutableArray array];        
+    }
 }
+
 - (void)viewWillDisappear:(BOOL)animated
 {
     AppDelegate *del = [self appDelegate];
@@ -92,6 +101,12 @@ static NSString *SERVER = @"server";
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+-(BOOL) textFieldShouldReturn:(UITextField *)textField
+{
+    [messageTextField resignFirstResponder];
+    return YES;
 }
 
 #pragma mark - Table view data source
@@ -115,8 +130,10 @@ static NSString *SERVER = @"server";
         cell = [[MessageCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:identifier];
     }
     
-    NSMutableDictionary *dict = [messages objectAtIndex:indexPath.row];
-    
+    NSDictionary *dict = [messages objectAtIndex:indexPath.row];
+    if (dict == nil) {
+        return cell;
+    }
     //发送者
     NSString *sender = [dict objectForKey:@"sender"];
     //消息
@@ -215,7 +232,7 @@ static NSString *SERVER = @"server";
         
         messageTextField.text = @"";
         [messageTextField resignFirstResponder];
-        
+
         NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
         
         [dictionary setObject:message forKey:@"msg"];
@@ -235,7 +252,7 @@ static NSString *SERVER = @"server";
 
 #pragma mark XMPPMessageDelegate
 -(void)newMessageReceived:(NSDictionary *)messageCotent{
-    
+//    messages = [messageCotent copy];
     [messages addObject:messageCotent];
     
     [tView reloadData];

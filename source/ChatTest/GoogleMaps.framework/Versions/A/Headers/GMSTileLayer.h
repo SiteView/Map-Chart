@@ -67,13 +67,12 @@ FOUNDATION_EXTERN UIImage *const kGMSTileLayerNoTile;
  * the layer to the map. Setting it to nil removes this layer from the map. A
  * layer may be active on at most one map at any given time.
  */
-@property(nonatomic, weak) GMSMapView *map;
+@property (nonatomic, weak) GMSMapView *map;
 
 /**
  * Higher |zIndex| value tile layers will be drawn on top of lower |zIndex|
- * value tile layers and overlays.  Equal values result in undefined draw
- * ordering.
+ * value tile layers.  Equal values result in undefined draw ordering.
  */
-@property(nonatomic, assign) NSInteger zIndex;
+@property (nonatomic, assign) NSUInteger zIndex;
 
 @end

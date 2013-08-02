@@ -49,10 +49,10 @@
 #import "XMPPRoomMemoryStorage.h"
 #import "XMPPRoomCoreDataStorage.h"
 #import "XMPPRoomHybridStorage.h"
-//
-//#import "XMPPvCardTempModule.h"
-//#import "XMPPvCardCoreDataStorage.h"
-//
+
+#import "XMPPvCardTempModule.h"
+#import "XMPPvCardCoreDataStorage.h"
+
 //#import "XMPPPubSub.h"
 //
 //#import "TURNSocket.h"
