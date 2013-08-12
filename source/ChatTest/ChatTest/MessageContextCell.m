@@ -6,9 +6,9 @@
 //  Copyright (c) 2013年 siteview_mac. All rights reserved.
 //
 
-#import "MessageCell.h"
+#import "MessageContextCell.h"
 
-@implementation MessageCell
+@implementation MessageContextCell
 
 @synthesize senderAndTimeLabel;
 @synthesize messageContentView;

@@ -8,9 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "XMPPMessageDelegate.h"
+#import <CoreData/CoreData.h>
 
-@interface MessageViewController : UIViewController<UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, XMPPMessageDelegate>
-
-@property(nonatomic, retain) NSString *chatWithUser;
+@interface MessageViewController : UIViewController<UITableViewDelegate, UITableViewDataSource, XMPPMessageDelegate, NSFetchedResultsControllerDelegate>
 
 @end

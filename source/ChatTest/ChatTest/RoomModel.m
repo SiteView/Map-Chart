@@ -14,5 +14,7 @@
 @synthesize jid;
 @synthesize isMucPasswordProtocted;
 @synthesize coordinate;
+@synthesize effectivetimeStart;
+@synthesize effectivetimeEnd;
 
 @end

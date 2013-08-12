@@ -9,7 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "XMPPRoomMessageDelegate.h"
 
-@interface RoomMessageViewController : UIViewController<UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, XMPPRoomMessageDelegate>
+@interface MessageContextViewController : UIViewController<UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, XMPPRoomMessageDelegate>
+
+@property (nonatomic, strong) NSString *roomName;
 
 - (void)didReceiveMessage:(XMPPMessage *)message fromOccupant:(XMPPJID *)occupantJID;
 

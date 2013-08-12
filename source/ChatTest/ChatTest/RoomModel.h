@@ -15,4 +15,7 @@
 @property (nonatomic, strong) NSString *jid;
 @property (nonatomic) BOOL isMucPasswordProtocted;
 @property (nonatomic) CLLocationCoordinate2D coordinate;
+@property (nonatomic) NSTimeInterval effectivetimeStart;
+@property (nonatomic) NSTimeInterval effectivetimeEnd;
+
 @end

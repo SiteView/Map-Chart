@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MessageCell : UITableViewCell
+@interface MessageContextCell : UITableViewCell
 
 @property(nonatomic, retain) UILabel *senderAndTimeLabel;
 @property(nonatomic, retain) UITextView *messageContentView;

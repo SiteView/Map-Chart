@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "XMPPFramework.h"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
@@ -37,19 +37,26 @@
 @property (nonatomic, strong) id roomsDelegate;
 @property (nonatomic, strong) id roomMessageDelegate;
 @property (nonatomic, strong) NSString *server_;
+@property (nonatomic, strong, readonly) NSMutableDictionary *messageList;
 @property (nonatomic, strong, readonly) NSMutableArray *groupChatMessage;
 @property (nonatomic, strong, readonly) NSMutableDictionary *friendsChatMessage;
 
 @property (nonatomic, readonly) BOOL isOnline;
 @property (nonatomic) BOOL isXMPPRegister;
 @property (nonatomic) BOOL registerSuccess;
+@property (nonatomic, readonly) NSMutableArray *roomModel_;
 
 - (NSString*)uuid;
+
+- (NSManagedObjectContext *)managedObjectContext_room;
+- (NSDictionary *)managedObjectContext_rooms;
+- (NSArray *)managedObjectContext_roomMessage:(NSString *)roomName;
 
 - (BOOL)connect:(NSString *)userId password:(NSString *)password serverName:(NSString *)serverName server:(NSString *)server;
 - (void)disconnect;
 - (void)querySupportMUC;
 - (BOOL)registery:(NSString *)userId password:(NSString *)password serverName:(NSString *)serverName server:(NSString *)server;
-- (void)joinRoom:(NSString *)roomjid password:(NSString *)password;
+- (void)createRoom:(NSString *)roomName password:(NSString *)fullName;
+- (void)joinRoom:(NSString *)roomjid password:(NSString *)password nickName:(NSString *)nickName;
 
 @end

@@ -6,19 +6,20 @@
 //  Copyright (c) 2013年 siteview_mac. All rights reserved.
 //
 
-#import "RoomMessageViewController.h"
-#import "MessageCell.h"
+#import "MessageContextViewController.h"
+#import "MessageContextCell.h"
 #import "AppDelegate.h"
+#import "UserProperty.h"
 
 #define padding 20
 
 static NSString *USERID = @"userId";
 
-@interface RoomMessageViewController ()
+@interface MessageContextViewController ()
 
 @end
 
-@implementation RoomMessageViewController
+@implementation MessageContextViewController
 {
     UITableView *tView;
     UITextField *messageTextField;
@@ -28,6 +29,8 @@ static NSString *USERID = @"userId";
     NSString *to_;
     int messageRightPosition;
 }
+
+@synthesize roomName;
 
 - (void)viewDidLoad
 {
@@ -75,11 +78,34 @@ static NSString *USERID = @"userId";
     tView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:tView];
     
+    [self loadHistoryRecord];
+    
+}
+
+- (void)loadHistoryRecord
+{
+    // 加载聊天记录
+    
     AppDelegate *app = [self appDelegate];
     app.roomMessageDelegate = self;
-
-//    messages = [[NSMutableArray alloc] init];
-    messages = [[NSMutableArray alloc] initWithArray:app.groupChatMessage];
+    
+    messages = [[[self appDelegate] managedObjectContext_roomMessage:roomName] mutableCopy];
+    /*
+     messages = [NSMutableArray array];
+     
+     [messages addObject:@"测试1"];
+     [messages addObject:@"测试1"];
+     
+     
+     AppDelegate *app = [self appDelegate];
+     
+     if (app.messageList != nil)
+     {
+     messages = [[NSMutableDictionary alloc] initWithDictionary:[app.messageList copy]];
+     } else {
+     messages = [NSMutableDictionary dictionary];
+     }
+     */
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -160,10 +186,10 @@ static NSString *USERID = @"userId";
     
     static NSString *identifier = @"msgCell";
     
-    MessageCell *cell =(MessageCell *)[tableView dequeueReusableCellWithIdentifier:identifier];
+    MessageContextCell *cell =(MessageContextCell *)[tableView dequeueReusableCellWithIdentifier:identifier];
     
     if (cell == nil) {
-        cell = [[MessageCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:identifier];
+        cell = [[MessageContextCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:identifier];
     }
     
     NSDictionary *dict = [messages objectAtIndex:indexPath.row];
@@ -188,9 +214,8 @@ static NSString *USERID = @"userId";
     
     UIImage *bgImage = nil;
     
-    cell.senderAndTimeLabel.text = [NSString stringWithFormat:@"%@ %@", sender, time];
     //发送消息
-    if ([sender isEqualToString:@"you"]) {
+    if ([sender isEqualToString:[UserProperty sharedInstance].account]) {
         //背景图
         bgImage = [[UIImage imageNamed:@"BlueBubble2.png"] stretchableImageWithLeftCapWidth:20 topCapHeight:15];
         [cell.messageContentView setFrame:CGRectMake(padding, padding*2, size.width + 5, size.height)];
@@ -205,7 +230,8 @@ static NSString *USERID = @"userId";
     }
     
     cell.bgImageView.image = bgImage;
-    
+    cell.senderAndTimeLabel.text = [NSString stringWithFormat:@"%@ %@", sender, time];
+
     return cell;
     
 }

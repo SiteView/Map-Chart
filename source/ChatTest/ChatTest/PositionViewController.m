@@ -9,10 +9,9 @@
 #import "PositionViewController.h"
 #import "AppDelegate.h"
 #import "MessageViewController.h"
+#import "RoomModel.h"
+#import "UserProperty.h"
 //#import <MapKit/MapKit.h>
-
-#define DOMAIN_NAME @"192.168.9.11"
-#define DOMAIN_URL  @"siteviewwzp"
 
 static int kMarkerCount = 0;
 
@@ -39,6 +38,10 @@ static CGFloat randf() {
 
     // GSMaker
     NSMutableDictionary *onlineMaker_;
+    
+    NSMutableArray *rooms_;
+
+    NSString *roomjid_;
 }
 
 @synthesize roomsViewController;
@@ -90,6 +93,7 @@ static CGFloat randf() {
                                                                  zoom:10];
     
     mapView_ = [GMSMapView mapWithFrame:CGRectZero camera:camera];
+    mapView_.buildingsEnabled = YES;
     mapView_.delegate = self;
     mapView_.autoresizingMask =
     UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -136,7 +140,7 @@ static CGFloat randf() {
                                     target:self
                                     action:@selector(login)];
     [self.navigationItem setLeftBarButtonItem:loginButton_];
-*/
+
     roomLists_ =
     [[UIBarButtonItem alloc] initWithTitle:@"Rooms"
                                      style:UIBarButtonItemStyleBordered
@@ -150,7 +154,7 @@ static CGFloat randf() {
                                     target:self
                                     action:@selector(GroupChatMessage)];
     [self.navigationItem setRightBarButtonItem:groupChatBtn];
-
+*/
     AppDelegate *app = [self appDelegate];
     app.authenticateDelegate = self;
     app.chatDelegate = self;
@@ -336,7 +340,7 @@ static CGFloat randf() {
 - (void)roomLists
 {
     if (self.roomsViewController == nil) {
-        self.roomsViewController = [[RoomsViewController alloc] init];
+        self.roomsViewController = [[MessageContextViewController alloc] init];
     }
     
     [self.navigationController pushViewController:self.roomsViewController animated:YES];
@@ -346,7 +350,7 @@ static CGFloat randf() {
 - (void)GroupChatMessage
 {
     if (self.roomMessageViewController == nil) {
-        self.roomMessageViewController = [[RoomMessageViewController alloc] init];
+        self.roomMessageViewController = [[MessageContextViewController alloc] init];
     }
     [self.navigationController pushViewController:self.roomMessageViewController animated:YES];
 }
@@ -370,7 +374,7 @@ static CGFloat randf() {
     [self.navigationController popViewControllerAnimated:NO];
     
     if (self.roomsViewController == nil) {
-        self.roomsViewController = [[RoomsViewController alloc] init];
+        self.roomsViewController = [[MessageContextViewController alloc] init];
     }
     
     [self.navigationItem.backBarButtonItem setTitle:@""];
@@ -398,8 +402,9 @@ static CGFloat randf() {
 }
 
 //在线好友
--(void)newBuddyOnline:(NSString *)buddyName{
-    
+-(void)newBuddyOnline:(NSString *)buddyName
+{
+/*
     if (![onlineUsers_ containsObject:buddyName]) {
         [onlineUsers_ addObject:buddyName];
         
@@ -416,7 +421,7 @@ static CGFloat randf() {
         [self addMarkerInBounds:bounds stringWithTitle:buddyName];
         
     }
-    
+*/    
 }
 
 //好友下线
@@ -428,24 +433,102 @@ static CGFloat randf() {
     marker.map = nil;
 }
 
+- (void)showRoomPasswordAlertView
+{
+    UIAlertView *alertView = [[UIAlertView alloc]
+                              initWithTitle:@"Room password"
+                              message:@"Enter room password"
+                              delegate:self
+                              cancelButtonTitle:@"Cancel"
+                              otherButtonTitles:@"OK", nil];
+    alertView.alertViewStyle = UIAlertViewStyleSecureTextInput;
+    [alertView show];
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    switch (alertView.alertViewStyle) {
+        case UIAlertViewStyleSecureTextInput:
+        {
+            switch (buttonIndex) {
+                case 0:
+                    break;
+                case 1:
+                {
+                    UITextField *textField = [alertView textFieldAtIndex:0];
+                    
+                    AppDelegate *app = [self appDelegate];
+                    app.roomsDelegate = self;
+                    
+                    [app joinRoom:roomjid_ password:textField.text nickName:[UserProperty sharedInstance].nickName];
+                    NSLog(@"Secure text input: %@", textField.text);
+                    
+                }
+                    break;
+                default:
+                    break;
+            }
+        }
+            break;
+            
+        default:
+            break;
+    }
+}
+
+- (BOOL)alertViewShouldEnableFirstOtherButton:(UIAlertView *)alertView {
+    UIAlertViewStyle style = alertView.alertViewStyle;
+    
+    if ((style == UIAlertViewStyleSecureTextInput) ||
+        (style == UIAlertViewStylePlainTextInput) ||
+        (style == UIAlertViewStyleLoginAndPasswordInput)) {
+        UITextField *textField = [alertView textFieldAtIndex:0];
+        if ([textField.text length] == 0) {
+            return NO;
+        }
+    }
+    
+    return YES;
+}
+
 // 和好友聊天
 - (void)mapView:(GMSMapView *)mapView didTapInfoWindowOfMarker:(GMSMarker *)marker
 {
     //start a Chat
-    NSString *chatUserName = marker.title;
-    MessageViewController *messageView = [[MessageViewController alloc] init];
+    NSString *roomName = marker.title;
     
-    messageView.chatWithUser = chatUserName;
+    RoomModel *roomChat = nil;
+    for (RoomModel* room in rooms_) {
+        if ([room.jid isEqualToString:roomName]) {
+            roomChat = room;
+            break;
+        }
+    }
     
-    [self.navigationController pushViewController:messageView animated:YES ];
-
+    if (roomChat != nil) {
+        if (roomChat.isMucPasswordProtocted) {
+            roomjid_ = roomChat.jid;
+            [self showRoomPasswordAlertView];
+            return;
+        }
+        
+        AppDelegate *app = [self appDelegate];
+        [app joinRoom:roomChat.jid password:nil nickName:[UserProperty sharedInstance].nickName];
+        return;
+    }
 }
 
 
 - (void)didAuthenticate:(XMPPStream *)sender {
     // 获得聊天室列表
-    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        AppDelegate *app = [self appDelegate];
+        app.roomsDelegate = self;
+        [app querySupportMUC];
+    });
+
 }
+
 - (void)didConnect:(XMPPStream *)sender
 {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -456,15 +539,20 @@ static CGFloat randf() {
 - (void)registery
 {
     if (isRegistry_ == NO) {
-        
+/*
         // Get the stored data before the view loads
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSString *account = [defaults objectForKey:@"account"];
         NSString *password = [defaults objectForKey:@"password"];
         NSString *serverName = [defaults objectForKey:@"serverName"];
         NSString *serverAddress = [defaults objectForKey:@"serverAddress"];
-        
+*/
 //        if (account == @"" || password == @"")
+
+        NSString *account = [UserProperty sharedInstance].account;
+        NSString *password = [UserProperty sharedInstance].password;
+        NSString *serverName = [UserProperty sharedInstance].serverName;
+        NSString *serverAddress = [UserProperty sharedInstance].serverAddress;
         if (account == nil || password == nil)
         {
             AppDelegate *app = [self appDelegate];
@@ -475,13 +563,9 @@ static CGFloat randf() {
             serverAddress = DOMAIN_NAME;
             serverName = DOMAIN_URL;
             
-            [defaults setObject:account forKey:@"account"];
-            [defaults setObject:password forKey:@"password"];
-            [defaults setObject:serverName forKey:@"serverName"];
-            [defaults setObject:serverAddress forKey:@"serverAddress"];
-            [defaults synchronize];
-            
-            
+            [UserProperty sharedInstance].account = account;
+            [UserProperty sharedInstance].password = password;
+            [[UserProperty sharedInstance] save];
         }
         // 用户的注册
         [[self appDelegate] registery:account password:password serverName:serverName server:serverAddress];
@@ -492,15 +576,11 @@ static CGFloat randf() {
 
 - (void)loginRequest
 {
-    // Get the stored data before the view loads
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *account = [defaults objectForKey:@"account"];
-    NSString *password = [defaults objectForKey:@"password"];
-    NSString *serverName = [defaults objectForKey:@"serverName"];
-    NSString *serverAddress = [defaults objectForKey:@"serverAddress"];
-    
-//    if (account == nil || account == @"" ||
-//        password == nil || password == @"")
+    NSString *nickName = [UserProperty sharedInstance].nickName;
+    NSString *account = [UserProperty sharedInstance].account;
+    NSString *password = [UserProperty sharedInstance].password;
+    NSString *serverName = [UserProperty sharedInstance].serverName;
+    NSString *serverAddress = [UserProperty sharedInstance].serverAddress;
     if (account == nil || password == nil)
     {
         AppDelegate *app = [self appDelegate];
@@ -510,14 +590,16 @@ static CGFloat randf() {
         password = uuid;
         serverAddress = DOMAIN_NAME;
         serverName = DOMAIN_URL;
-        
-        [defaults setObject:account forKey:@"account"];
-        [defaults setObject:password forKey:@"password"];
-        [defaults setObject:serverName forKey:@"serverName"];
-        [defaults setObject:serverAddress forKey:@"serverAddress"];
-        [defaults synchronize];
-        
-        
+
+        [UserProperty sharedInstance].account = account;
+        [UserProperty sharedInstance].password = password;
+        [[UserProperty sharedInstance] save];
+    }
+
+    if ([nickName length] == 0) {
+        nickName = account;
+        [UserProperty sharedInstance].nickName = account;
+        [[UserProperty sharedInstance] save];
     }
     // 用户的登录
     [[self appDelegate] connect:account password:password serverName:serverName server:serverAddress];
@@ -546,4 +628,46 @@ static CGFloat randf() {
 //    [self loginRequest];
 }
 
+-(void)newRoomsReceived:(NSArray *)roomsContent
+{
+    rooms_ = [roomsContent copy];
+    
+    for (RoomModel* room in rooms_) {
+        //
+        UIColor *color =
+        [UIColor colorWithHue:randf() saturation:1.f brightness:1.f alpha:1.0f];
+        
+        CLLocationCoordinate2D position = room.coordinate;
+        
+        GMSMarker *marker = [GMSMarker markerWithPosition:position];
+        marker.title = [NSString stringWithFormat:@"%@", room.jid];
+        marker.animated = YES;
+        marker.icon = [GMSMarker markerImageWithColor:color];
+        marker.map = mapView_;
+        
+        [onlineMaker_ setObject:marker forKey:marker.title];
+
+    }
+}
+#pragma mark XMPPRoomsDelegate
+
+- (void)didJoinRoomSuccess
+{
+    UITabBarController *tabBarController;
+    tabBarController = (UITabBarController *)self.parentViewController.parentViewController;
+    
+    tabBarController.selectedIndex = 1;
+}
+
+- (void)didJoinRoomFailure:(NSString *)errorMsg
+{
+    UIAlertView *alertView = [[UIAlertView alloc]
+                              initWithTitle:@"Room password"
+                              message:errorMsg
+                              delegate:self
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil, nil];
+    [alertView show];
+    
+}
 @end

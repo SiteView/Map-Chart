@@ -87,10 +87,10 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     //start a Chat
-    NSString *chatUserName = (NSString *)[onlineUsers_ objectAtIndex:indexPath.row];
+//    NSString *chatUserName = (NSString *)[onlineUsers_ objectAtIndex:indexPath.row];
     MessageViewController *messageView = [[MessageViewController alloc] init];
     
-    messageView.chatWithUser = chatUserName;
+//    messageView.chatWithUser = chatUserName;
 
     [self.navigationController pushViewController:messageView animated:YES ];
 

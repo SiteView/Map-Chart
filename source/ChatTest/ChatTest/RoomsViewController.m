@@ -9,17 +9,30 @@
 #import "RoomsViewController.h"
 #import "AppDelegate.h"
 #import "RoomModel.h"
+#import "XMPPFramework.h"
+#import "DDLog.h"
+#import "CreateRoomViewController.h"
+#import "UserProperty.h"
 
 @interface RoomsViewController ()
 
 @end
 
+// Log levels: off, error, warn, info, verbose
+#if DEBUG
+static const int ddLogLevel = LOG_LEVEL_VERBOSE;
+#else
+static const int ddLogLevel = LOG_LEVEL_INFO;
+#endif
+
 @implementation RoomsViewController
 {
     UITableView *table_;
+	NSFetchedResultsController *fetchedResultsController;
     NSMutableArray *rooms_;
     NSString *roomPassword_;
     NSString *roomjid_;
+    CreateRoomViewController *createRoomViewController;
 }
 
 - (void)viewDidLoad
@@ -28,39 +41,32 @@
     self.view.backgroundColor =
     [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.8];
 
-    self.title = @"聊天室列表";
-
-    table_ = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    table_ = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 15)];
     table_.dataSource = self;
     table_.delegate = self;
     table_.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     [self.view addSubview:table_];
 
-    rooms_ = [NSMutableArray array];
+//    rooms_ = [NSMutableArray array];
     roomPassword_ = nil;
     
-/*    UIBarButtonItem *rightButton =
-    [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Join", @"Join")
+    UIBarButtonItem *rightButton =
+    [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Create Room", @"Create Room")
                                      style:UIBarButtonItemStyleBordered
-                                    target:@selector(joinRooms)
-                                    action:nil];
+                                    target:self
+                                    action:@selector(CreateRoom)];
     [self.navigationItem setRightBarButtonItem:rightButton];
-*/
+
 //    [self.navigationItem setHidesBackButton:YES];
 
     AppDelegate *app = [self appDelegate];
     app.roomsDelegate = self;
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [app querySupportMUC];
-    });
-
+    rooms_ = [app.roomModel_ copy];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    AppDelegate *app = [self appDelegate];
-    app.roomsDelegate = nil;
 }
 
 - (void)didReceiveMemoryWarning
@@ -69,8 +75,13 @@
     // Dispose of any resources that can be recreated.
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Accessors
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 //取得当前程序的委托
--(AppDelegate *)appDelegate{
+-(AppDelegate *)appDelegate
+{
     
     return (AppDelegate *)[[UIApplication sharedApplication] delegate];
     
@@ -84,25 +95,112 @@
 
 -(void)newRoomsReceived:(NSArray *)roomsContent
 {
-    rooms_ = [roomsContent copy];
     [table_ reloadData];
 }
+/*
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark NSFetchedResultsController
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+- (NSFetchedResultsController *)fetchedResultsController
+{
+	if (fetchedResultsController == nil)
+	{
+		NSManagedObjectContext *moc = [[self appDelegate] managedObjectContext_room];
+		
+		NSEntityDescription *entity = [NSEntityDescription entityForName:@"XMPPRoomCoreDataStorageObject"
+		                                          inManagedObjectContext:moc];
+		
+		NSSortDescriptor *sd1 = [[NSSortDescriptor alloc] initWithKey:@"sectionNum" ascending:YES];
+		NSSortDescriptor *sd2 = [[NSSortDescriptor alloc] initWithKey:@"displayName" ascending:YES];
+		
+		NSArray *sortDescriptors = [NSArray arrayWithObjects:sd1, sd2, nil];
+		
+		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+		[fetchRequest setEntity:entity];
+		[fetchRequest setSortDescriptors:sortDescriptors];
+		[fetchRequest setFetchBatchSize:10];
+		
+		fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+		                                                               managedObjectContext:moc
+		                                                                 sectionNameKeyPath:@"sectionNum"
+		                                                                          cacheName:nil];
+		[fetchedResultsController setDelegate:self];
+		
+		
+		NSError *error = nil;
+		if (![fetchedResultsController performFetch:&error])
+		{
+			DDLogError(@"Error performing fetch: %@", error);
+		}
+        
+	}
+	
+	return fetchedResultsController;
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+{
+	[table_ reloadData];
+}
+*/
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
+//	return [[[self fetchedResultsController] sections] count];
+}
+/*
+- (NSString *)tableView:(UITableView *)sender titleForHeaderInSection:(NSInteger)sectionIndex
+{
+	NSArray *sections = [[self fetchedResultsController] sections];
+	
+	if (sectionIndex < [sections count])
+	{
+		id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:sectionIndex];
+        
+		int section = [sectionInfo.name intValue];
+		switch (section)
+		{
+			case 0  : return @"Available";
+			case 1  : return @"Away";
+			default : return @"Offline";
+		}
+	}
+	
+	return @"";
+}
+*/
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)sectionIndex
+{
+/*	NSArray *sections = [[self fetchedResultsController] sections];
+	
+	if (sectionIndex < [sections count])
+	{
+		id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:sectionIndex];
+		return sectionInfo.numberOfObjects;
+	}
+*/
+    return [rooms_ count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *identifier = @"cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier];
-    }
+    static NSString *CellIdentifier = @"Cell";
     
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+    }
+/*
+    XMPPRoomCoreDataStorage *room = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+    room.description;
+    room.messageEntityName;
+    room.occupantEntityName;
+ */
+
     RoomModel *dict = [rooms_ objectAtIndex:[indexPath row]];
     if (dict.isMucPasswordProtocted) {
         NSString *strProtocted = [NSString stringWithFormat:@"锁 %@", dict.jid];
@@ -112,13 +210,7 @@
     }
         cell.textLabel.text = dict.name;
     
-        
     return cell;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return [rooms_ count];
 }
 
 - (void)showRoomPasswordAlertView
@@ -149,7 +241,7 @@
                     AppDelegate *app = [self appDelegate];
                     app.roomsDelegate = self;
                     
-                    [self joinRoom:roomjid_ password:roomPassword_];
+                    [app joinRoom:roomjid_ password:roomPassword_ nickName:[UserProperty sharedInstance].nickName];
                     NSLog(@"Secure text input: %@", textField.text);
                     
                 }
@@ -192,34 +284,37 @@
         return;
     }
 
-    [self joinRoom:roomjid_ password:nil];
-    
-    //[self dismissViewControllerAnimated:YES completion:NULL];
-    [self.navigationController popViewControllerAnimated:YES];
-
-//    [[app xmppStream] joinRooms:roomjid];
-//    [self.navigationController popViewControllerAnimated:YES];
+    AppDelegate *app = [self appDelegate];
+    [app joinRoom:roomjid_ password:nil nickName:[UserProperty sharedInstance].nickName];
 }
 
-- (void)joinRoom:(NSString *)roomjid password:(NSString *)password
+- (void)CreateRoom
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        AppDelegate *app = [self appDelegate];
-        
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setObject:roomjid forKey:@"TargetRoom"];
-        [defaults synchronize];
-        
-        [app joinRoom:roomjid password:nil];
-    });
+    if (createRoomViewController == nil) {
+        createRoomViewController = [[CreateRoomViewController alloc] init];
+    }
+    [self.navigationController pushViewController:createRoomViewController animated:YES];
     
 }
-
 #pragma mark XMPPRoomsDelegate
 
 - (void)didJoinRoomSuccess
 {
-    [self.navigationController popViewControllerAnimated:YES];
+    UITabBarController *tabBarController;
+    tabBarController = (UITabBarController *)self.parentViewController.parentViewController;
+    
+    tabBarController.selectedIndex = 1;
+/*
+    // 设置加入成功标志
+    UIAlertView *alertView = [[UIAlertView alloc]
+                              initWithTitle:@"Room password"
+                              message:@"加入成功"
+                              delegate:self
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil, nil];
+    [alertView show];
+*/    
+//    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)didJoinRoomFailure:(NSString *)errorMsg

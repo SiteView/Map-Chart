@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "XMPPRoomsDelegate.h"
+#import <CoreData/CoreData.h>
 
 @interface RoomsViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, XMPPRoomsDelegate>
 
