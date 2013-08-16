@@ -13,6 +13,7 @@
 #import "DDLog.h"
 #import "CreateRoomViewController.h"
 #import "UserProperty.h"
+#import "RoomContextCell.h"
 
 @interface RoomsViewController ()
 
@@ -28,8 +29,11 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 @implementation RoomsViewController
 {
     UITableView *table_;
+    UIActivityIndicatorView *indicator_;
+    UIBarButtonItem *refreshButton_;
+    UIBarButtonItem *indicatorButton_;
 	NSFetchedResultsController *fetchedResultsController;
-    NSMutableArray *rooms_;
+    NSMutableDictionary *rooms_;
     NSString *roomPassword_;
     NSString *roomjid_;
     CreateRoomViewController *createRoomViewController;
@@ -41,13 +45,15 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     self.view.backgroundColor =
     [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.8];
 
-    table_ = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 15)];
+    indicator_ = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    indicatorButton_ = [[UIBarButtonItem alloc] initWithCustomView:indicator_];
+    
+    table_ = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - 95)];
     table_.dataSource = self;
     table_.delegate = self;
     table_.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     [self.view addSubview:table_];
 
-//    rooms_ = [NSMutableArray array];
     roomPassword_ = nil;
     
     UIBarButtonItem *rightButton =
@@ -57,16 +63,26 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
                                     action:@selector(CreateRoom)];
     [self.navigationItem setRightBarButtonItem:rightButton];
 
-//    [self.navigationItem setHidesBackButton:YES];
+    refreshButton_ =
+    [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Refresh", @"Refresh")
+                                     style:UIBarButtonItemStyleBordered
+                                    target:self
+                                    action:@selector(refreshRoom)];
+    [self.navigationItem setLeftBarButtonItem:refreshButton_];
+}
 
+- (void)viewWillAppear:(BOOL)animated
+{
     AppDelegate *app = [self appDelegate];
     app.roomsDelegate = self;
     
-    rooms_ = [app.roomModel_ copy];
+    rooms_ = [app.roomModel_ mutableCopy];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    AppDelegate *app = [self appDelegate];
+    app.roomsDelegate = nil;
 }
 
 - (void)didReceiveMemoryWarning
@@ -75,6 +91,19 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     // Dispose of any resources that can be recreated.
 }
 
+- (void)refreshRoom
+{
+    [indicator_ startAnimating];
+    self.navigationItem.leftBarButtonItem = indicatorButton_;
+    
+    AppDelegate *app = [self appDelegate];
+    rooms_ = [app.roomModel_ mutableCopy];
+    [table_ reloadData];
+    
+    // 没有新的房间，服务器不更新
+//    app.roomsDelegate = self;
+//    [app querySupportMUC];
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Accessors
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,9 +111,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 //取得当前程序的委托
 -(AppDelegate *)appDelegate
 {
-    
     return (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    
 }
 
 //取得当前的XMPPStream
@@ -93,12 +120,17 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     return [[self appDelegate] xmppStream];
 }
 
--(void)newRoomsReceived:(NSArray *)roomsContent
+-(void)newRoomsReceived:(RoomModel *)roomsContent
 {
+    [indicator_ stopAnimating];
+    self.navigationItem.leftBarButtonItem = refreshButton_;
+
+    AppDelegate *app = [self appDelegate];
+
+    rooms_ = [app.roomModel_ mutableCopy];
     [table_ reloadData];
 }
 /*
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark NSFetchedResultsController
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -139,43 +171,18 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 	
 	return fetchedResultsController;
 }
-
+*/
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
 	[table_ reloadData];
 }
-*/
+
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return 1;
-//	return [[[self fetchedResultsController] sections] count];
-}
-/*
-- (NSString *)tableView:(UITableView *)sender titleForHeaderInSection:(NSInteger)sectionIndex
-{
-	NSArray *sections = [[self fetchedResultsController] sections];
-	
-	if (sectionIndex < [sections count])
-	{
-		id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:sectionIndex];
-        
-		int section = [sectionInfo.name intValue];
-		switch (section)
-		{
-			case 0  : return @"Available";
-			case 1  : return @"Away";
-			default : return @"Offline";
-		}
-	}
-	
-	return @"";
-}
-*/
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)sectionIndex
 {
-/*	NSArray *sections = [[self fetchedResultsController] sections];
+/*
+	NSArray *sections = [[self fetchedResultsController] sections];
 	
 	if (sectionIndex < [sections count])
 	{
@@ -188,28 +195,47 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
+    static NSString *CellIdentifier = @"RoomContextCell";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    RoomContextCell *cell = (RoomContextCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        cell = [[RoomContextCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+/*        NSArray * cellNib = [[NSBundle mainBundle] loadNibNamed:@"RoomContextCell" owner:self options:nil];
+        
+        cell = [cellNib objectAtIndex:0];
+//        cell = [[[NSBundle mainBundle] loadNibNamed:@"RoomContextCell" owner:self options:nil] lastObject];
+*/ 
     }
 /*
-    XMPPRoomCoreDataStorage *room = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+    RoomModel *room = [[self fetchedResultsController] objectAtIndexPath:indexPath];
     room.description;
     room.messageEntityName;
     room.occupantEntityName;
  */
 
-    RoomModel *dict = [rooms_ objectAtIndex:[indexPath row]];
-    if (dict.isMucPasswordProtocted) {
-        NSString *strProtocted = [NSString stringWithFormat:@"锁 %@", dict.jid];
-        cell.detailTextLabel.text = strProtocted;
+    __block RoomModel *room = nil;
+    __block int nCount = 0;
+    [rooms_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        if (nCount == [indexPath row]) {
+            room = obj;
+            *stop = YES;
+        }
+        nCount++;
+    }];
+
+    if (room.muc_passwordprotected) {
+//            NSString *strProtocted = [NSString stringWithFormat:@"锁 %@", room.jid];
+//            cell.detailTextLabel.text = strProtocted;
     } else {
-        cell.detailTextLabel.text = dict.jid;
+//            cell.detailTextLabel.text = room.jid;
+        cell.lockImageView.image = nil;
     }
-        cell.textLabel.text = dict.name;
-    
+//        cell.textLabel.text = room.name;
+    cell.titleLabel.text = room.name;
+//    cell.timeLabel.text = @"时间";
+//    NSDate *start = [[NSDate alloc] initWithTimeIntervalSince1970:room.effectivetimeStart];
+//    NSDate *end = [NSDate dateWithTimeIntervalSince1970:room.effectivetimeEnd];
+
     return cell;
 }
 
@@ -275,16 +301,41 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // join the room
-    RoomModel *room = [rooms_ objectAtIndex:[indexPath row]];
+    __block RoomModel *room = nil;
+    __block int nCount = 0;
+    [rooms_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        if (nCount == [indexPath row]) {
+            room = obj;
+            *stop = YES;
+        }
+        nCount++;
+    }];
     
+    if (room == nil) {
+        return;
+    }
+    
+    AppDelegate *app = [self appDelegate];
+    
+    // 是否为已加入房间
+    NSDictionary *roomJoined = [app.roomJoinModel_ copy];
+    if ((roomJoined != nil) && ([roomJoined count] > 0))
+    {
+        RoomModel* roomJoin = [roomJoined objectForKey:room.jid];
+        if (roomJoin != nil)
+        {
+            [self didJoinRoomSuccess];
+            return;
+        }
+    }
+
     roomjid_ = room.jid;
-    if (room.isMucPasswordProtocted) {
+    if (room.muc_passwordprotected) {
         // 加密房间，输入密码
         [self showRoomPasswordAlertView];
         return;
     }
 
-    AppDelegate *app = [self appDelegate];
     [app joinRoom:roomjid_ password:nil nickName:[UserProperty sharedInstance].nickName];
 }
 
@@ -304,17 +355,6 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     tabBarController = (UITabBarController *)self.parentViewController.parentViewController;
     
     tabBarController.selectedIndex = 1;
-/*
-    // 设置加入成功标志
-    UIAlertView *alertView = [[UIAlertView alloc]
-                              initWithTitle:@"Room password"
-                              message:@"加入成功"
-                              delegate:self
-                              cancelButtonTitle:@"OK"
-                              otherButtonTitles:nil, nil];
-    [alertView show];
-*/    
-//    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)didJoinRoomFailure:(NSString *)errorMsg

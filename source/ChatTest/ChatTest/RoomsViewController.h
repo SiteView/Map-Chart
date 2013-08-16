@@ -10,6 +10,8 @@
 #import "XMPPRoomsDelegate.h"
 #import <CoreData/CoreData.h>
 
-@interface RoomsViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, XMPPRoomsDelegate>
+@interface RoomsViewController : UIViewController<UITableViewDataSource, UITableViewDelegate,
+//            NSFetchedResultsControllerDelegate,
+            XMPPRoomsDelegate>
 
 @end
