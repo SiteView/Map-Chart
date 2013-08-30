@@ -1,0 +1,48 @@
+/* 
+  Todo.strings
+  ChatTest
+
+  Created by siteview_mac on 13-8-16.
+  Copyright (c) 2013年 siteview_mac. All rights reserved.
+*/
+/*
+2013-8-16
+1、用户加入房间后，取得房间所有好友，以及好友的位置（完成）
+2、用户加入房间后，直接在地图上显示所有成员的位置。（完成）
+3、修改用户昵称（完成）
+4、用户加入房间后，发消息，报告自己的位置（完成）
+5、房间成员定时广播自己的位置（完成）
+6、动画切换显示房间聊天记录。
+ 
+ 2013-8-22
+ 1、分开 聊天记录和聊天信息
+ 2、键盘弹出时，变换发送框位置
+ 
+ 2013-8-26
+ 1、修复bug
+ Room -》 Events （中文：活动）
+ BUG: 时间选择小时、分钟时，直接退出时间设置界面
+ 
+ 2013-8-27
+ 选择性别是，应该是radiobutton
+ BUG: 无法自由设置位置，用户应该可以search and 输入任意地址
+ 1、App Name: MapDots
+ 
+ 2013-8-28
+ 1、版本发布
+ 2、每次加一个版本号： 0.8.1 等等，从0.8.x开始，附上一个release note
+ 
+ 2013-8-29
+ 1、Create Events时，搜素出来的地点按 “字母”排序
+ 2、BUG: 地图没有自动平移，小点点有跑出屏幕范围，看不到了
+ 地图进入定位，消失停止定位
+ 
+ 
+ IMPROVEMENT: 最下面的部分文字和背景高度不匹配，要自动适应iphone4和iphone5
+ UserProperty使用CoreData来实现(1小时搞不定，==）
+ 
+ BUG:  female 为红点，male为篮点
+ 尝试Baidu和Bing的地图，提高定位准确性
+ 2、支持微信
+ 3、定位精度，Bing Map、Baidu Map
+*/
