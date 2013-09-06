@@ -15,4 +15,8 @@
     #import <GoogleMaps/GoogleMaps.h>
     #import <CoreData/CoreData.h>
     #import <MapKit/MapKit.h>
+    #import "BMapKit.h"
 #endif
+
+#define GOOGLE_MAPS
+//#define BAIDU_MAPS

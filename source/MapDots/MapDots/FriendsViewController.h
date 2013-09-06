@@ -15,13 +15,17 @@
 #ifdef GOOGLE_MAPS
 GMSMapViewDelegate
 #else
+#ifdef BAIDU_MAPS
+BMKMapViewDelegate
+#else
 MKMapViewDelegate,
 CLLocationManagerDelegate
+#endif
 #endif
     >
 
 @property (nonatomic, strong) NSString *roomName;
 
-- (void)addCoordinate:(CLLocationCoordinate2D)coordinate;
+- (void)addCoordinate:(NSString *)title coordinate:(CLLocationCoordinate2D)coordinate color:(UIColor *)color;
 
 @end

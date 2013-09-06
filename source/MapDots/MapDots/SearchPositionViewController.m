@@ -25,7 +25,6 @@
     MKLocalSearch *localSearch;
     UIBarButtonItem *viewAllButton;
     CLLocationManager *locationManager;
-    MapViewController *mapViewController;
 }
 
 - (void)viewDidLoad
@@ -52,14 +51,17 @@
     [self.view addSubview:table_];
 
     viewAllButton =
-    [[UIBarButtonItem alloc] initWithTitle:@"showAll"
+    [[UIBarButtonItem alloc] initWithTitle:@"All"
                                      style:UIBarButtonItemStyleBordered
                                     target:self
                                     action:@selector(showAll:)];
     [self.navigationItem setRightBarButtonItem:viewAllButton];
     
+/*
+    MapViewController *mapViewController;
     mapViewController = [[MapViewController alloc] init];
-
+    [mapViewController setFinish:m_target_edit action:m_selector_edit];
+*/ 
 }
 
 
@@ -104,6 +106,10 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    MapViewController *mapViewController;
+    mapViewController = [[MapViewController alloc] init];
+    [mapViewController setFinish:m_target_edit action:m_selector_edit];
+
     // pass the new bounding region to the map destination view controller
     mapViewController.boundingRegion = boundingRegion;
     
@@ -198,6 +204,12 @@
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 }
 
+- (NSComparisonResult)caseInsensitiveCompare:(MKMapItem *)mapItem
+{
+//    return NSOrderedDescending;
+    return [@"" compare:mapItem.name];
+}
+
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
     [searchBar resignFirstResponder];
@@ -236,6 +248,8 @@
 
 - (IBAction)showAll:(id)sender
 {
+    MapViewController *mapViewController;
+    mapViewController = [[MapViewController alloc] init];
     [mapViewController setFinish:m_target_edit action:m_selector_edit];
 
     // pass the new bounding region to the map destination view controller

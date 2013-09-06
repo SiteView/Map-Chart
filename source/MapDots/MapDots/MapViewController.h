@@ -8,7 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MapViewController : UIViewController <MKMapViewDelegate>
+@interface MapViewController : UIViewController <
+#ifdef GOOGLE_MAPS
+GMSMapViewDelegate
+#else
+#ifdef BAIDU_MAPS
+BMKMapViewDelegate
+#else
+MKMapViewDelegate
+#endif
+#endif
+>
 {
     id m_target_edit;
     SEL m_selector_edit;

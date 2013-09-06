@@ -135,6 +135,8 @@
             EditNameViewController *editNameViewController = [[EditNameViewController alloc] init];
             editNameViewController.nickName = [UserProperty sharedInstance].nickName;
             [editNameViewController setEditFinish:self callback:@selector(editOpCallback:)];
+            
+            [editNameViewController setHidesBottomBarWhenPushed:YES];
             [self.navigationController pushViewController:editNameViewController animated:YES];
         }
             break;
@@ -143,6 +145,8 @@
             EditSexViewController *editSexViewController = [[EditSexViewController alloc] init];
             editSexViewController.sex = [UserProperty sharedInstance].sex;
             [editSexViewController setEditFinish:self callback:@selector(editSexOpCallback:)];
+
+            [editSexViewController setHidesBottomBarWhenPushed:YES];
             [self.navigationController pushViewController:editSexViewController animated:YES];
         }
             break;

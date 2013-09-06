@@ -10,4 +10,13 @@
 
 @implementation PlaceAnnotation
 
+@synthesize coordinate;
+@synthesize title;
+@synthesize subtitle;
+
+- (void)setCoordinate:(CLLocationCoordinate2D)newCoordinate
+{
+    coordinate = newCoordinate;
+}
+
 @end

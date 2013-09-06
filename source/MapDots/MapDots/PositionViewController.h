@@ -13,11 +13,13 @@
 #import "XMPPRoomsDelegate.h"
 
 @interface PositionViewController : UIViewController<XMPPAuthenticateDelegate, XMPPChatDelegate, XMPPRoomsDelegate
-//    , GMSMapViewDelegate>
-    , MKMapViewDelegate, CLLocationManagerDelegate
+    , GMSMapViewDelegate
+//    , MKMapViewDelegate, CLLocationManagerDelegate
     >
 
+/*
 @property (strong, nonatomic) LoginViewController *loginViewController;
 @property (strong, nonatomic) MessageContextViewController *roomsViewController;
 @property (strong, nonatomic) MessageContextViewController *roomMessageViewController;
+*/ 
 @end

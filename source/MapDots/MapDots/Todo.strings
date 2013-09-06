@@ -34,15 +34,41 @@
  
  2013-8-29
  1、Create Events时，搜素出来的地点按 “字母”排序
- 2、BUG: 地图没有自动平移，小点点有跑出屏幕范围，看不到了
- 地图进入定位，消失停止定位
  
+ 2013-9-2
+ (3小时）
+ 1、地图使用Google Map
+ 2、IMPROVEMENT: 最下面的部分文字和背景高度不匹配，要自动适应iphone4和iphone5
+ 3、自适应键盘高度
  
- IMPROVEMENT: 最下面的部分文字和背景高度不匹配，要自动适应iphone4和iphone5
- UserProperty使用CoreData来实现(1小时搞不定，==）
+ 下午：
+ 4、消息的时间顺序问题
+ 5、UserProperty使用CoreData来实现(1小时搞不定，==）不需要了
+ 6、Fix Bug：BUG: 创建事件时，选择完地址，应该显示出被选中的地址信息。（3小时）
+ 7、使用Baidu地图
  
- BUG:  female 为红点，male为篮点
- 尝试Baidu和Bing的地图，提高定位准确性
- 2、支持微信
+ 2013-9-3
+ 1、使用Baidu地图（3小时）
+ 2、如何得到精确的google map位置信息，如何申请 ？有申请的网址 ？(3小时，没能解决）
+ 3、BUG: 地图没有自动平移，小点点有跑出屏幕范围，看不到了
+ 4、尝试Baidu和Bing的地图，提高定位准确性
+ 5、IOS7兼容性
+ 
+ 2013-9-4
+ 1、支持微信：此功能必须上线后，才能使用
+ 2、BUG: zoomin之后，mapdot过几秒又自己zoomout会原状了 
+ 3、BUG：female 为红点，male为篮点
+ 
+ 2013-9-5
+ 1、Mapdot 只要竖屏就ok，不用支持翻转
+ 
+ 2013-9-6
+ 1、IOS7兼容性
+ 
+ Later：
+
+ 1、尝试Baidu和Bing的地图，提高定位准确性
+ 2、IOS7兼容性
+ 
  3、定位精度，Bing Map、Baidu Map
 */

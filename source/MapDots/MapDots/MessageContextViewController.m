@@ -62,6 +62,7 @@
     tView.delegate = self;
     tView.dataSource = self;
     tView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
     [self.view addSubview:tView];
 
     
@@ -256,7 +257,7 @@
     CGSize textSize = {260.0 ,10000.0};
     CGSize size = [messageStr sizeWithFont:[UIFont boldSystemFontOfSize:13]
                          constrainedToSize:textSize
-                             lineBreakMode:UILineBreakModeWordWrap];
+                             lineBreakMode:NSLineBreakByWordWrapping];
     
     size.width +=(padding/2);
     
@@ -327,7 +328,7 @@
     NSString *msg = message.body;
 
     CGSize textSize = {260.0 , 10000.0};
-    CGSize size = [msg sizeWithFont:[UIFont boldSystemFontOfSize:13] constrainedToSize:textSize lineBreakMode:UILineBreakModeWordWrap];
+    CGSize size = [msg sizeWithFont:[UIFont boldSystemFontOfSize:13] constrainedToSize:textSize lineBreakMode:NSLineBreakByWordWrapping];
     
     size.height += padding*2;
     

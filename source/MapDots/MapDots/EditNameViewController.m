@@ -23,11 +23,15 @@
 {
     [super viewDidLoad];
 	
-    UIControl *view_ = [[UIControl alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
+    CGRect rect = CGRectMake(0, 0,
+                             self.view.bounds.size.width,
+                             self.view.bounds.size.height);
+
+    UIControl *view_ = [[UIControl alloc] initWithFrame:rect];
     [view_ addTarget:self action:@selector(backgroundTap:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:view_];
 
-    self.view.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];
+    view_.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];
     
     text_ = [[UITextField alloc] initWithFrame:CGRectMake(3, 3, self.view.bounds.size.width - 6, 30)];
     text_.borderStyle = UITextBorderStyleRoundedRect;
@@ -40,11 +44,11 @@
     
     text_.text = nickName;
     
-    [self.view addSubview:text_];
+    [view_ addSubview:text_];
     
     UILabel *tint = [[UILabel alloc] initWithFrame:CGRectMake(10, 33, self.view.bounds.size.width, 30)];
     tint.text = @"给您自己取一个好听的名字作为昵称";
-    [self.view addSubview:tint];
+    [view_ addSubview:tint];
 }
 
 - (void)didReceiveMemoryWarning

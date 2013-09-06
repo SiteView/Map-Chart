@@ -19,6 +19,8 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
+        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
+        }
         //日期标签
         senderAndTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, 300, 20)];
         //居中显示

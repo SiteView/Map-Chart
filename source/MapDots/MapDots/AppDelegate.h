@@ -13,10 +13,12 @@
 #import "XMPPRoomMessageDelegate.h"
 #import "XMPPAuthenticateDelegate.h"
 #import "XMPPChatDelegate.h"
+#import "WXApi.h"
 
 @class RoomModel;
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate,
+    WXApiDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
@@ -53,10 +55,11 @@
 @property (nonatomic, readonly) BOOL isOnline;
 @property (nonatomic) BOOL isXMPPRegister;
 @property (nonatomic) BOOL registerSuccess;
-@property (nonatomic, readonly) NSMutableDictionary *roomModel_; // 房间列表
-@property (nonatomic, readonly) NSMutableDictionary *roomJoinModel_; // 加入的房间列表
-@property (nonatomic, readonly) NSMutableDictionary *xmppRoomList; // 加入的房间列表
-@property (nonatomic, readonly) NSMutableDictionary *xmppRoomJoin; // 加入的房间列表
+
+//@property (nonatomic, readonly) NSMutableDictionary *roomModel_; // 房间列表
+//@property (nonatomic, readonly) NSMutableDictionary *roomJoinModel_; // 加入的房间列表
+@property (nonatomic, readonly) NSMutableDictionary *xmppRoomList_; // 加入的房间列表
+//@property (nonatomic, readonly) NSMutableDictionary *xmppRoomJoin_; // 加入的房间列表
 
 @property (nonatomic, strong) RoomModel *createRoomModel;
 @property (nonatomic) CLLocationCoordinate2D myLocation;
@@ -81,6 +84,10 @@
 
 - (void)updateMyPosition;
 - (void)updateMyPositionWithRoomName:(NSString *)roomName;
-- (void)updateMyPositionWithRoom:(RoomModel *)room;
+- (void)updateMyPositionWithRoom:(XMPPRoom *)room;
+
+#pragma make WXApi
+
+- (void) sendTextContent:(NSString*)nsText;
 
 @end

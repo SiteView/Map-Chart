@@ -217,6 +217,289 @@ enum XMPPRoomState
 	
 	return result;
 }
+
+- (NSString *)roomName
+{
+	if (dispatch_get_specific(moduleQueueTag))
+	{
+		return roomName;
+	}
+	else
+	{
+		__block NSString *result;
+		
+		dispatch_sync(moduleQueue, ^{
+			result = roomName;
+		});
+		
+		return result;
+	}
+}
+
+- (void)setRoomName:(NSString *)newRoomName
+{
+	dispatch_block_t block = ^{
+		roomName = newRoomName;
+	};
+	
+	if (dispatch_get_specific(moduleQueueTag))
+		block();
+	else
+		dispatch_async(moduleQueue, block);
+}
+
+- (NSString *)password
+{
+	if (dispatch_get_specific(moduleQueueTag))
+	{
+		return password;
+	}
+	else
+	{
+		__block NSString *result;
+		
+		dispatch_sync(moduleQueue, ^{
+			result = password;
+		});
+		
+		return result;
+	}
+}
+
+- (void)setPassword:(NSString *)newPassword
+{
+	dispatch_block_t block = ^{
+		password = newPassword;
+	};
+	
+	if (dispatch_get_specific(moduleQueueTag))
+		block();
+	else
+		dispatch_async(moduleQueue, block);
+}
+
+- (NSString *)roominfo_creationdate
+{
+	if (dispatch_get_specific(moduleQueueTag))
+	{
+		return roominfo_creationdate;
+	}
+	else
+	{
+		__block NSString *result;
+		
+		dispatch_sync(moduleQueue, ^{
+			result = roominfo_creationdate;
+		});
+		
+		return result;
+	}
+}
+
+- (void)setRoominfo_creationdate:(NSString *)newRoominfo_creationdate
+{
+	dispatch_block_t block = ^{
+		roominfo_creationdate = newRoominfo_creationdate;
+	};
+	
+	if (dispatch_get_specific(moduleQueueTag))
+		block();
+	else
+		dispatch_async(moduleQueue, block);
+}
+
+- (BOOL)muc_passwordprotected
+{
+	if (dispatch_get_specific(moduleQueueTag))
+	{
+		return muc_passwordprotected;
+	}
+	else
+	{
+		__block BOOL result;
+		
+		dispatch_sync(moduleQueue, ^{
+			result = muc_passwordprotected;
+		});
+		
+		return result;
+	}
+}
+
+- (BOOL)muc_public
+{
+	if (dispatch_get_specific(moduleQueueTag))
+	{
+		return muc_public;
+	}
+	else
+	{
+		__block BOOL result;
+		
+		dispatch_sync(moduleQueue, ^{
+			result = muc_public;
+		});
+		
+		return result;
+	}
+}
+
+- (BOOL)muc_open
+{
+	if (dispatch_get_specific(moduleQueueTag))
+	{
+		return muc_open;
+	}
+	else
+	{
+		__block BOOL result;
+		
+		dispatch_sync(moduleQueue, ^{
+			result = muc_open;
+		});
+		
+		return result;
+	}
+}
+
+- (BOOL)muc_unmoderated
+{
+	if (dispatch_get_specific(moduleQueueTag))
+	{
+		return muc_unmoderated;
+	}
+	else
+	{
+		__block BOOL result;
+		
+		dispatch_sync(moduleQueue, ^{
+			result = muc_unmoderated;
+		});
+		
+		return result;
+	}
+}
+
+- (BOOL)muc_semianonymous
+{
+	if (dispatch_get_specific(moduleQueueTag))
+	{
+		return muc_semianonymous;
+	}
+	else
+	{
+		__block BOOL result;
+		
+		dispatch_sync(moduleQueue, ^{
+			result = muc_semianonymous;
+		});
+		
+		return result;
+	}
+}
+
+- (BOOL)muc_persistent
+{
+	if (dispatch_get_specific(moduleQueueTag))
+	{
+		return muc_persistent;
+	}
+	else
+	{
+		__block BOOL result;
+		
+		dispatch_sync(moduleQueue, ^{
+			result = muc_persistent;
+		});
+		
+		return result;
+	}
+}
+
+- (CLLocationCoordinate2D)coordinatePosition
+{
+	if (dispatch_get_specific(moduleQueueTag))
+	{
+		return coordinatePosition;
+	}
+	else
+	{
+		__block CLLocationCoordinate2D result;
+		
+		dispatch_sync(moduleQueue, ^{
+			result = coordinatePosition;
+		});
+		
+		return result;
+	}
+}
+
+- (NSTimeInterval)effectivetimeStart
+{
+	if (dispatch_get_specific(moduleQueueTag))
+	{
+		return effectivetimeStart;
+	}
+	else
+	{
+		__block NSTimeInterval result;
+		
+		dispatch_sync(moduleQueue, ^{
+			result = effectivetimeStart;
+		});
+		
+		return result;
+	}
+}
+
+- (NSTimeInterval)effectivetimeEnd
+{
+	if (dispatch_get_specific(moduleQueueTag))
+	{
+		return effectivetimeEnd;
+	}
+	else
+	{
+		__block NSTimeInterval result;
+		
+		dispatch_sync(moduleQueue, ^{
+			result = effectivetimeEnd;
+		});
+		
+		return result;
+	}
+}
+
+- (NSMutableDictionary *)members
+{
+	if (dispatch_get_specific(moduleQueueTag))
+	{
+		return members;
+	}
+	else
+	{
+		__block NSMutableDictionary *result;
+		
+		dispatch_sync(moduleQueue, ^{
+			result = members;
+		});
+		
+		return result;
+	}
+}
+
+- (void)setMembers:(NSMutableDictionary *)newMembers
+{
+	dispatch_block_t block = ^{
+		members = newMembers;
+	};
+	
+	if (dispatch_get_specific(moduleQueueTag))
+		block();
+	else
+		dispatch_async(moduleQueue, block);
+}
+
 /*
 - (BOOL)isRoomOwner
 {

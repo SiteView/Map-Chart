@@ -8,7 +8,7 @@
 
 #import "EventsViewController.h"
 #import "AppDelegate.h"
-#import "RoomModel.h"
+#import "XMPPRoom.h"
 #import "XMPPFramework.h"
 #import "DDLog.h"
 #import "CreateEventViewController.h"
@@ -16,6 +16,7 @@
 #import "RoomContextCell.h"
 #import "FriendsViewController.h"
 #import "PlaceAnnotation.h"
+#import "UserProperty.h"
 
 @interface EventsViewController ()
 
@@ -38,8 +39,12 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 #ifdef GOOGLE_MAPS
     GMSMapView *mapView_;
 #else
-    CLLocationManager *locationManager;
+#ifdef BAIDU_MAPS
+    BMKMapView *mapView_;
+#else
     MKMapView *mapView_;
+#endif
+    CLLocationManager *locationManager;
 #endif
     CLLocationCoordinate2D position_;
     NSMutableDictionary *onlineMaker_;
@@ -64,6 +69,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     // 用户是否已注册
     BOOL isRegistry_;
 
+    UIActionSheet *actionSheet_;
+    NSString *strTitle;
 }
 
 - (void)viewDidLoad
@@ -112,6 +119,15 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
                                                   target:self
                                                   action:@selector(flipView)];
     
+    actionSheet_ = [[UIActionSheet alloc] initWithTitle:nil
+                                               delegate:self
+                                      cancelButtonTitle:@"Cancel"
+                                 destructiveButtonTitle:@"Join Event"
+                                      otherButtonTitles:@"Shared to WeiChat", nil];
+    
+    actionSheet_.actionSheetStyle = UIActionSheetStyleDefault;
+    actionSheet_.destructiveButtonIndex = 3;
+
     [self.view addSubview:viewEvents_];
     
     // viewPosition_
@@ -120,9 +136,9 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     
     GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:28.17523
                                                             longitude:112.9803
-                                                                 zoom:10];
+                                                                 zoom:14];
     
-    mapView_ = [GMSMapView mapWithFrame:CGRectZero camera:camera];
+    mapView_ = [GMSMapView mapWithFrame:rect camera:camera];
     mapView_.buildingsEnabled = YES;
     mapView_.delegate = self;
     mapView_.autoresizingMask =
@@ -131,20 +147,19 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     mapView_.settings.compassButton = YES;
     mapView_.settings.myLocationButton = YES;
     
-    // Listen to the myLocation property of GMSMapView.
-    [mapView_ addObserver:self
-               forKeyPath:@"myLocation"
-                  options:NSKeyValueObservingOptionNew
-                  context:NULL];
-    
-    // Ask for My Location data after the map has already been added to the UI.
-    dispatch_async(dispatch_get_main_queue(), ^{
-        mapView_.myLocationEnabled = YES;
-    });
-    
+#else
+#ifdef BAIDU_MAPS
+    mapView_ = [[BMKMapView alloc] initWithFrame:self.view.bounds];
+    mapView_.delegate = self;
+    //实现旋转、俯视的3D效果
+//    mapView_.rotate = 90;
+    mapView_.overlooking = -30;
+    //开启定位功能
+    mapView_.showsUserLocation = NO;
+    mapView_.userTrackingMode = BMKUserTrackingModeFollow;
+    mapView_.showsUserLocation = YES;
 #else
     mapView_ = [[MKMapView alloc] initWithFrame:self.view.bounds];
-    
     mapView_.mapType = MKMapTypeStandard;
     mapView_.delegate = self;
     
@@ -157,7 +172,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     span.longitudeDelta = 0.05;
     
     MKCoordinateRegion region = {coordinate, span};
-    [mapView_ setRegion:region];
+    //    [mapView_ setRegion:region];
     mapView_.showsUserLocation = YES;
     
     locationManager = [[CLLocationManager alloc] init];
@@ -173,6 +188,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         [locationManager startUpdatingLocation];
         
     }
+#endif
     
 #endif
     viewPosition_ = mapView_;
@@ -187,7 +203,6 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
     AppDelegate *app = [self appDelegate];
     app.authenticateDelegate = self;
-    app.chatDelegate = self;
     
     [self loginRequest];
 }
@@ -195,15 +210,39 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 - (void)viewWillAppear:(BOOL)animated
 {
     AppDelegate *app = [self appDelegate];
+    app.chatDelegate = self;
     app.roomsDelegate = self;
     
-    rooms_ = [app.roomModel_ mutableCopy];
+    rooms_ = [app.xmppRoomList_ mutableCopy];
+#ifdef GOOGLE_MAPS
+    // Listen to the myLocation property of GMSMapView.
+    [mapView_ addObserver:self
+               forKeyPath:@"myLocation"
+                  options:NSKeyValueObservingOptionNew
+                  context:NULL];
+    
+    //    firstLocationUpdate_ = NO;
+    
+    
+    // Ask for My Location data after the map has already been added to the UI.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        mapView_.myLocationEnabled = YES;
+    });
+    
+#endif
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     AppDelegate *app = [self appDelegate];
+    app.chatDelegate = self;
     app.roomsDelegate = nil;
+#ifdef GOOGLE_MAPS
+    
+    [mapView_ removeObserver:self
+                  forKeyPath:@"myLocation"
+                     context:NULL];
+#endif
 }
 
 - (void)didReceiveMemoryWarning
@@ -212,13 +251,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     // Dispose of any resources that can be recreated.
 }
 
-- (void)dealloc {
-#ifdef GOOGLE_MAPS
-    
-    [mapView_ removeObserver:self
-                  forKeyPath:@"myLocation"
-                     context:NULL];
-#endif
+- (void)dealloc
+{
 }
 #ifdef GOOGLE_MAPS
 
@@ -238,8 +272,32 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     app.myLocation = location.coordinate;
     
     mapView_.camera = [GMSCameraPosition cameraWithTarget:location.coordinate
-                                                     zoom:14];
+                                                     zoom:mapView_.camera.zoom];
     //    }
+}
+
+#else
+#ifdef BAIDU_MAPS
+
+- (void)mapView:(BMKMapView *)mapView didUpdateUserLocation:(BMKUserLocation *)userLocation
+{
+    CLLocationCoordinate2D coordinate;
+    coordinate = [userLocation coordinate];
+    
+    position_ = coordinate;
+    
+    BMKCoordinateSpan span;
+    span.latitudeDelta = 0.05;
+    span.longitudeDelta = 0.05;
+    
+    BMKCoordinateRegion region = {coordinate, span};
+//    [mapView_ setRegion:[mapView_ regionThatFits:region]];
+    mapView_.showsUserLocation = YES;
+}
+
+- (void)mapView:(BMKMapView *)mapView didFailToLocateUserWithError:(NSError *)error
+{
+    
 }
 
 #else
@@ -271,6 +329,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 }
 
 #endif
+#endif
 
 - (void)refreshRoom
 {
@@ -278,7 +337,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     self.navigationItem.leftBarButtonItem = indicatorButton_;
     
     AppDelegate *app = [self appDelegate];
-    rooms_ = [app.roomModel_ mutableCopy];
+    rooms_ = [app.xmppRoomList_ mutableCopy];
     [table_ reloadData];
     
     [indicator_ stopAnimating];
@@ -424,7 +483,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     room.occupantEntityName;
  */
 
-    __block RoomModel *room = nil;
+    __block XMPPRoom *room = nil;
     __block int nCount = 0;
     [rooms_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         if (nCount == [indexPath row]) {
@@ -441,7 +500,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         cell.lockImageView.image = nil;
     }
 //        cell.textLabel.text = room.name;
-    cell.titleLabel.text = room.name;
+    cell.titleLabel.text = room.roomName;
 //    cell.timeLabel.text = @"时间";
 //    NSDate *start = [[NSDate alloc] initWithTimeIntervalSince1970:room.effectivetimeStart];
 //    NSDate *end = [NSDate dateWithTimeIntervalSince1970:room.effectivetimeEnd];
@@ -451,7 +510,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    __block RoomModel *room = nil;
+    __block XMPPRoom *room = nil;
     __block int nCount = 0;
     [rooms_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         if (nCount == [indexPath row]) {
@@ -461,7 +520,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         nCount++;
     }];
 
-    [self joinEvents:room.jid];
+    [self joinEvents:[room.roomJID full]];
 
 }
 
@@ -470,6 +529,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     if (createRoomViewController == nil) {
         createRoomViewController = [[CreateEventViewController alloc] init];
     }
+    [createRoomViewController setHidesBottomBarWhenPushed:YES];
     [self.navigationController pushViewController:createRoomViewController animated:YES];
     
 }
@@ -564,7 +624,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
          */
         //        if (account == @"" || password == @"")
         
-        NSString *account = [UserProperty sharedInstance].nickName;
+        NSString *account = [UserProperty sharedInstance].account;
+        NSString *nickName = [UserProperty sharedInstance].nickName;
         NSString *password = [UserProperty sharedInstance].password;
         //        NSString *serverName = [UserProperty sharedInstance].serverName;
         //        NSString *serverAddress = [UserProperty sharedInstance].serverAddress;
@@ -579,6 +640,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
             //            serverName = DOMAIN_URL;
             
             [UserProperty sharedInstance].nickName = account;
+            [UserProperty sharedInstance].account = account;
             [UserProperty sharedInstance].password = password;
             [[UserProperty sharedInstance] save];
         }
@@ -594,7 +656,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 {
     NSLog(@"%s", __FUNCTION__);
     NSString *nickName = [UserProperty sharedInstance].nickName;
-    NSString *account = [UserProperty sharedInstance].nickName;
+    NSString *account = [UserProperty sharedInstance].account;
     NSString *password = [UserProperty sharedInstance].password;
     //    NSString *serverName = [UserProperty sharedInstance].serverName;
     //    NSString *serverAddress = [UserProperty sharedInstance].serverAddress;
@@ -609,6 +671,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         //        serverName = DOMAIN_NAME;
         
         [UserProperty sharedInstance].nickName = account;
+        [UserProperty sharedInstance].account = account;
         [UserProperty sharedInstance].password = password;
         [[UserProperty sharedInstance] save];
     }
@@ -650,19 +713,19 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 -(void)newRoomsReceived:(NSArray *)roomsContent
 {
     AppDelegate *app = [self appDelegate];
-    rooms_ = [app.roomModel_ mutableCopy];
+    rooms_ = [app.xmppRoomList_ mutableCopy];
 
     [table_ reloadData];
 
     [rooms_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        RoomModel *room = obj;
+        XMPPRoom *room = obj;
         
         CLLocationCoordinate2D coordinate = room.coordinatePosition;
 #ifdef GOOGLE_MAPS
-        UIColor *color = [UIColor colorWithHue:randf() saturation:1.f brightness:1.f alpha:1.0f];
+        UIColor *color = [UIColor redColor];//[UIColor colorWithHue:randf() saturation:1.f brightness:1.f alpha:1.0f];
         
         GMSMarker *marker = [GMSMarker markerWithPosition:coordinate];
-        marker.title = [NSString stringWithFormat:@"%@", room.jid];
+        marker.title = [NSString stringWithFormat:@"%@", room.roomName];
         marker.animated = YES;
         marker.icon = [GMSMarker markerImageWithColor:color];
         marker.map = mapView_;
@@ -686,8 +749,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     app.roomsDelegate = self;
     
     // 是否为已加入房间
-    NSDictionary *roomJoined = [app.roomJoinModel_ copy];
-    RoomModel* roomJoin = [roomJoined objectForKey:roomJid];
+    NSDictionary *roomJoined = [app.xmppRoomList_ copy];
+    XMPPRoom* roomJoin = [roomJoined objectForKey:roomJid];
     if (roomJoin != nil)
     {
         [self didJoinRoomSuccess:roomJid];
@@ -695,12 +758,12 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     }
     
     // 加入房间
-    __block RoomModel *roomChat = nil;
+    __block XMPPRoom *roomChat = nil;
     
-    rooms_ = [app.roomModel_ mutableCopy];
+    rooms_ = [app.xmppRoomList_ mutableCopy];
     [rooms_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        RoomModel *room = obj;
-        if ([room.jid isEqualToString:roomJid]) {
+        XMPPRoom *room = obj;
+        if ([[room.roomJID full] isEqualToString:roomJid]) {
             roomChat = obj;
             *stop = YES;
         }
@@ -708,13 +771,44 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     
     if (roomChat != nil) {
         if (roomChat.muc_passwordprotected) {
-            roomjid_ = roomChat.jid;
+            roomjid_ = [roomChat.roomJID full];
             [self showRoomPasswordAlertView];
             return;
         }
         
-        [app joinRoom:roomChat.jid password:nil nickName:[UserProperty sharedInstance].nickName];
+        [app joinRoom:[roomChat.roomJID full] password:nil nickName:[UserProperty sharedInstance].nickName];
         return;
+    }
+}
+
+
+#pragma make -
+#pragma make UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    switch (buttonIndex) {
+        case 0:
+        {
+            // Join Event
+            [[self appDelegate].xmppRoomList_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+                XMPPRoom *rm = obj;
+                if ([rm.roomName isEqualToString:strTitle]) {
+                    [self joinEvents:[rm.roomJID full]];
+                    *stop = YES;
+                }
+            }];
+        }
+            break;
+        case 1:
+        {
+            // Shared to WeiChat
+            NSString *strWX = [NSString stringWithFormat:@"%@ 邀请您参加 %@ 的活动", [UserProperty sharedInstance].nickName, strTitle];
+            [[self appDelegate] sendTextContent:strWX];
+        }
+            break;
+        default:
+            break;
     }
 }
 
@@ -723,10 +817,36 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 // 和好友聊天
 - (void)mapView:(GMSMapView *)mapView didTapInfoWindowOfMarker:(GMSMarker *)marker
 {
-    [self joinEvents:marker.title];
+    strTitle = marker.title;
+    // 有UITabBar遮挡
+    //    [actionSheet_ showInView:self.view];
+    [actionSheet_ showInView:[UIApplication sharedApplication].keyWindow];
+/*
+    [[self appDelegate].XMPPRoom_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        XMPPRoom *rm = obj;
+        if ([rm.name isEqualToString:strTitle]) {
+            [self joinEvents:rm.jid];
+            *stop = YES;
+        }
+    }];
+*/ 
 }
 #else
+#ifdef BAIDU_MAPS
+- (void)mapView:(BMKMapView *)mapView annotationViewForBubble:(BMKAnnotationView *)view
+{
+    PlaceAnnotation *annotation = view.annotation;
+    
+    [[self appDelegate].XMPPRoom_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        XMPPRoom *rm = obj;
+        if ([rm.name isEqualToString:annotation.title]) {
+            [self joinEvents:rm.jid];
+            *stop = YES;
+        }
+    }];
 
+}
+#else
 - (void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views
 {
     for (MKPinAnnotationView *place in views) {
@@ -758,8 +878,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 {
     PlaceAnnotation *annotation = view.annotation;
     
-    [[self appDelegate].roomModel_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        RoomModel *rm = obj;
+    [[self appDelegate].XMPPRoom_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        XMPPRoom *rm = obj;
         if ([rm.name isEqualToString:annotation.title]) {
             [self joinEvents:rm.jid];
             *stop = YES;
@@ -776,6 +896,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
  }
  }
  */
+#endif
 #endif
 
 
@@ -796,6 +917,9 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     friendsViewController = [[FriendsViewController alloc] init];
     
     friendsViewController.roomName = roomJid;
+    
+    [friendsViewController setHidesBottomBarWhenPushed:YES];
+
     [self.navigationController pushViewController:friendsViewController animated:YES];
     
 }

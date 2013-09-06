@@ -10,11 +10,9 @@
 
 @implementation RoomModel
 
-@synthesize name;
+@synthesize roomName;
 @synthesize password;
-@synthesize jid;
-@synthesize subject;
-@synthesize items;
+@synthesize members;
 @synthesize roominfo_creationdate;
 @synthesize muc_passwordprotected;
 @synthesize muc_public;
@@ -26,6 +24,7 @@
 @synthesize effectivetimeStart;
 @synthesize effectivetimeEnd;
 
+/*
 - (id)init
 {
     self = [super init];
@@ -34,5 +33,5 @@
     }
     return self;
 }
-
+*/
 @end

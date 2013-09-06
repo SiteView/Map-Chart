@@ -11,13 +11,17 @@
 #import "XMPPChatDelegate.h"
 #import "XMPPRoomsDelegate.h"
 
-@interface EventsViewController : UIViewController<UITableViewDataSource, UITableViewDelegate,
+@interface EventsViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate,
 //            NSFetchedResultsControllerDelegate,
-    XMPPAuthenticateDelegate, XMPPChatDelegate, XMPPRoomsDelegate
+    XMPPAuthenticateDelegate, XMPPChatDelegate, XMPPRoomsDelegate, 
 #ifdef GOOGLE_MAPS
-    , GMSMapViewDelegate>
+    GMSMapViewDelegate
 #else
-, MKMapViewDelegate, CLLocationManagerDelegate>
+#ifdef BAIDU_MAPS
+BMKMapViewDelegate
+#else
+MKMapViewDelegate, CLLocationManagerDelegate
 #endif
-
+#endif
+    >
 @end

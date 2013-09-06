@@ -20,10 +20,16 @@
 
     GMSMapView *mapView_;
 #else
-    CLLocationManager *locationManager;
+#ifdef BAIDU_MAPS
+    BMKMapView *mapView_;
+#else
     MKMapView *mapView_;
+#endif
+    CLLocationManager *locationManager;
     PlaceAnnotation *annotation_;
 #endif
+    
+    NSString *addressName;
     CLLocationCoordinate2D position_;
 }
 
@@ -60,6 +66,17 @@
         mapView_.myLocationEnabled = YES;
     });
 
+#else
+#ifdef BAIDU_MAPS
+    mapView_ = [[BMKMapView alloc] initWithFrame:self.view.bounds];
+    mapView_.delegate = self;
+    //实现旋转、俯视的3D效果
+    //    mapView_.rotate = 90;
+    mapView_.overlooking = -30;
+    //开启定位功能
+    mapView_.showsUserLocation = NO;
+    mapView_.userTrackingMode = BMKUserTrackingModeFollow;
+    mapView_.showsUserLocation = YES;
 #else
     mapView_ = [[MKMapView alloc] initWithFrame:rectMap];
     mapView_.mapType = MKMapTypeStandard;
@@ -107,7 +124,8 @@
     }
 
 #endif
-    
+#endif
+ 
 //    [self.view addSubview:mapView_];
     self.view = mapView_;
     
@@ -152,7 +170,29 @@
 }
 
 #else
+#ifdef BAIDU_MAPS
 
+- (void)mapView:(BMKMapView *)mapView didUpdateUserLocation:(BMKUserLocation *)userLocation
+{
+    CLLocationCoordinate2D coordinate;
+    coordinate = [userLocation coordinate];
+    
+    position_ = coordinate;
+    
+    BMKCoordinateSpan span;
+    span.latitudeDelta = 0.05;
+    span.longitudeDelta = 0.05;
+    
+    BMKCoordinateRegion region = {coordinate, span};
+    [mapView_ setRegion:[mapView_ regionThatFits:region]];
+    mapView_.showsUserLocation = YES;
+}
+
+- (void)mapView:(BMKMapView *)mapView didFailToLocateUserWithError:(NSError *)error
+{
+    
+}
+#else
 
 #pragma mark-
 #pragma locationManagerDelegate methods
@@ -173,6 +213,7 @@
     [mapView_ setRegion:region];
     mapView_.showsUserLocation = YES;
 }
+#endif
 
 #endif
 
@@ -195,15 +236,27 @@
     
     UIColor *color = [UIColor blueColor];
     
-    position_ = coordinate;
-    
     GMSMarker *marker = [GMSMarker markerWithPosition:coordinate];
     marker.animated = YES;
     marker.icon = [GMSMarker markerImageWithColor:color];
     marker.map = mapView_;
+    
+    position_ = coordinate;
+    addressName = marker.title;
 }
 #else
 
+#ifdef BAIDU_MAPS
+- (void)mapView:(BMKMapView *)mapView annotationViewForBubble:(BMKAnnotationView *)view
+{
+    PlaceAnnotation *annotation = view.annotation;
+    addressName = annotation.title;
+    position_ = annotation.coordinate;
+    
+    [self confirmPosition];
+    
+}
+#else
 - (void)fingerTapAction:(UIGestureRecognizer*)gestureRecognizer
 {
     CGPoint touchPoint = [gestureRecognizer locationInView:mapView_];//这里touchPoint是点击的某点在地图控件中的位置
@@ -211,6 +264,7 @@
     [mapView_ convertPoint:touchPoint toCoordinateFromView:mapView_];//这里touchMapCoordinate就是该点的经纬度了
     
     position_ = coordinate;
+    addressName = annotation.title;
 
 //    [mapView_ removeAnnotation:annotation_];
     // add the single annotation to our map
@@ -226,6 +280,7 @@
 
 }
 #endif
+#endif
 
 - (void)confirmPosition
 {
@@ -234,7 +289,7 @@
     // 获得用户点击的位置
     coordinate = position_;
     
-    NSString *position = [NSString stringWithFormat:@"[%lf,%lf]", coordinate.latitude, coordinate.longitude];
+    NSString *position = [NSString stringWithFormat:@"[%lf,%lf]%@", coordinate.latitude, coordinate.longitude, addressName];
     [m_target_edit performSelector:m_selector_edit withObject:position];
     [self.navigationController popViewControllerAnimated:YES];
 }

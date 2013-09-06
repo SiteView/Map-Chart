@@ -8,11 +8,19 @@
 
 #import <Foundation/Foundation.h>
 
-@interface PlaceAnnotation : NSObject <MKAnnotation>
+@interface PlaceAnnotation : NSObject <
+#ifdef BAIDU_MAPS
+BMKAnnotation
+#else
+MKAnnotation
+#endif
+>
 
-@property (nonatomic, assign) CLLocationCoordinate2D coordinate;
-@property (nonatomic, retain) NSString *title;
-@property (nonatomic, retain) NSString *subTitle;
-@property (nonatomic, retain) NSURL *url;
+@property (nonatomic, readonly) CLLocationCoordinate2D coordinate;
+@property (nonatomic, copy) NSString *title;
+@property (nonatomic, copy) NSString *subtitle;
+@property (nonatomic, strong) NSURL *url;
+
+- (void)setCoordinate:(CLLocationCoordinate2D)newCoordinate;
 
 @end

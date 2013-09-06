@@ -16,6 +16,7 @@
 #import "UserProperty.h"
 
 #define padding 20
+#define KEYBOARD_HEIGHT 256
 
 @implementation FriendsViewController
 {
@@ -25,13 +26,19 @@
     UIBarButtonItem *flipMapButton_;
     UIBarButtonItem *flipListButton_;
 
+    UIToolbar *toolBar;
+    
     // viewPosition_
 #ifdef GOOGLE_MAPS
-    
+    BOOL firstLocationUpdate_;
     GMSMapView *mapView_;
+#else
+#ifdef BAIDU_MAPS
+    BMKMapView *mapView_;
 #else
     CLLocationManager *locationManager;
     MKMapView *mapView_;
+#endif
 #endif
     CLLocationCoordinate2D position_;
 
@@ -43,13 +50,14 @@
     // viewMessages_
     UITableView *tView;
     UITextField *messageTextField;
-    UIControl* view_;
+    UIControl* messageControl_;
     UIButton *sendBtn;
     int messageRightPosition;
     BOOL isShowKeyboard;
 	NSFetchedResultsController *fetchedResultsController;
     NSDateFormatter *dateFormatter;
 
+    float keyboardHeight;
 //    MessageContextViewController* messageContextViewController;
 }
 
@@ -61,7 +69,7 @@
     
     self.title = roomName;
     dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm"];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     
     CGRect rect = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
     flipListButton_ = [[UIBarButtonItem alloc] initWithTitle:@"Message"
@@ -75,7 +83,16 @@
 
     
     // viewMessages_
+    float controlTop = 0;
+
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
+        controlTop = 30;
+    }
+
     viewMessages_ = [[UIView alloc] initWithFrame:rect];
+    
+    CGFloat tableBottom = self.view.bounds.size.height - 80;
+    CGFloat textTop = tableBottom + 5;
     
     float messageTextFieldWidth = 229;
     float sendBtnLeft = 235;
@@ -85,23 +102,21 @@
         sendBtnLeft = 615;
         messageRightPosition = 768;
     }
-    viewMessages_.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.8];
+    viewMessages_.backgroundColor = [UIColor blackColor];
+//    viewMessages_.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.8];
     
-    view_ = [[UIControl alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
-    [view_ addTarget:self action:@selector(backgroundTap:) forControlEvents:UIControlEventTouchDown];
-    [viewMessages_ addSubview:view_];
-    
-    CGFloat tableBottom = self.view.bounds.size.height - 130;
-    CGFloat textTop = self.view.bounds.size.height - 130 + 5;
-    
-    tView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, tableBottom)];
+/*    messageControl_ = [[UIControl alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
+    [messageControl_ addTarget:self action:@selector(backgroundTap:) forControlEvents:UIControlEventTouchDown];
+    [viewMessages_ addSubview:messageControl_];
+*/    
+    tView = [[UITableView alloc] initWithFrame:CGRectMake(0, controlTop, self.view.bounds.size.width, tableBottom)];
     tView.delegate = self;
     tView.dataSource = self;
     tView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [viewMessages_ addSubview:tView];
     
     
-    messageTextField = [[UITextField alloc] initWithFrame:CGRectMake(3, textTop, messageTextFieldWidth, 29)];
+    messageTextField = [[UITextField alloc] initWithFrame:CGRectMake(3, textTop + controlTop, messageTextFieldWidth, 29)];
     messageTextField.borderStyle = UITextBorderStyleRoundedRect;
     messageTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     messageTextField.delegate = self;
@@ -109,14 +124,10 @@
     messageTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
     messageTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     messageTextField.keyboardType = UIKeyboardTypeDefault;
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(showKeyboard)
-                                                 name:UIKeyboardDidShowNotification
-                                               object:nil];
     [viewMessages_ addSubview:messageTextField];
     
     sendBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    sendBtn.frame = CGRectMake(sendBtnLeft, textTop, 70, 29);
+    sendBtn.frame = CGRectMake(sendBtnLeft, textTop + controlTop, 70, 29);
     sendBtn.titleLabel.font = [UIFont boldSystemFontOfSize:18.0f];
     [sendBtn setTitle:@"Send" forState:UIControlStateNormal];
     sendBtn.titleLabel.textAlignment = NSTextAlignmentLeft;
@@ -132,12 +143,34 @@
     // viewPosition_
     viewPosition_ = [[UIView alloc] initWithFrame:rect];
     
+    CGRect rectToolBar = CGRectMake(0,
+                                    self.view.bounds.size.height - 40,
+                                self.view.bounds.size.width,
+                                self.view.bounds.size.height - 40 - toolBar.frame.size.height);
+//    toolBar = [[UIToolbar alloc] initWithFrame:rectToolBar];
+    toolBar = [[UIToolbar alloc] init];
+    
+    NSMutableArray *myToolBarItems = [NSMutableArray array];
+    
+    [myToolBarItems addObject:[[UIBarButtonItem alloc]
+                                initWithTitle:@"Members"
+                                style:UIBarButtonItemStylePlain
+                                target:self
+                                action:@selector(actionMembers)]];
+    [myToolBarItems addObject:flipListButton_];
+    [toolBar setItems:myToolBarItems animated:YES];
+
+    CGRect rectMap = CGRectMake(0,
+                                controlTop,
+                                self.view.bounds.size.width,
+                                self.view.bounds.size.height - 40 - toolBar.frame.size.height);
+    
+
 #ifdef GOOGLE_MAPS
     GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:28.17523
                                                             longitude:112.9803
                                                                  zoom:10];
-    
-    mapView_ = [GMSMapView mapWithFrame:CGRectZero camera:camera];
+    mapView_ = [GMSMapView mapWithFrame:rectMap camera:camera];
     mapView_.buildingsEnabled = YES;
     mapView_.delegate = self;
     mapView_.autoresizingMask =
@@ -146,11 +179,17 @@
     mapView_.settings.compassButton = YES;
     mapView_.settings.myLocationButton = YES;
     
-    // Listen to the myLocation property of GMSMapView.
-    [mapView_ addObserver:self
-               forKeyPath:@"myLocation"
-                  options:NSKeyValueObservingOptionNew
-                  context:NULL];
+#else
+#ifdef BAIDU_MAPS
+    mapView_ = [[BMKMapView alloc] initWithFrame:self.view.bounds];
+    mapView_.delegate = self;
+    //实现旋转、俯视的3D效果
+    //    mapView_.rotate = 90;
+    mapView_.overlooking = -30;
+    //开启定位功能
+    mapView_.showsUserLocation = NO;
+    mapView_.userTrackingMode = BMKUserTrackingModeFollow;
+    mapView_.showsUserLocation = YES;
 #else
     mapView_ = [[MKMapView alloc] initWithFrame:rect];
     mapView_.mapType = MKMapTypeStandard;
@@ -182,9 +221,11 @@
         
     }
 #endif
-    
+#endif
+ 
     onlineMaker_ = [NSMutableDictionary dictionary];
     
+//    [viewPosition_ addSubview:toolBar];
     [viewPosition_ addSubview:mapView_];
     
     [self.view addSubview:viewMessages_];
@@ -194,17 +235,12 @@
     
 //    [self.navigationItem setLeftBarButtonItem:createEventButton_];
     [self.navigationItem setRightBarButtonItem:flipListButton_];
+//    [self.navigationItem setRightBarButtonItem:toolBar];
 
-    /*
-     dispatch_async(dispatch_get_main_queue(), ^{
-     mapView_.myLocationEnabled = YES;
-     });
-     */
+//    [self.navigationController.visibleViewController.navigationController.navigationBar addSubview:toolBar];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self showFriendsPosition];
     });
-    AppDelegate *app = [self appDelegate];
-    app.chatDelegate = self;
     
 }
 
@@ -216,22 +252,59 @@
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-#ifdef GOOGLE_MAPS
-    [mapView_ removeObserver:self
-                  forKeyPath:@"myLocation"
-                     context:NULL];
-#endif
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     self.title = roomName;
+
+    AppDelegate *app = [self appDelegate];
+    app.chatDelegate = self;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardDidShow:)
+                                                 name:UIKeyboardDidShowNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillChangeFrameNotification
+                                               object:nil];
+    
+#ifdef GOOGLE_MAPS
+    // Listen to the myLocation property of GMSMapView.
+    [mapView_ addObserver:self
+               forKeyPath:@"myLocation"
+                  options:NSKeyValueObservingOptionNew
+                  context:NULL];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        mapView_.myLocationEnabled = YES;
+    });
+#endif
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     AppDelegate *app = [self appDelegate];
     app.chatDelegate = nil;
+    
+    // 移除键盘事件的通知
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+#ifdef GOOGLE_MAPS
+    
+    [mapView_ removeObserver:self
+                  forKeyPath:@"myLocation"
+                     context:NULL];
+#endif
 }
 
 #ifdef GOOGLE_MAPS
@@ -242,7 +315,7 @@
                       ofObject:(id)object
                         change:(NSDictionary *)change
                        context:(void *)context {
-    if (!firstLocationUpdate_) {
+//    if (!firstLocationUpdate_) {
         // If the first location update has not yet been recieved, then jump to that
         // location.
         firstLocationUpdate_ = YES;
@@ -253,9 +326,11 @@
         
         mapView_.camera = [GMSCameraPosition cameraWithTarget:location.coordinate
                                                          zoom:14];
-    }
+//    }
 }
 
+#else
+#ifdef BAIDU_MAPS
 #else
 
 
@@ -279,6 +354,7 @@
     [mapView_ setRegion:region];
     mapView_.showsUserLocation = YES;
 }
+#endif
 #endif
 
 //取得当前程序的委托
@@ -327,9 +403,17 @@
         isViewPosition_ = YES;
         [self.navigationItem setLeftBarButtonItem:nil];
         
+        [self hideKeyboard];
+
 //        [self.navigationItem setLeftBarButtonItem:createEventButton_];
         [self.navigationItem setRightBarButtonItem:flipListButton_];
     }
+}
+
+- (void)actionMembers
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"OK" message:@"OK" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+    [alert show];
 }
 
 #ifdef GOOGLE_MAPS
@@ -383,8 +467,9 @@
         [onlineMaker_ setObject:marker forKey:title];
     }
 }
-#else
 
+#else
+// BAIDU_MAPS和Apple Map使用相同的PlaceAnnotation
 //在线好友
 -(void)newBuddyOnline:(NSString *)buddyName coordinate:(CLLocationCoordinate2D)coordinate color:(UIColor *)color
 {
@@ -441,10 +526,11 @@
 
 - (void)showFriendsPosition
 {
+    NSLog(@"%s", __FUNCTION__);
     AppDelegate *app = [self appDelegate];
-    RoomModel *room = [app.roomJoinModel_ objectForKey:roomName];
-    if (room.items != nil) {
-        [room.items enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+    RoomModel *room = [app.xmppRoomList_ objectForKey:roomName];
+    if (room.members != nil) {
+        [room.members enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
             MemberProperty * member = obj;
             
             NSString *lowerName = [member.name lowercaseString];
@@ -467,18 +553,28 @@
 }
 #endif
 
+#pragma mark -
+#pragma mark Responding to keyboard events
 
-- (void)showKeyboard
+- (void)keyboardDidShow:(NSNotification*)aNotification
 {
-    isShowKeyboard = YES;
+    NSDictionary* info = [aNotification userInfo];
+    CGRect bkbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+    CGRect ekbSize = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     
+    CGFloat yOffset = ekbSize.origin.y - bkbSize.origin.y;
+    
+    // 弹出:-216
+    // 汉字:-36
+    NSLog(@"%f", yOffset);
+    
+    keyboardHeight += yOffset;
+//    [self moveInputBarWithKeyboardHeight:yOffset withDuration:0.0];
     CGRect frame = self.view.frame;
     
-    frame.origin.y -=216;
-    frame.origin.y += 30;
+    frame.origin.y += yOffset;
     
-    frame.size.height +=216;
-    frame.size.height -= 30;
+    frame.size.height -= yOffset;
     
     self.view.frame = frame;
     
@@ -490,46 +586,126 @@
     self.view.frame = frame;
     
     [UIView commitAnimations];
+    
+    isShowKeyboard = YES;
+
+}
+
+- (void)keyboardWillShow:(NSNotification *)notification
+{
+    /*
+     Reduce the size of the text view so that it's not obscured by the keyboard.
+     Animate the resize so that it's in sync with the appearance of the keyboard.
+     */
+    NSDictionary *userInfo = [notification userInfo];
+    // Get the origin of the keyboard when it's displayed.
+    NSValue* aValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
+    // Get the top of the keyboard as the y coordinate of its origin in self's view's coordinate system. The bottom of the text view's frame should align with the top of the keyboard's final position.
+    CGRect keyboardRect = [aValue CGRectValue];
+    // Get the duration of the animation.
+    NSValue *animationDurationValue = [userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
+    NSTimeInterval animationDuration;
+    [animationDurationValue getValue:&animationDuration];
+    
+    // Animate the resize of the text view's frame in sync with the keyboard's appearance.
+    [self moveInputBarWithKeyboardHeight:keyboardRect.size.height withDuration:animationDuration];
+}
+
+- (void)keyboardWillHide:(NSNotification *)notification {
+    NSDictionary* userInfo = [notification userInfo];
+    /*
+     Restore the size of the text view (fill self's view).
+     Animate the resize so that it's in sync with the disappearance of the keyboard.
+     */
+    NSValue *animationDurationValue = [userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
+    NSTimeInterval animationDuration;
+    [animationDurationValue getValue:&animationDuration];
+    [self moveInputBarWithKeyboardHeight:0.0 withDuration:animationDuration];
+}
+
+- (void)moveInputBarWithKeyboardHeight:(float)height withDuration:(int)duration
+{
+/*    if ((height > -0.00001) && (height < 0.00001))
+    {
+        [self hideKeyboard];
+    } else {
+        keyboardHeight = height;
+        [self showKeyboard];
+    }
+*/ 
+}
+
+- (void)showKeyboard
+{
+//    keyboardHeight = KEYBOARD_HEIGHT;
+    if (isShowKeyboard) {
+    } else {
+        CGRect frame = self.view.frame;
+        
+        frame.origin.y -= keyboardHeight;
+        
+        frame.size.height += keyboardHeight;
+        
+        self.view.frame = frame;
+        
+        [UIView beginAnimations:@"ResizeView"context:nil];
+        
+        NSTimeInterval animationDuration = 0.30f;
+        [UIView setAnimationDuration:animationDuration];
+        
+        self.view.frame = frame;
+        
+        [UIView commitAnimations];
+        
+        isShowKeyboard = YES;
+    }
 }
 
 - (void)hideKeyboard
 {
-    
-    NSTimeInterval animationDuration = 0.30f;
-    
-    CGRect frame = self.view.frame;
-    
-    frame.origin.y +=216;
-    frame.origin.y -= 30;
-    
-    frame.size.height -=216;
-    frame.size.height += 30;
-    
-    self.view.frame = frame;
-    
-    //self.view移回原位置
-    
-    [UIView beginAnimations:@"ResizeView" context:nil];
-    
-    [UIView setAnimationDuration:animationDuration];
-    
-    self.view.frame = frame;
-    
-    [UIView commitAnimations];
-    
+//    keyboardHeight = KEYBOARD_HEIGHT;
+    if (isShowKeyboard) {
+        NSTimeInterval animationDuration = 0.30f;
+        
+        CGRect frame = self.view.frame;
+        
+        frame.origin.y -= keyboardHeight;
+        
+        frame.size.height += keyboardHeight;
+        
+        self.view.frame = frame;
+        
+        //self.view移回原位置
+        
+        [UIView beginAnimations:@"ResizeView" context:nil];
+        
+        [UIView setAnimationDuration:animationDuration];
+        
+        self.view.frame = frame;
+        
+        [UIView commitAnimations];
+
+        keyboardHeight = 0.0;
+        isShowKeyboard = NO;
+    }
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [self sendButton:nil];
+    [self hideKeyboard];
     return YES;
 }
-
-- (void)backgroundTap:(id)sender {
-    if (isShowKeyboard) {
-        [self textFieldShouldReturn:messageTextField];
-        isShowKeyboard = NO;
-    }
+/*
+- (BOOL)textFieldShouldClear:(UITextField *)textField
+{
+    [self hideKeyboard];
+    return NO;
+}
+*/
+- (void)backgroundTap:(id)sender
+{
+    [self hideKeyboard];
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -593,14 +769,25 @@
 {
     //消息
     NSString *messageStr = message.body;
-    NSString *nickName = message.jidStr;
+
+    NSString *nickName = message.nickname;
+    if (nickName == nil) {
+        NSString *name = message.jidStr;
+        if (name != nil) {
+            nickName = [[name componentsSeparatedByString:@"/"] lastObject];
+        }
+    }
     
+    NSString *strTitle = nickName;
+    if (nickName != nil) {
+        strTitle = [[nickName componentsSeparatedByString:@"@"] objectAtIndex:0];
+    }
     NSString *time = [dateFormatter stringFromDate:message.localTimestamp];
     
     CGSize textSize = {260.0 ,10000.0};
     CGSize size = [messageStr sizeWithFont:[UIFont boldSystemFontOfSize:13]
                          constrainedToSize:textSize
-                             lineBreakMode:UILineBreakModeWordWrap];
+                             lineBreakMode:NSLineBreakByWordWrapping];
     
     size.width +=(padding/2);
     
@@ -611,7 +798,7 @@
     UIImage *bgImage = nil;
     
     //发送消息
-    if (message.isFromMe)
+    if ((message.isFromMe) || [strTitle isEqualToString:[UserProperty sharedInstance].nickName])
     {
         //背景图
         bgImage = [[UIImage imageNamed:@"BlueBubble2.png"] stretchableImageWithLeftCapWidth:20 topCapHeight:15];
@@ -619,11 +806,15 @@
                                                      padding*2,
                                                      size.width + 5,
                                                      size.height)];
-        
+
         [cell.bgImageView setFrame:CGRectMake(cell.messageContentView.frame.origin.x - padding/2,
                                               cell.messageContentView.frame.origin.y - padding/2,
                                               size.width + padding,
                                               size.height + padding)];
+        
+        cell.senderAndTimeLabel.textAlignment = UITextAlignmentLeft;
+        cell.senderAndTimeLabel.text = [NSString stringWithFormat:@"%@\n%@", strTitle, time];
+        //    cell.senderAndTimeLabel.text = [NSString stringWithFormat:@"%@", time];
     }else {
         
         bgImage = [[UIImage imageNamed:@"GreenBubble2.png"] stretchableImageWithLeftCapWidth:14 topCapHeight:15];
@@ -637,10 +828,13 @@
                                               cell.messageContentView.frame.origin.y - padding/2,
                                               size.width + padding,
                                               size.height + padding)];
+
+        cell.senderAndTimeLabel.textAlignment = UITextAlignmentRight;
+        cell.senderAndTimeLabel.text = [NSString stringWithFormat:@"%@\n%@", strTitle, time];
+        //    cell.senderAndTimeLabel.text = [NSString stringWithFormat:@"%@", time];
     }
     
     cell.bgImageView.image = bgImage;
-    cell.senderAndTimeLabel.text = [NSString stringWithFormat:@"%@ %@", nickName, time];
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -671,11 +865,11 @@
     NSString *msg = message.body;
     
     CGSize textSize = {260.0 , 10000.0};
-    CGSize size = [msg sizeWithFont:[UIFont boldSystemFontOfSize:13] constrainedToSize:textSize lineBreakMode:UILineBreakModeWordWrap];
+    CGSize size = [msg sizeWithFont:[UIFont boldSystemFontOfSize:13] constrainedToSize:textSize lineBreakMode:NSLineBreakByWordWrapping];
     
     size.height += padding*2;
     
-    CGFloat height = size.height < 65 ? 65 : size.height;
+    CGFloat height = size.height < 75 ? 75 : size.height;
     
     return height;
     

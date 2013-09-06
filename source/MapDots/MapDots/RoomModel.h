@@ -9,13 +9,21 @@
 #import <Foundation/Foundation.h>
 
 @interface RoomModel : NSObject
+/*
+@property (readonly) XMPPJID * roomJID;     // E.g. xmpp-development@conference.deusty.com
 
-@property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) NSString *jid;
+@property (readonly) XMPPJID * myRoomJID;   // E.g. xmpp-development@conference.deusty.com/robbiehanson
+@property (readonly) NSString * myNickname; // E.g. robbiehanson
+
+@property (readonly) NSString *roomSubject;
+
+// 表示是否已经加入房间
+@property (readonly) BOOL isJoined;
+*/
+@property (nonatomic, strong) NSString *roomName;
 @property (nonatomic, strong) NSString *password;
-@property (nonatomic, strong) NSString *subject;
 @property (nonatomic, strong) NSString *roominfo_creationdate;
-@property (nonatomic, strong) NSMutableDictionary *items;
+@property (nonatomic, strong) NSMutableDictionary *members;
 
 @property (nonatomic) BOOL muc_passwordprotected;
 @property (nonatomic) BOOL muc_public;

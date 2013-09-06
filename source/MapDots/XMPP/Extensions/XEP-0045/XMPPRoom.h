@@ -33,11 +33,11 @@ static NSString *const XMPPMUCOwnerNamespace = @"http://jabber.org/protocol/muc#
 	__strong NSString *myNickname;
 	
 	__strong NSString *roomSubject;
-    
+	
     __strong NSString *roomName;
     __strong NSString *password;
     __strong NSString *roominfo_creationdate;
-    __strong NSMutableDictionary *items;
+    __strong NSMutableDictionary *members;
     
     BOOL muc_passwordprotected;
     BOOL muc_public;
@@ -84,6 +84,21 @@ static NSString *const XMPPMUCOwnerNamespace = @"http://jabber.org/protocol/muc#
 @property (readonly) NSString *roomSubject;
 
 @property (readonly) BOOL isJoined;
+
+@property (strong) NSString *roomName;
+@property (nonatomic, strong) NSString *password;
+@property (nonatomic, strong) NSString *roominfo_creationdate;
+@property (nonatomic, strong) NSMutableDictionary *members;
+
+@property (nonatomic) BOOL muc_passwordprotected;
+@property (nonatomic) BOOL muc_public;
+@property (nonatomic) BOOL muc_open;
+@property (nonatomic) BOOL muc_unmoderated;
+@property (nonatomic) BOOL muc_semianonymous;
+@property (nonatomic) BOOL muc_persistent;
+@property (nonatomic) CLLocationCoordinate2D coordinatePosition;
+@property (nonatomic) NSTimeInterval effectivetimeStart;
+@property (nonatomic) NSTimeInterval effectivetimeEnd;
 
 #pragma mark Room Lifecycle
 

@@ -47,9 +47,6 @@ static CGFloat randf() {
     NSString *roomjid_;
 }
 
-@synthesize roomsViewController;
-@synthesize roomMessageViewController;
-
 - (id) init
 {
     self = [super init];
@@ -164,6 +161,7 @@ static CGFloat randf() {
 }
 
 #ifdef GOOGLE_MAPS
+/*
 
 - (void)didTapAdd {
     for (int i = 0; i < 10; ++i) {
@@ -209,7 +207,7 @@ static CGFloat randf() {
     
     [onlineMaker_ setObject:marker forKey:marker.title];
 }
-
+*/
 
 - (void)addMarkerInBounds:(GMSCoordinateBounds *)bounds stringWithTitle:(NSString *)title {
     CLLocationDegrees latitude = bounds.southWest.latitude +
@@ -289,6 +287,8 @@ static CGFloat randf() {
 }
 
 #endif
+
+/*
 - (void)login
 {
     if (m_isCertified) {
@@ -358,7 +358,7 @@ static CGFloat randf() {
     [self.navigationItem setHidesBackButton:YES];
     [self.navigationController pushViewController:self.roomsViewController animated:YES];
 }
-
+*/
 - (void)logout
 {
     AppDelegate *app = [self appDelegate];
@@ -595,17 +595,17 @@ static CGFloat randf() {
 -(void)newRoomsReceived:(NSArray *)roomsContent
 {
     AppDelegate *app = [self appDelegate];
-    rooms_ = [app.roomModel_ mutableCopy];
+    rooms_ = [app.xmppRoomList_ mutableCopy];
     
     [rooms_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        RoomModel *room = obj;
+        XMPPRoom *room = obj;
         
         CLLocationCoordinate2D coordinate = room.coordinatePosition;
 #ifdef GOOGLE_MAPS
         UIColor *color = [UIColor colorWithHue:randf() saturation:1.f brightness:1.f alpha:1.0f];
         
         GMSMarker *marker = [GMSMarker markerWithPosition:coordinate];
-        marker.title = [NSString stringWithFormat:@"%@", room.jid];
+        marker.title = [NSString stringWithFormat:@"%@", [room.roomJID full]];
         marker.animated = YES;
         marker.icon = [GMSMarker markerImageWithColor:color];
         marker.map = mapView_;
@@ -629,21 +629,21 @@ static CGFloat randf() {
     app.roomsDelegate = self;
     
     // 是否为已加入房间
-    NSDictionary *roomJoined = [app.roomJoinModel_ copy];
-    RoomModel* roomJoin = [roomJoined objectForKey:roomName];
+    NSDictionary *roomJoined = [app.xmppRoomList_ copy];
+    XMPPRoom* roomJoin = [roomJoined objectForKey:roomName];
     if (roomJoin != nil)
     {
-        [self didJoinRoomSuccess:roomJoin.name];
+        [self didJoinRoomSuccess:roomJoin.roomName];
         return;
     }
     
     // 加入房间
-    __block RoomModel *roomChat = nil;
+    __block XMPPRoom *roomChat = nil;
     
-    rooms_ = [app.roomModel_ mutableCopy];
+    rooms_ = [app.xmppRoomList_ mutableCopy];
     [rooms_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        RoomModel *room = obj;
-        if ([room.jid isEqualToString:roomName]) {
+        XMPPRoom *room = obj;
+        if ([room.roomName isEqualToString:roomName]) {
             roomChat = obj;
             *stop = YES;
         }
@@ -651,12 +651,12 @@ static CGFloat randf() {
     
     if (roomChat != nil) {
         if (roomChat.muc_passwordprotected) {
-            roomjid_ = roomChat.jid;
+            roomjid_ = [roomChat.roomJID full];
             [self showRoomPasswordAlertView];
             return;
         }
         
-        [app joinRoom:roomChat.jid password:nil nickName:[UserProperty sharedInstance].nickName];
+        [app joinRoom:[roomChat.roomJID full] password:nil nickName:[UserProperty sharedInstance].nickName];
         return;
     }
 }

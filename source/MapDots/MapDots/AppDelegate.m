@@ -59,6 +59,8 @@ typedef enum XMPPStatus XMPPStatus;
     MessageViewController *messageViewController;
     
     NSTimer *timer;
+    
+    BMKMapManager* _mapManager;
 }
 
 #define DISCO_INFO  @"http://jabber.org/protocol/disco#info"
@@ -93,16 +95,18 @@ typedef enum XMPPStatus XMPPStatus;
 @synthesize isOnline;
 @synthesize isXMPPRegister;
 @synthesize registerSuccess;
-@synthesize roomModel_;
-@synthesize roomJoinModel_;
+//@synthesize roomModel_;
+//@synthesize roomJoinModel_;
 @synthesize messageList;
 @synthesize createRoomModel;
-@synthesize xmppRoomJoin;
-@synthesize xmppRoomList;
+//@synthesize xmppRoomJoin;
+@synthesize xmppRoomList_;
 @synthesize myLocation;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+#ifdef GOOGLE_MAPS
+
     if ([APIKey length] == 0) {
         // Blow up if APIKey has not yet been set.
         NSString *bundleId = [[NSBundle mainBundle] bundleIdentifier];
@@ -115,7 +119,17 @@ typedef enum XMPPStatus XMPPStatus;
                                      userInfo:nil];
     }
     [GMSServices provideAPIKey:(NSString *)APIKey];
-
+#else
+#ifdef BAIDU_MAPS
+    // 要使用百度地图，请先启动BaiduMapManager
+    _mapManager = [[BMKMapManager alloc]init];
+    // 如果要关注网络及授权验证事件，请设定     generalDelegate参数
+    BOOL ret = [_mapManager start:BaiduAPIKey  generalDelegate:nil];
+    if (!ret) {
+        NSLog(@"manager start failed!");
+    }
+#endif
+#endif
 	// Configure logging framework
 	
 	[DDLog addLogger:[DDTTYLogger sharedInstance]];
@@ -128,6 +142,8 @@ typedef enum XMPPStatus XMPPStatus;
     
     // Setup the timer
     [self setupTimer];
+    
+    [WXApi registerApp:WXAPIKey];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 /*
@@ -188,12 +204,85 @@ typedef enum XMPPStatus XMPPStatus;
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
 {
-    NSString *str = @"test";
-    
+    return [WXApi handleOpenURL:url delegate:self];
 }
 
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+//    NSString *str = @"test";
+    return [WXApi handleOpenURL:url delegate:self];
+}
+
+#pragma make WXApi
+
+- (void) sendTextContent:(NSString*)nsText
+{
+    SendMessageToWXReq* req = [[SendMessageToWXReq alloc] init];
+    req.bText = YES;
+    req.text = nsText;
+    req.scene = WXSceneSession;
+    
+    [WXApi sendReq:req];
+}
+
+#pragma make WXApiDelegate
+
+/*
+-(void) onShowMediaMessage:(WXMediaMessage *) message
+{
+    // 微信启动， 有消息内容。
+    [self viewContent:message];
+}
+
+-(void) onRequestAppMessage
+{
+    // 微信请求App提供内容， 需要app提供内容后使用sendRsp返回
+    
+    RespForWeChatViewController* controller = [[RespForWeChatViewController alloc]autorelease];
+    controller.delegate = self;
+    [self.viewController presentModalViewController:controller animated:YES];
+    
+}
+*/
+
+// onReq是微信终端向第三方程序发起请求，要求第三方程序响应。第三方程序响应完后必须调用sendRsp返回。在调用sendRsp返回时，会切回到微信终端程序界面。
+- (void)onReq:(BaseReq *)req
+{
+/*    if([req isKindOfClass:[GetMessageFromWXReq class]])
+    {
+        [self onRequestAppMessage];
+    }
+    else if([req isKindOfClass:[ShowMessageFromWXReq class]])
+    {
+        ShowMessageFromWXReq* temp = (ShowMessageFromWXReq*)req;
+        [self onShowMediaMessage:temp.message];
+    }
+*/ 
+}
+
+// 如果第三方程序向微信发送了sendReq的请求，那么onResp会被回调。sendReq请求调用后，会切到微信终端程序界面。
+- (void)onResp:(BaseResp *)resp
+{
+    if([resp isKindOfClass:[SendMessageToWXResp class]])
+    {
+        NSString *strTitle = [NSString stringWithFormat:@"发送结果"];
+        NSString *strMsg = [NSString stringWithFormat:@"发送媒体消息结果:%d", resp.errCode];
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:strTitle message:strMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        [alert show];
+    }
+    else if([resp isKindOfClass:[SendAuthResp class]])
+    {
+        NSString *strTitle = [NSString stringWithFormat:@"Auth结果"];
+        NSString *strMsg = [NSString stringWithFormat:@"Auth结果:%d", resp.errCode];
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:strTitle message:strMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        [alert show];
+    }
+
+}
 #pragma make UITabBarControllerDelegate
 
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
@@ -253,19 +342,28 @@ typedef enum XMPPStatus XMPPStatus;
 	// Everything else plugs into the xmppStream, such as modules/extensions and delegates.
     
 	xmppStream = [[XMPPStream alloc] init];
-    roomModel_ = [NSMutableDictionary dictionary];
-    roomJoinModel_ = [NSMutableDictionary dictionary];
-    xmppRoomList = [NSMutableDictionary dictionary];
-    xmppRoomJoin = [NSMutableDictionary dictionary];
+//    roomModel_ = [NSMutableDictionary dictionary];
+//    roomJoinModel_ = [NSMutableDictionary dictionary];
+    xmppRoomList_ = [NSMutableDictionary dictionary];
+//    xmppRoomJoin = [NSMutableDictionary dictionary];
     createRoomModel = [[RoomModel alloc] init];
     
+    #if !TARGET_IPHONE_SIMULATOR
+    {
+        // Want xmpp to run in the background?
+        //
+        // The simulator doesn't support backgrouding yet.
+        
+        xmppStream.enableBackgroundingOnSocket = YES;
+    }
+    #endif
 	// Setup reconnect
 	//
 	// The XMPPReconnect module monitors for "accidental disconnections" and
 	// automatically reconnects the stream for you.
 	// There's a bunch more information in the XMPPReconnect header file.
 	
-//	xmppReconnect = [[XMPPReconnect alloc] init];
+	xmppReconnect = [[XMPPReconnect alloc] init];
     
 	// Setup roster
 	//
@@ -307,14 +405,14 @@ typedef enum XMPPStatus XMPPStatus;
     
 	// Activate xmpp modules
     
-//	[xmppReconnect         activate:xmppStream];
+	[xmppReconnect         activate:xmppStream];
 	[xmppRoster            activate:xmppStream];
     [xmppMuc               activate:xmppStream];
 	[xmppvCardTempModule   activate:xmppStream];
 	[xmppvCardAvatarModule activate:xmppStream];
 	[xmppCapabilities      activate:xmppStream];
 
-    [xmppCapabilities addDelegate:self delegateQueue:dispatch_get_main_queue()];
+//    [xmppCapabilities addDelegate:self delegateQueue:dispatch_get_main_queue()];
     [xmppStream addDelegate:self delegateQueue:dispatch_get_main_queue()];
 	[xmppRoster addDelegate:self delegateQueue:dispatch_get_main_queue()];
 }
@@ -324,7 +422,7 @@ typedef enum XMPPStatus XMPPStatus;
 	[xmppStream removeDelegate:self];
 	[xmppRoster removeDelegate:self];
 	
-//	[xmppReconnect         deactivate];
+	[xmppReconnect         deactivate];
 	[xmppRoster            deactivate];
 	[xmppvCardTempModule   deactivate];
 	[xmppvCardAvatarModule deactivate];
@@ -333,7 +431,7 @@ typedef enum XMPPStatus XMPPStatus;
 	[xmppStream disconnect];
 	
 	xmppStream = nil;
-//	xmppReconnect = nil;
+	xmppReconnect = nil;
     xmppRoster = nil;
 	xmppRosterStorage = nil;
     xmppRoomStorage = nil;
@@ -800,16 +898,12 @@ typedef enum XMPPStatus XMPPStatus;
                 [messageList setObject:messageArray forKey:roomJID];
             }
             
-            RoomModel *roomModel = [roomJoinModel_ objectForKey:roomJID];
-            if (roomModel == nil)
+            XMPPRoom *roomModel = [xmppRoomList_ objectForKey:roomJID];
+            if (roomModel.isJoined)
             {
-                RoomModel *room = [[RoomModel alloc] init];
-                room.name = roomName;
-                room.jid = roomJID;
+                roomModel.roomName = roomName;
                 
-                [roomJoinModel_ setObject:room forKey:room.jid];
-                
-                [roomsDelegate didJoinRoomSuccess:room.jid];
+                [roomsDelegate didJoinRoomSuccess:[roomModel.roomJID full]];
             }
             /*
              // 房间成员
@@ -845,10 +939,13 @@ typedef enum XMPPStatus XMPPStatus;
                         if (jid != nil) {
                             NSString *memberJid = [[jid componentsSeparatedByString:@"/"] objectAtIndex:0];
                             
-                            MemberProperty *member = [roomModel.items objectForKey:memberJid];
+                            if (roomModel.members == nil) {
+                                roomModel.members = [NSDictionary dictionary];
+                            }
+                            MemberProperty *member = [roomModel.members objectForKey:memberJid];
                             if (member == nil) {
                                 member = [[MemberProperty alloc] init];
-                                [roomModel.items setObject:member forKey:memberJid];
+                                [roomModel.members setObject:member forKey:memberJid];
                             }
                             member.jid = memberJid;
 //                        member.coordinate = ;
@@ -1126,14 +1223,10 @@ typedef enum XMPPStatus XMPPStatus;
     if ([[jid full] isEqualToString:DOMAIN_NAME]) {
         [self parseDiscoInfo:caps];
     } else {
-        RoomModel *room = [roomModel_ objectForKey:[jid description]];
-        if (room == nil) {
-            room = [[RoomModel alloc] init];
-            room.jid = [jid description];
-        }
+        XMPPRoom *room = [xmppRoomList_ objectForKey:[jid description]];
         
         // 设置Room的属性
-        [self parseDiscoInfoWithRoom:caps roomid:room.jid];
+        [self parseDiscoInfoWithRoom:caps roomid:[room.roomJID full]];
         
         [roomsDelegate newRoomsReceived:room];
     }
@@ -1312,26 +1405,23 @@ typedef enum XMPPStatus XMPPStatus;
         NSXMLNode *jid = [node attributeForName:@"jid"];
         NSXMLNode *name = [node attributeForName:@"name"];
         
-        RoomModel *room = nil;
-        room = [roomModel_ objectForKey:[jid stringValue]];
+        XMPPRoom *room = nil;
+        room = [xmppRoomList_ objectForKey:[jid stringValue]];
         if (room == nil ) {
-            room = [[RoomModel alloc] init];
-            room.name = [name stringValue];
-            room.jid = [jid stringValue];
-            [roomModel_ setObject:room forKey:room.jid];
-
             // new room，加入CoreData中
-            XMPPRoom *roomItem = [[XMPPRoom alloc] initWithRoomStorage:xmppRoomStorage jid:[XMPPJID jidWithString:room.jid] dispatchQueue:dispatch_get_main_queue()];
+            room = [[XMPPRoom alloc] initWithRoomStorage:xmppRoomStorage jid:[XMPPJID jidWithString:[jid stringValue]] dispatchQueue:dispatch_get_main_queue()];
+            
+            room.roomName = [name stringValue];
             
             XMPPStream *stream = [self xmppStream];
-            [roomItem activate:stream];
-            [roomItem addDelegate:self delegateQueue:dispatch_get_main_queue()];
+            [room activate:stream];
+            [room addDelegate:self delegateQueue:dispatch_get_main_queue()];
 
-            [xmppRoomList setObject:roomItem forKey:room.jid];
+            [xmppRoomList_ setObject:room forKey:[room.roomJID full]];
         }
 
-        if ([room.jid length] > 0) {
-            [xmppCapabilities fetchCapabilitiesForJID:[XMPPJID jidWithString:room.jid]];
+        if ([[room.roomJID full] length] > 0) {
+            [xmppCapabilities fetchCapabilitiesForJID:room.roomJID];
         }
     }
 }
@@ -1398,7 +1488,7 @@ typedef enum XMPPStatus XMPPStatus;
     */
 
     RoomModel *roomModel = nil;
-    roomModel = [roomModel_ objectForKey:room];
+    roomModel = [xmppRoomList_ objectForKey:room];
     if (roomModel == nil) {
         return;
     }
@@ -1469,7 +1559,7 @@ typedef enum XMPPStatus XMPPStatus;
     createRoomModel = roomModel;
     
     //创建一个新的群聊房间,roomName是房间名 fullName是房间里自己所用的昵称
-    NSString *jidRoom = [NSString stringWithFormat:@"%@@conference.%@", roomModel.name, DOMAIN_NAME];
+    NSString *jidRoom = [NSString stringWithFormat:@"%@@conference.%@", roomModel.roomName, DOMAIN_NAME];
     XMPPJID *jid = [XMPPJID jidWithString:jidRoom];
 
     XMPPRoom *room = [[XMPPRoom alloc] initWithRoomStorage:xmppRoomStorage jid:jid dispatchQueue:dispatch_get_main_queue()];
@@ -1478,9 +1568,8 @@ typedef enum XMPPStatus XMPPStatus;
     [room activate:stream];
     [room joinRoomUsingNickname:jabberID_ history:nil password:roomModel.password];
     [room addDelegate:self delegateQueue:dispatch_get_main_queue()];
-    [xmppRoomJoin setObject:room forKey:jidRoom];
     
-    [xmppRoomList setObject:room forKey:jidRoom];
+    [xmppRoomList_ setObject:room forKey:jidRoom];
 
 }
 
@@ -1491,7 +1580,7 @@ typedef enum XMPPStatus XMPPStatus;
 
 //    XMPPRoom *xmppRoom = [xmppRoomJoin objectForKey:roomjid];
 //    if (xmppRoom == nil) {
-        XMPPRoom *xmppRoom = [xmppRoomList objectForKey:roomjid];
+        XMPPRoom *xmppRoom = [xmppRoomList_ objectForKey:roomjid];
         [xmppRoom joinRoomUsingNickname:jabberID_ history:nil password:password];
 //        [xmppRoomJoin setObject:xmppRoom forKey:roomjid];
 //    }
@@ -1521,7 +1610,7 @@ typedef enum XMPPStatus XMPPStatus;
 {
     status_ = STATUS_CHANGE_NICKNAME;
     
-    [xmppRoomJoin enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+    [xmppRoomList_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         XMPPRoom *xmppRoom = obj;
         [xmppRoom changeNickname:newNickName];
     }];
@@ -1529,8 +1618,8 @@ typedef enum XMPPStatus XMPPStatus;
 
 - (void)changeUserSexual:(BOOL)sexual
 {
-    [roomJoinModel_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        RoomModel *room = obj;
+    [xmppRoomList_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        XMPPRoom *room = obj;
         [self updateMyPositionWithRoom:room];
     }];
 }
@@ -1538,17 +1627,17 @@ typedef enum XMPPStatus XMPPStatus;
 - (void)updateMyPosition
 {
     NSLog(@"%s", __FUNCTION__);
-    [roomJoinModel_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        RoomModel *room = obj;
+    [xmppRoomList_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        XMPPRoom *room = obj;
         [self updateMyPositionWithRoom:room];
     }];
 }
 
 - (void)updateMyPositionWithRoomName:(NSString *)roomName
 {
-    [roomJoinModel_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        RoomModel *room = obj;
-        if ([roomName isEqualToString:room.name]) {
+    [xmppRoomList_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        XMPPRoom *room = obj;
+        if ([roomName isEqualToString:room.roomName]) {
             [self updateMyPositionWithRoom:room];
             *stop = YES;
         }
@@ -1556,7 +1645,7 @@ typedef enum XMPPStatus XMPPStatus;
     
 }
 
-- (void)updateMyPositionWithRoom:(RoomModel *)room
+- (void)updateMyPositionWithRoom:(XMPPRoom *)room
 {
     NSLog(@"%s", __FUNCTION__);
     /*
@@ -1578,7 +1667,7 @@ typedef enum XMPPStatus XMPPStatus;
      
 
      */
-    XMPPMessage *mes = [XMPPMessage messageWithType:@"groupchat" to:[XMPPJID jidWithString:room.jid]];
+    XMPPMessage *mes = [XMPPMessage messageWithType:@"groupchat" to:room.roomJID];
     
     [mes addAttributeWithName:@"from" stringValue:jabberID_];
     NSXMLElement *body = [NSXMLElement elementWithName:@"body"];
@@ -1676,7 +1765,7 @@ typedef enum XMPPStatus XMPPStatus;
 
 - (NSDictionary *)managedObjectContext_rooms
 {
-    return [roomJoinModel_ copy];
+    return [xmppRoomList_ copy];
 }
 
 - (NSArray *)managedObjectContext_roomMessage:(NSString *)roomName
@@ -1831,16 +1920,6 @@ typedef enum XMPPStatus XMPPStatus;
 	NSLog(@"%s", __FUNCTION__);
     [sender fetchMembersList];
     
-    NSString *roomJid = [sender.roomJID full];
-    // update member position
-    RoomModel *room = [roomJoinModel_ objectForKey:roomJid];
-    if (room == nil) {
-        room = [[RoomModel alloc] init];
-        room.name = [[roomJid componentsSeparatedByString:@"@"] objectAtIndex:0] ;
-        room.jid = roomJid;
-        [roomJoinModel_ setObject:room forKey:roomJid];
-    }
-
     [roomsDelegate didJoinRoomSuccess:[sender.roomJID full]];
 //    [sender fetchModeratorsList];
     /*
@@ -1983,7 +2062,7 @@ typedef enum XMPPStatus XMPPStatus;
         senderName = roomJid;
     }
 
-    RoomModel *room = [roomJoinModel_ objectForKey:roomJid];
+    RoomModel *room = [xmppRoomList_ objectForKey:roomJid];
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     
     // room messages
@@ -2011,14 +2090,8 @@ typedef enum XMPPStatus XMPPStatus;
             //        NSLog(log);
             
             // update member position
-            RoomModel *room = [roomJoinModel_ objectForKey:roomJid];
-            if (room == nil) {
-                room = [[RoomModel alloc] init];
-                room.name = roomJid;
-                room.jid = roomJid;
-                [roomJoinModel_ setObject:room forKey:roomJid];
-            }
-            
+            RoomModel *room = [xmppRoomList_ objectForKey:roomJid];
+
             // 24cefc6c@siteviewwzp/2080b101
             NSArray *arrayTo = [to componentsSeparatedByString:@"/"];
             
@@ -2026,11 +2099,16 @@ typedef enum XMPPStatus XMPPStatus;
             NSString *toName = [arrayTo objectAtIndex:0];
             NSArray *arrayToName = [toName componentsSeparatedByString:@"@"];
             NSString *toNickName = [arrayToName objectAtIndex:0];
-            MemberProperty *member = [room.items objectForKey:toNickName];
+            
+            if (room.members == nil) {
+                room.members = [NSMutableDictionary dictionary];
+            }
+            
+            MemberProperty *member = [room.members objectForKey:toNickName];
             if (member == nil) {
                 member = [[MemberProperty alloc] init];
                 member.name = toNickName;
-                [room.items setObject:member forKey:toNickName];
+                [room.members setObject:member forKey:toNickName];
             }
             if ([[toNickName uppercaseString] isEqualToString:[UserProperty sharedInstance].nickName] ) {
                 member.sexual = [UserProperty sharedInstance].sex;
@@ -2084,11 +2162,15 @@ typedef enum XMPPStatus XMPPStatus;
     NSString *toName = [arrayTo objectAtIndex:0];
     NSArray *arrayToName = [toName componentsSeparatedByString:@"@"];
     NSString *toNickName = [arrayToName objectAtIndex:0];
-    MemberProperty *member = [room.items objectForKey:toNickName];
+    if (room.members == nil) {
+        room.members = [NSMutableDictionary dictionary];
+    }
+    
+    MemberProperty *member = [room.members objectForKey:toNickName];
     if (member == nil) {
         member = [[MemberProperty alloc] init];
         member.name = toNickName;
-        [room.items setObject:member forKey:toNickName];
+        [room.members setObject:member forKey:toNickName];
     }
     
     BOOL isMemberInfoCHange = NO;

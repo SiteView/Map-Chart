@@ -12,8 +12,12 @@
 #ifdef GOOGLE_MAPS
 GMSMapViewDelegate
 #else
+#ifdef BAIDU_MAPS
+BMKMapViewDelegate
+#else
 MKMapViewDelegate,
 CLLocationManagerDelegate
+#endif
 #endif
     >
 {

@@ -34,7 +34,12 @@
 
     self.view.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.8];
 
-    datePicker = [[UIDatePicker alloc] init];
+    float controlTop = 0;
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
+        controlTop = 60;
+    }
+
+    datePicker = [[UIDatePicker alloc] initWithFrame:CGRectMake(0, controlTop, self.view.bounds.size.width, 50)];
     [datePicker setTimeZone:[NSTimeZone timeZoneWithName:@"GMT+8"]];
     [datePicker setDate:[NSDate date]];
     //    [datePicker setMaximumDate:[NSDate date]];
