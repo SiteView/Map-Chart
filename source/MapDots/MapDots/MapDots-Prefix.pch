@@ -16,6 +16,7 @@
     #import <CoreData/CoreData.h>
     #import <MapKit/MapKit.h>
     #import "BMapKit.h"
+    #import "EGORefreshTableHeaderView.h"
 #endif
 
 #define GOOGLE_MAPS

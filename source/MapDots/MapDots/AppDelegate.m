@@ -19,6 +19,7 @@
 #import "DDLog.h"
 #import "DDTTYLogger.h"
 #import "UserProperty.h"
+#import "iRate.h"
 
 // Log levels: off, error, warn, info, verbose
 #if DEBUG
@@ -103,10 +104,36 @@ typedef enum XMPPStatus XMPPStatus;
 @synthesize xmppRoomList_;
 @synthesize myLocation;
 
++ (void)initialize
+{
+    // 如果用户已评价，可以关闭此提示
+
+    [iRate sharedInstance].applicationName = @"MapDots";
+
+    //overriding the default iRate strings
+//    [iRate sharedInstance].messageTitle = NSLocalizedString(@"Rate MyApp", @"iRate message title");
+//    [iRate sharedInstance].message = NSLocalizedString(@"If you like MyApp, please take the time, etc", @"iRate message");
+    [iRate sharedInstance].cancelButtonLabel = NSLocalizedString(@"No, Thanks", @"iRate decline button");
+    [iRate sharedInstance].remindButtonLabel = NSLocalizedString(@"Remind Me Later", @"iRate remind button");
+    [iRate sharedInstance].rateButtonLabel = NSLocalizedString(@"Rate It Now", @"iRate accept button");
+    
+    //set the bundle ID. normally you wouldn't need to do this
+    //as it is picked up automatically from your Info.plist file
+    //but we want to test with an app that's actually on the store
+    [iRate sharedInstance].applicationBundleID = @"com.drogranflow.MapDots";
+	[iRate sharedInstance].onlyPromptIfLatestVersion = NO;
+    
+    [iRate sharedInstance].daysUntilPrompt = 30;
+#ifdef DEBUG
+    //enable preview mode
+    [iRate sharedInstance].previewMode = YES;
+#endif
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
 #ifdef GOOGLE_MAPS
-
+    
     if ([APIKey length] == 0) {
         // Blow up if APIKey has not yet been set.
         NSString *bundleId = [[NSBundle mainBundle] bundleIdentifier];
@@ -174,6 +201,20 @@ typedef enum XMPPStatus XMPPStatus;
 //    self.navigationController = [[UINavigationController alloc] initWithRootViewController:positionViewController];
     self.window.rootViewController = tabBarController;
     [self.window makeKeyAndVisible];
+    
+    // 1、完成推送功能的注册请求，即在程序启动时弹出是否使用推送功能
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound)];
+    
+    // 2、实现的程序启动是通过推送消息窗口触发的，在这里可以处理推送内容
+    // 判断程序是否有推送服务完成的
+    if (launchOptions) {
+        NSDictionary *pushNotificationKey = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+        
+        if (pushNotificationKey) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"推送通知" message:@"这是通过推送窗口启动的程序，你可以在这里处理推送内容" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil];
+            [alert show];
+        }
+    }
     return YES;
 }
 
@@ -204,6 +245,38 @@ typedef enum XMPPStatus XMPPStatus;
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+// 2. 接收从苹果服务器返回的唯一的设备token，该token是推送服务器发送推送消息的依据，所以需要发送回推送服务器保存
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
+    NSString *token = [NSString stringWithFormat:@"%@", deviceToken];
+    NSLog(@"APNS -> 生成的devToken:%@", token);
+/*
+    // 把deviceToken发送到我们的推送服务器
+    DeviceSender *sender = [[DeviceSender alloc] initWithDelegate:self];
+    [sender sendDeviceToPushServer:token];
+*/
+}
+
+// 3.接收注册推送通知功能时出现的错误，并做相关处理:
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
+{
+    NSLog(@"APNS -> 注册推送功能时发生错误，错误信息：\n %@", error);
+}
+
+// 4. 接收到推送消息，解析处理
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    NSLog(@"%s\nAPNS -> didReceiveRemoteNotification, Receive Data:\n%@", __FUNCTION__, userInfo);
+    
+    // 把icon上的标记数字设置为0
+    application.applicationIconBadgeNumber = 0;
+    if ([[userInfo objectForKey:@"aps"] objectForKey:@"alert"] != NULL) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"**推送消息**" message:[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] delegate:self cancelButtonTitle:@"关闭" otherButtonTitles:@"处理推送内容", nil];
+//        alert.tag = alert_tag_push;
+        [alert show];
+    }
+}
+
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
 {
     return [WXApi handleOpenURL:url delegate:self];
@@ -213,6 +286,19 @@ typedef enum XMPPStatus XMPPStatus;
 {
 //    NSString *str = @"test";
     return [WXApi handleOpenURL:url delegate:self];
+}
+
+// 给应用打分
+- (void)gotoReviews
+{
+    // App Store 上评论的链接地址是 itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id = appID
+    
+    // Here is the appid from itunesconnect
+    NSString *appId = @"514540362";
+
+    NSString* str = [NSString stringWithFormat: @"itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=%@", appId];
+    
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]];
 }
 
 #pragma make WXApi
@@ -354,9 +440,11 @@ typedef enum XMPPStatus XMPPStatus;
         //
         // The simulator doesn't support backgrouding yet.
         
-        xmppStream.enableBackgroundingOnSocket = YES;
+        // 没有实现VOIP，回被Apple reject
+        xmppStream.enableBackgroundingOnSocket = NO;
     }
     #endif
+    
 	// Setup reconnect
 	//
 	// The XMPPReconnect module monitors for "accidental disconnections" and
@@ -641,8 +729,10 @@ typedef enum XMPPStatus XMPPStatus;
         // process error
         NSXMLElement *node = [message elementForName:@"error"];
         if (node) {
+            /*
             int32_t code = [node attributeInt32ValueForName:@"code"];
             NSString *type = [node attributeStringValueForName:@"type"];
+            
             if ([type isEqualToString:@"modify"]) {
                 switch (code) {
                     case 400:
@@ -655,6 +745,7 @@ typedef enum XMPPStatus XMPPStatus;
                         break;
                 }
             }
+            */ 
         }
         
         return;

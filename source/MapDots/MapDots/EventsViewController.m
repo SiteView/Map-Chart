@@ -1,3 +1,4 @@
+
 //
 //  RoomsViewController.m
 //  ChatTest
@@ -52,8 +53,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
     // viewEvents_
     UITableView *table_;
-    UIActivityIndicatorView *indicator_;
-    UIBarButtonItem *refreshButton_;
+//    UIActivityIndicatorView *indicator_;
+//    UIBarButtonItem *refreshButton_;
     UIBarButtonItem *rightButton_;
     UIBarButtonItem *indicatorButton_;
 	NSFetchedResultsController *fetchedResultsController;
@@ -71,6 +72,10 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
     UIActionSheet *actionSheet_;
     NSString *strTitle;
+    
+    // 下拉刷新
+    EGORefreshTableHeaderView *refreshHeaderView;
+    BOOL reloading;
 }
 
 - (void)viewDidLoad
@@ -79,15 +84,22 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     self.view.backgroundColor =
     [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.8];
 
-    CGRect rect = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+    float controlTop = 0;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
+            controlTop = 65;
+        }
+    }
+    
+    CGRect rect = CGRectMake(0, controlTop, self.view.bounds.size.width, self.view.bounds.size.height);
     
     // viewEvents_
     viewEvents_ = [[UIView alloc] initWithFrame:rect];
-    
+/*
     indicator_ = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     indicatorButton_ = [[UIBarButtonItem alloc] initWithCustomView:indicator_];
-    
-    table_ = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - 10)];
+*/    
+    table_ = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - 10 - controlTop)];
     table_.dataSource = self;
     table_.delegate = self;
     table_.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
@@ -95,6 +107,11 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     table_.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
     [viewEvents_ addSubview:table_];
 
+    refreshHeaderView = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - table_.bounds.size.height, table_.bounds.size.width, table_.bounds.size.height)];
+    refreshHeaderView.delegate = self;
+    [table_ addSubview:refreshHeaderView];
+    [refreshHeaderView refreshLastUpdatedDate];
+    
     roomPassword_ = nil;
     
     createEventButton_ =
@@ -103,13 +120,13 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
                                     target:self
                                     action:@selector(CreateRoom)];
 
-    refreshButton_ =
+/*    refreshButton_ =
     [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Refresh", @"Refresh")
                                      style:UIBarButtonItemStyleBordered
                                     target:self
                                     action:@selector(refreshRoom)];
 //    [self.navigationItem setLeftBarButtonItem:refreshButton_];
-    
+*/
     flipListButton_ = [[UIBarButtonItem alloc] initWithTitle:@"List"
                                      style:UIBarButtonItemStyleBordered
                                     target:self
@@ -333,16 +350,16 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 - (void)refreshRoom
 {
-    [indicator_ startAnimating];
+/*    [indicator_ startAnimating];
     self.navigationItem.leftBarButtonItem = indicatorButton_;
-    
+*/
     AppDelegate *app = [self appDelegate];
     rooms_ = [app.xmppRoomList_ mutableCopy];
     [table_ reloadData];
-    
+/*
     [indicator_ stopAnimating];
     self.navigationItem.leftBarButtonItem = refreshButton_;
-
+*/
     // 没有新的房间，服务器不更新
 //    app.roomsDelegate = self;
 //    [app querySupportMUC];
@@ -369,7 +386,9 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     if (isViewPosition_) {
         isViewPosition_ = NO;
 
-        [self.navigationItem setLeftBarButtonItem:refreshButton_];
+        [self refreshRoom];
+        
+        [self.navigationItem setLeftBarButtonItem:nil];
         [self.navigationItem setRightBarButtonItem:flipMapButton_];
     } else {
         isViewPosition_ = YES;
@@ -524,6 +543,92 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 }
 
+#pragma mark - 
+#pragma mark Data Source Loading / Reloading Methods
+
+// 刷新开始时调用
+- (void)reloadTableViewDataSource
+{
+    // should be calling your tableviews data source model to reload
+    // put here just for demo
+    /* 
+     在这添加自己的代码
+     [self resetSearch];
+    */
+    reloading = YES;
+    //开始刷新后执行后台线程，在此之前可以开启HUD或其他对UI进行阻塞
+//    [NSThread detachNewThreadSelector:@selector(doInBackground) toTarget:self withObject:nil];
+    [self performSelector:@selector(doneLoadingTableViewData) withObject:nil afterDelay:1.0];
+//    [self performSelectorOnMainThread:@selector(doneLoadingTableViewData) withObject:nil waitUntilDone:YES];
+}
+
+// 刷新结束时调用
+- (void)doneLoadingTableViewData
+{
+    // model should call this when its done loading
+    /*
+     在这添加自己的代码
+     search.text = @"";
+     [myTableView reloadData];
+     [search resignFirstResponder];
+    */
+    [self refreshRoom];
+
+    reloading = NO;
+    [refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:table_];
+    //刷新表格内容
+    [table_ reloadData];
+}
+
+#pragma mark -
+#pragma mark Background operation
+
+// 这个方法运行于子线程中，完成获取刷新数据的操作
+- (void)doInBackground
+{
+    [self refreshRoom];
+    
+    //后台操作线程执行完后，到主线程更新UI
+    [self performSelectorOnMainThread:@selector(doneLoadingTableViewData) withObject:nil waitUntilDone:YES];
+}
+
+#pragma mark -
+#pragma mark UIScrollViewDelegate Methods
+
+// 页面滚动时委托
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    [refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    [refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
+}
+
+#pragma mark - 
+#pragma mark EGORefreshTableHeaderDelegate Methods
+// 开始刷新时委托
+- (void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView *)view
+{
+    [self reloadTableViewDataSource];
+}
+
+// 下拉时委托
+- (BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView *)view
+{
+    return reloading;
+}
+
+// 请求上次更新时间时委托
+- (NSDate *)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView *)view
+{
+    return [NSDate date];
+}
+
+#pragma mark -
+#pragma mark IBAction
+
 - (void)CreateRoom
 {
     if (createRoomViewController == nil) {
@@ -625,7 +730,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         //        if (account == @"" || password == @"")
         
         NSString *account = [UserProperty sharedInstance].account;
-        NSString *nickName = [UserProperty sharedInstance].nickName;
+//        NSString *nickName = [UserProperty sharedInstance].nickName;
         NSString *password = [UserProperty sharedInstance].password;
         //        NSString *serverName = [UserProperty sharedInstance].serverName;
         //        NSString *serverAddress = [UserProperty sharedInstance].serverAddress;

@@ -12,6 +12,7 @@
 #import "XMPPRoomsDelegate.h"
 
 @interface EventsViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate,
+    EGORefreshTableHeaderDelegate,
 //            NSFetchedResultsControllerDelegate,
     XMPPAuthenticateDelegate, XMPPChatDelegate, XMPPRoomsDelegate, 
 #ifdef GOOGLE_MAPS

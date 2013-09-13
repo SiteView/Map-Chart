@@ -41,7 +41,6 @@
 		1F620FF417CCD581001ED1C0 /* EditNameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F620FA717CCD580001ED1C0 /* EditNameViewController.m */; };
 		1F620FF517CCD581001ED1C0 /* EditPreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F620FA917CCD580001ED1C0 /* EditPreferencesViewController.m */; };
 		1F620FF617CCD581001ED1C0 /* EditSexViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F620FAB17CCD580001ED1C0 /* EditSexViewController.m */; };
-		1F620FF917CCD581001ED1C0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1F620FB117CCD580001ED1C0 /* InfoPlist.strings */; };
 		1F620FFC17CCD581001ED1C0 /* EventsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F620FB817CCD580001ED1C0 /* EventsViewController.m */; };
 		1F620FFD17CCD581001ED1C0 /* FriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F620FBA17CCD580001ED1C0 /* FriendsViewController.m */; };
 		1F620FFE17CCD581001ED1C0 /* GreenBubble2.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F620FBB17CCD580001ED1C0 /* GreenBubble2.png */; };
@@ -75,6 +74,7 @@
 		320C9C0B17D4678800F5E9C3 /* UserPropertyCoreDataStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 320C9C0A17D4678800F5E9C3 /* UserPropertyCoreDataStorage.m */; };
 		320C9C0D17D486CA00F5E9C3 /* mapapi.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 320C9C0C17D486CA00F5E9C3 /* mapapi.bundle */; };
 		320C9C2D17D493FD00F5E9C3 /* libbaidumapapi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 320C9C2C17D493FD00F5E9C3 /* libbaidumapapi.a */; };
+		321E4FDB17E02247007F7B1B /* iRate.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 321E4FDA17E02247007F7B1B /* iRate.bundle */; };
 		3248595117CD857C00FCFE89 /* XMPPAnonymousAuthentication.m in Sources */ = {isa = PBXBuildFile; fileRef = 3248587A17CD857C00FCFE89 /* XMPPAnonymousAuthentication.m */; };
 		3248595217CD857C00FCFE89 /* XMPPDeprecatedDigestAuthentication.m in Sources */ = {isa = PBXBuildFile; fileRef = 3248587D17CD857C00FCFE89 /* XMPPDeprecatedDigestAuthentication.m */; };
 		3248595317CD857C00FCFE89 /* XMPPDeprecatedPlainAuthentication.m in Sources */ = {isa = PBXBuildFile; fileRef = 3248588017CD857C00FCFE89 /* XMPPDeprecatedPlainAuthentication.m */; };
@@ -158,9 +158,18 @@
 		324859A117CD857C00FCFE89 /* DDXMLDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 3248594517CD857C00FCFE89 /* DDXMLDocument.m */; };
 		324859A217CD857C00FCFE89 /* DDXMLElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 3248594717CD857C00FCFE89 /* DDXMLElement.m */; };
 		324859A317CD857C00FCFE89 /* DDXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 3248594917CD857C00FCFE89 /* DDXMLNode.m */; };
-		324859A417CD857C00FCFE89 /* build-libidn.sh in Resources */ = {isa = PBXBuildFile; fileRef = 3248594D17CD857C00FCFE89 /* build-libidn.sh */; };
 		324859A517CD857C00FCFE89 /* libidn.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3248594F17CD857C00FCFE89 /* libidn.a */; };
 		324859A917CD860800FCFE89 /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 324859A817CD860800FCFE89 /* GoogleMaps.bundle */; };
+		326FB7AC17DEAB1C001DBF32 /* EGORefreshTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 326FB7AB17DEAB1C001DBF32 /* EGORefreshTableHeaderView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		326FB7B517DEB98E001DBF32 /* blackArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 326FB7AD17DEB98E001DBF32 /* blackArrow.png */; };
+		326FB7B617DEB98E001DBF32 /* blackArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 326FB7AE17DEB98E001DBF32 /* blackArrow@2x.png */; };
+		326FB7B717DEB98E001DBF32 /* blueArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 326FB7AF17DEB98E001DBF32 /* blueArrow.png */; };
+		326FB7B817DEB98E001DBF32 /* blueArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 326FB7B017DEB98E001DBF32 /* blueArrow@2x.png */; };
+		326FB7B917DEB98E001DBF32 /* grayArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 326FB7B117DEB98E001DBF32 /* grayArrow.png */; };
+		326FB7BA17DEB98E001DBF32 /* grayArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 326FB7B217DEB98E001DBF32 /* grayArrow@2x.png */; };
+		326FB7BB17DEB98E001DBF32 /* whiteArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 326FB7B317DEB98E001DBF32 /* whiteArrow.png */; };
+		326FB7BC17DEB98E001DBF32 /* whiteArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 326FB7B417DEB98E001DBF32 /* whiteArrow@2x.png */; };
+		3271FB8617DF20220004C5BB /* iRate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3271FB8417DF20220004C5BB /* iRate.m */; };
 		32FDCD9F17D6E6A20045FA20 /* libWeChatSDK_armv7_armv7s.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32FDCD9C17D6E6A20045FA20 /* libWeChatSDK_armv7_armv7s.a */; };
 		32FE443517CED66500FC54CE /* UserProperty.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 32FE443317CED66500FC54CE /* UserProperty.xcdatamodeld */; };
 /* End PBXBuildFile section */
@@ -210,7 +219,6 @@
 		1F620FA917CCD580001ED1C0 /* EditPreferencesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditPreferencesViewController.m; sourceTree = "<group>"; };
 		1F620FAA17CCD580001ED1C0 /* EditSexViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditSexViewController.h; sourceTree = "<group>"; };
 		1F620FAB17CCD580001ED1C0 /* EditSexViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditSexViewController.m; sourceTree = "<group>"; };
-		1F620FB217CCD580001ED1C0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = InfoPlist.strings; sourceTree = "<group>"; };
 		1F620FB717CCD580001ED1C0 /* EventsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsViewController.h; sourceTree = "<group>"; };
 		1F620FB817CCD580001ED1C0 /* EventsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsViewController.m; sourceTree = "<group>"; };
 		1F620FB917CCD580001ED1C0 /* FriendsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendsViewController.h; sourceTree = "<group>"; };
@@ -300,6 +308,8 @@
 		320C9C2A17D4888D00F5E9C3 /* BMKUserLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BMKUserLocation.h; path = inc/BMKUserLocation.h; sourceTree = "<group>"; };
 		320C9C2B17D4888D00F5E9C3 /* BMKVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BMKVersion.h; path = inc/BMKVersion.h; sourceTree = "<group>"; };
 		320C9C2C17D493FD00F5E9C3 /* libbaidumapapi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbaidumapapi.a; path = "libs/Release-iphonesimulator/libbaidumapapi.a"; sourceTree = "<group>"; };
+		321E4FD517E02114007F7B1B /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		321E4FDA17E02247007F7B1B /* iRate.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = iRate.bundle; path = iRate/iRate.bundle; sourceTree = "<group>"; };
 		3248587917CD857C00FCFE89 /* XMPPAnonymousAuthentication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPAnonymousAuthentication.h; sourceTree = "<group>"; };
 		3248587A17CD857C00FCFE89 /* XMPPAnonymousAuthentication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPAnonymousAuthentication.m; sourceTree = "<group>"; };
 		3248587C17CD857C00FCFE89 /* XMPPDeprecatedDigestAuthentication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPDeprecatedDigestAuthentication.h; sourceTree = "<group>"; };
@@ -475,11 +485,22 @@
 		3248594817CD857C00FCFE89 /* DDXMLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLNode.h; sourceTree = "<group>"; };
 		3248594917CD857C00FCFE89 /* DDXMLNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXMLNode.m; sourceTree = "<group>"; };
 		3248594B17CD857C00FCFE89 /* DDXMLPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLPrivate.h; sourceTree = "<group>"; };
-		3248594D17CD857C00FCFE89 /* build-libidn.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "build-libidn.sh"; sourceTree = "<group>"; };
 		3248594E17CD857C00FCFE89 /* idn-int.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "idn-int.h"; sourceTree = "<group>"; };
 		3248594F17CD857C00FCFE89 /* libidn.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libidn.a; sourceTree = "<group>"; };
 		3248595017CD857C00FCFE89 /* stringprep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stringprep.h; sourceTree = "<group>"; };
 		324859A817CD860800FCFE89 /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
+		326FB7AA17DEAB1C001DBF32 /* EGORefreshTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EGORefreshTableHeaderView.h; path = EGOTableViewPullRefresh/EGORefreshTableHeaderView.h; sourceTree = "<group>"; };
+		326FB7AB17DEAB1C001DBF32 /* EGORefreshTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EGORefreshTableHeaderView.m; path = EGOTableViewPullRefresh/EGORefreshTableHeaderView.m; sourceTree = "<group>"; };
+		326FB7AD17DEB98E001DBF32 /* blackArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blackArrow.png; path = EGOTableViewPullRefresh/blackArrow.png; sourceTree = "<group>"; };
+		326FB7AE17DEB98E001DBF32 /* blackArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "blackArrow@2x.png"; path = "EGOTableViewPullRefresh/blackArrow@2x.png"; sourceTree = "<group>"; };
+		326FB7AF17DEB98E001DBF32 /* blueArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blueArrow.png; path = EGOTableViewPullRefresh/blueArrow.png; sourceTree = "<group>"; };
+		326FB7B017DEB98E001DBF32 /* blueArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "blueArrow@2x.png"; path = "EGOTableViewPullRefresh/blueArrow@2x.png"; sourceTree = "<group>"; };
+		326FB7B117DEB98E001DBF32 /* grayArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = grayArrow.png; path = EGOTableViewPullRefresh/grayArrow.png; sourceTree = "<group>"; };
+		326FB7B217DEB98E001DBF32 /* grayArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "grayArrow@2x.png"; path = "EGOTableViewPullRefresh/grayArrow@2x.png"; sourceTree = "<group>"; };
+		326FB7B317DEB98E001DBF32 /* whiteArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = whiteArrow.png; path = EGOTableViewPullRefresh/whiteArrow.png; sourceTree = "<group>"; };
+		326FB7B417DEB98E001DBF32 /* whiteArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "whiteArrow@2x.png"; path = "EGOTableViewPullRefresh/whiteArrow@2x.png"; sourceTree = "<group>"; };
+		3271FB8317DF20220004C5BB /* iRate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iRate.h; path = iRate/iRate.h; sourceTree = "<group>"; };
+		3271FB8417DF20220004C5BB /* iRate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = iRate.m; path = iRate/iRate.m; sourceTree = "<group>"; };
 		32FDCD9C17D6E6A20045FA20 /* libWeChatSDK_armv7_armv7s.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libWeChatSDK_armv7_armv7s.a; path = WeiChat.framework/libWeChatSDK_armv7_armv7s.a; sourceTree = "<group>"; };
 		32FDCD9D17D6E6A20045FA20 /* WXApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WXApi.h; path = WeiChat.framework/WXApi.h; sourceTree = "<group>"; };
 		32FDCD9E17D6E6A20045FA20 /* WXApiObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WXApiObject.h; path = WeiChat.framework/WXApiObject.h; sourceTree = "<group>"; };
@@ -526,6 +547,8 @@
 		1F0671E217CCD14200BB47CB = {
 			isa = PBXGroup;
 			children = (
+				3271FB8117DF200B0004C5BB /* iRate */,
+				326FB7A917DEAB13001DBF32 /* EGOTableViewPullRefresh */,
 				32FDCD9B17D6E6940045FA20 /* WeiChat */,
 				320C9C0E17D4883300F5E9C3 /* baidu */,
 				320C9BFC17D42A5900F5E9C3 /* iPadRetina_Icon.png */,
@@ -598,7 +621,6 @@
 				1F620FA917CCD580001ED1C0 /* EditPreferencesViewController.m */,
 				1F620FAA17CCD580001ED1C0 /* EditSexViewController.h */,
 				1F620FAB17CCD580001ED1C0 /* EditSexViewController.m */,
-				1F620FAC17CCD580001ED1C0 /* en.lproj */,
 				1F620FB717CCD580001ED1C0 /* EventsViewController.h */,
 				1F620FB817CCD580001ED1C0 /* EventsViewController.m */,
 				1F620FB917CCD580001ED1C0 /* FriendsViewController.h */,
@@ -669,14 +691,6 @@
 				1F06720417CCD14300BB47CB /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		1F620FAC17CCD580001ED1C0 /* en.lproj */ = {
-			isa = PBXGroup;
-			children = (
-				1F620FB117CCD580001ED1C0 /* InfoPlist.strings */,
-			);
-			path = en.lproj;
 			sourceTree = "<group>";
 		};
 		320C9C0E17D4883300F5E9C3 /* baidu */ = {
@@ -1181,12 +1195,38 @@
 		3248594C17CD857C00FCFE89 /* libidn */ = {
 			isa = PBXGroup;
 			children = (
-				3248594D17CD857C00FCFE89 /* build-libidn.sh */,
 				3248594E17CD857C00FCFE89 /* idn-int.h */,
 				3248594F17CD857C00FCFE89 /* libidn.a */,
 				3248595017CD857C00FCFE89 /* stringprep.h */,
 			);
 			path = libidn;
+			sourceTree = "<group>";
+		};
+		326FB7A917DEAB13001DBF32 /* EGOTableViewPullRefresh */ = {
+			isa = PBXGroup;
+			children = (
+				326FB7AD17DEB98E001DBF32 /* blackArrow.png */,
+				326FB7AE17DEB98E001DBF32 /* blackArrow@2x.png */,
+				326FB7AF17DEB98E001DBF32 /* blueArrow.png */,
+				326FB7B017DEB98E001DBF32 /* blueArrow@2x.png */,
+				326FB7B117DEB98E001DBF32 /* grayArrow.png */,
+				326FB7B217DEB98E001DBF32 /* grayArrow@2x.png */,
+				326FB7B317DEB98E001DBF32 /* whiteArrow.png */,
+				326FB7B417DEB98E001DBF32 /* whiteArrow@2x.png */,
+				326FB7AA17DEAB1C001DBF32 /* EGORefreshTableHeaderView.h */,
+				326FB7AB17DEAB1C001DBF32 /* EGORefreshTableHeaderView.m */,
+			);
+			name = EGOTableViewPullRefresh;
+			sourceTree = "<group>";
+		};
+		3271FB8117DF200B0004C5BB /* iRate */ = {
+			isa = PBXGroup;
+			children = (
+				321E4FDA17E02247007F7B1B /* iRate.bundle */,
+				3271FB8317DF20220004C5BB /* iRate.h */,
+				3271FB8417DF20220004C5BB /* iRate.m */,
+			);
+			name = iRate;
 			sourceTree = "<group>";
 		};
 		32FDCD9B17D6E6940045FA20 /* WeiChat */ = {
@@ -1234,6 +1274,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				"zh-Hant",
 			);
 			mainGroup = 1F0671E217CCD14200BB47CB;
 			productRefGroup = 1F0671EC17CCD14200BB47CB /* Products */;
@@ -1256,20 +1297,27 @@
 				1F06720517CCD14300BB47CB /* Default-568h@2x.png in Resources */,
 				1F620FED17CCD581001ED1C0 /* aqua.png in Resources */,
 				1F620FEE17CCD581001ED1C0 /* BlueBubble2.png in Resources */,
-				1F620FF917CCD581001ED1C0 /* InfoPlist.strings in Resources */,
 				1F620FFE17CCD581001ED1C0 /* GreenBubble2.png in Resources */,
 				1F62100817CCD581001ED1C0 /* orange.png in Resources */,
 				1F62100C17CCD581001ED1C0 /* room_lock.png in Resources */,
 				1F62100E17CCD581001ED1C0 /* RoomContextCell.xib in Resources */,
 				1F62101417CCD581001ED1C0 /* Todo.strings in Resources */,
 				3248599F17CD857C00FCFE89 /* README.txt in Resources */,
-				324859A417CD857C00FCFE89 /* build-libidn.sh in Resources */,
 				324859A917CD860800FCFE89 /* GoogleMaps.bundle in Resources */,
 				320C9BF717D42A2800F5E9C3 /* iPhone_Icon.png in Resources */,
 				320C9BF917D42A2F00F5E9C3 /* iPhoneRetina_Icon.png in Resources */,
 				320C9BFB17D42A5500F5E9C3 /* iPad_Icon.png in Resources */,
 				320C9BFD17D42A5900F5E9C3 /* iPadRetina_Icon.png in Resources */,
 				320C9C0D17D486CA00F5E9C3 /* mapapi.bundle in Resources */,
+				326FB7B517DEB98E001DBF32 /* blackArrow.png in Resources */,
+				326FB7B617DEB98E001DBF32 /* blackArrow@2x.png in Resources */,
+				326FB7B717DEB98E001DBF32 /* blueArrow.png in Resources */,
+				326FB7B817DEB98E001DBF32 /* blueArrow@2x.png in Resources */,
+				326FB7B917DEB98E001DBF32 /* grayArrow.png in Resources */,
+				326FB7BA17DEB98E001DBF32 /* grayArrow@2x.png in Resources */,
+				326FB7BB17DEB98E001DBF32 /* whiteArrow.png in Resources */,
+				326FB7BC17DEB98E001DBF32 /* whiteArrow@2x.png in Resources */,
+				321E4FDB17E02247007F7B1B /* iRate.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1390,6 +1438,8 @@
 				32FE443517CED66500FC54CE /* UserProperty.xcdatamodeld in Sources */,
 				320C9C0817D466B100F5E9C3 /* UserPropertyCoreDataStorageObject.m in Sources */,
 				320C9C0B17D4678800F5E9C3 /* UserPropertyCoreDataStorage.m in Sources */,
+				326FB7AC17DEAB1C001DBF32 /* EGORefreshTableHeaderView.m in Sources */,
+				3271FB8617DF20220004C5BB /* iRate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1400,14 +1450,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				1F0671F817CCD14200BB47CB /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		1F620FB117CCD580001ED1C0 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				1F620FB217CCD580001ED1C0 /* en */,
+				321E4FD517E02114007F7B1B /* zh-Hant */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
