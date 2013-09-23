@@ -65,15 +65,17 @@
 		1F62101517CCD581001ED1C0 /* UserProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F620FE517CCD581001ED1C0 /* UserProperty.m */; };
 		1F62101817CCD5E0001ED1C0 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F62101717CCD5E0001ED1C0 /* MapViewController.m */; };
 		1F62101A17CCD611001ED1C0 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F62101917CCD611001ED1C0 /* MapKit.framework */; };
+		320C09ED17E7EC6100EDB623 /* FriendsPositionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 320C09EC17E7EC6100EDB623 /* FriendsPositionViewController.m */; };
 		320C9BF717D42A2800F5E9C3 /* iPhone_Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 320C9BF617D42A2800F5E9C3 /* iPhone_Icon.png */; };
 		320C9BF917D42A2F00F5E9C3 /* iPhoneRetina_Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 320C9BF817D42A2F00F5E9C3 /* iPhoneRetina_Icon.png */; };
 		320C9BFB17D42A5500F5E9C3 /* iPad_Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 320C9BFA17D42A5500F5E9C3 /* iPad_Icon.png */; };
 		320C9BFD17D42A5900F5E9C3 /* iPadRetina_Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 320C9BFC17D42A5900F5E9C3 /* iPadRetina_Icon.png */; };
-		320C9C0517D42C7300F5E9C3 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 320C9C0417D42C7300F5E9C3 /* GoogleMaps.framework */; };
 		320C9C0817D466B100F5E9C3 /* UserPropertyCoreDataStorageObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 320C9C0717D466B100F5E9C3 /* UserPropertyCoreDataStorageObject.m */; };
 		320C9C0B17D4678800F5E9C3 /* UserPropertyCoreDataStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 320C9C0A17D4678800F5E9C3 /* UserPropertyCoreDataStorage.m */; };
 		320C9C0D17D486CA00F5E9C3 /* mapapi.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 320C9C0C17D486CA00F5E9C3 /* mapapi.bundle */; };
 		320C9C2D17D493FD00F5E9C3 /* libbaidumapapi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 320C9C2C17D493FD00F5E9C3 /* libbaidumapapi.a */; };
+		32101E8E17EFD419006F1F7D /* GoogleMapsM4B.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32101E8D17EFD419006F1F7D /* GoogleMapsM4B.framework */; };
+		32101E9017EFD421006F1F7D /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 32101E8F17EFD421006F1F7D /* GoogleMaps.bundle */; };
 		321E4FDB17E02247007F7B1B /* iRate.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 321E4FDA17E02247007F7B1B /* iRate.bundle */; };
 		3248595117CD857C00FCFE89 /* XMPPAnonymousAuthentication.m in Sources */ = {isa = PBXBuildFile; fileRef = 3248587A17CD857C00FCFE89 /* XMPPAnonymousAuthentication.m */; };
 		3248595217CD857C00FCFE89 /* XMPPDeprecatedDigestAuthentication.m in Sources */ = {isa = PBXBuildFile; fileRef = 3248587D17CD857C00FCFE89 /* XMPPDeprecatedDigestAuthentication.m */; };
@@ -159,7 +161,10 @@
 		324859A217CD857C00FCFE89 /* DDXMLElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 3248594717CD857C00FCFE89 /* DDXMLElement.m */; };
 		324859A317CD857C00FCFE89 /* DDXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 3248594917CD857C00FCFE89 /* DDXMLNode.m */; };
 		324859A517CD857C00FCFE89 /* libidn.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3248594F17CD857C00FCFE89 /* libidn.a */; };
-		324859A917CD860800FCFE89 /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 324859A817CD860800FCFE89 /* GoogleMaps.bundle */; };
+		324F780B17E6938F0085E42B /* XMPPPub.m in Sources */ = {isa = PBXBuildFile; fileRef = 324F780A17E6938F0085E42B /* XMPPPub.m */; };
+		324F781117E6A6170085E42B /* XMPPMessage+XEP0080.m in Sources */ = {isa = PBXBuildFile; fileRef = 324F781017E6A6170085E42B /* XMPPMessage+XEP0080.m */; };
+		324F781717E6D32C0085E42B /* XMPPIQ+XEP_0060.m in Sources */ = {isa = PBXBuildFile; fileRef = 324F781417E6D32C0085E42B /* XMPPIQ+XEP_0060.m */; };
+		324F781817E6D32C0085E42B /* XMPPPubSub.m in Sources */ = {isa = PBXBuildFile; fileRef = 324F781617E6D32C0085E42B /* XMPPPubSub.m */; };
 		326FB7AC17DEAB1C001DBF32 /* EGORefreshTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 326FB7AB17DEAB1C001DBF32 /* EGORefreshTableHeaderView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		326FB7B517DEB98E001DBF32 /* blackArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 326FB7AD17DEB98E001DBF32 /* blackArrow.png */; };
 		326FB7B617DEB98E001DBF32 /* blackArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 326FB7AE17DEB98E001DBF32 /* blackArrow@2x.png */; };
@@ -268,11 +273,12 @@
 		1F62101617CCD5E0001ED1C0 /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
 		1F62101717CCD5E0001ED1C0 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
 		1F62101917CCD611001ED1C0 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		320C09EB17E7EC6000EDB623 /* FriendsPositionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendsPositionViewController.h; sourceTree = "<group>"; };
+		320C09EC17E7EC6100EDB623 /* FriendsPositionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendsPositionViewController.m; sourceTree = "<group>"; };
 		320C9BF617D42A2800F5E9C3 /* iPhone_Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPhone_Icon.png; sourceTree = "<group>"; };
 		320C9BF817D42A2F00F5E9C3 /* iPhoneRetina_Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPhoneRetina_Icon.png; sourceTree = "<group>"; };
 		320C9BFA17D42A5500F5E9C3 /* iPad_Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPad_Icon.png; sourceTree = "<group>"; };
 		320C9BFC17D42A5900F5E9C3 /* iPadRetina_Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPadRetina_Icon.png; sourceTree = "<group>"; };
-		320C9C0417D42C7300F5E9C3 /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
 		320C9C0617D466B100F5E9C3 /* UserPropertyCoreDataStorageObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserPropertyCoreDataStorageObject.h; sourceTree = "<group>"; };
 		320C9C0717D466B100F5E9C3 /* UserPropertyCoreDataStorageObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserPropertyCoreDataStorageObject.m; sourceTree = "<group>"; };
 		320C9C0917D4678800F5E9C3 /* UserPropertyCoreDataStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserPropertyCoreDataStorage.h; sourceTree = "<group>"; };
@@ -308,6 +314,8 @@
 		320C9C2A17D4888D00F5E9C3 /* BMKUserLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BMKUserLocation.h; path = inc/BMKUserLocation.h; sourceTree = "<group>"; };
 		320C9C2B17D4888D00F5E9C3 /* BMKVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BMKVersion.h; path = inc/BMKVersion.h; sourceTree = "<group>"; };
 		320C9C2C17D493FD00F5E9C3 /* libbaidumapapi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbaidumapapi.a; path = "libs/Release-iphonesimulator/libbaidumapapi.a"; sourceTree = "<group>"; };
+		32101E8D17EFD419006F1F7D /* GoogleMapsM4B.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMapsM4B.framework; sourceTree = "<group>"; };
+		32101E8F17EFD421006F1F7D /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = GoogleMapsM4B.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
 		321E4FD517E02114007F7B1B /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		321E4FDA17E02247007F7B1B /* iRate.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = iRate.bundle; path = iRate/iRate.bundle; sourceTree = "<group>"; };
 		3248587917CD857C00FCFE89 /* XMPPAnonymousAuthentication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPAnonymousAuthentication.h; sourceTree = "<group>"; };
@@ -488,7 +496,14 @@
 		3248594E17CD857C00FCFE89 /* idn-int.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "idn-int.h"; sourceTree = "<group>"; };
 		3248594F17CD857C00FCFE89 /* libidn.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libidn.a; sourceTree = "<group>"; };
 		3248595017CD857C00FCFE89 /* stringprep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stringprep.h; sourceTree = "<group>"; };
-		324859A817CD860800FCFE89 /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
+		324F780917E6938F0085E42B /* XMPPPub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XMPPPub.h; path = "XEP-0080/XMPPPub.h"; sourceTree = "<group>"; };
+		324F780A17E6938F0085E42B /* XMPPPub.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMPPPub.m; path = "XEP-0080/XMPPPub.m"; sourceTree = "<group>"; };
+		324F780F17E6A6170085E42B /* XMPPMessage+XEP0080.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "XMPPMessage+XEP0080.h"; path = "XEP-0080/XMPPMessage+XEP0080.h"; sourceTree = "<group>"; };
+		324F781017E6A6170085E42B /* XMPPMessage+XEP0080.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "XMPPMessage+XEP0080.m"; path = "XEP-0080/XMPPMessage+XEP0080.m"; sourceTree = "<group>"; };
+		324F781317E6D32C0085E42B /* XMPPIQ+XEP_0060.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XMPPIQ+XEP_0060.h"; sourceTree = "<group>"; };
+		324F781417E6D32C0085E42B /* XMPPIQ+XEP_0060.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XMPPIQ+XEP_0060.m"; sourceTree = "<group>"; };
+		324F781517E6D32C0085E42B /* XMPPPubSub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPPubSub.h; sourceTree = "<group>"; };
+		324F781617E6D32C0085E42B /* XMPPPubSub.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPPubSub.m; sourceTree = "<group>"; };
 		326FB7AA17DEAB1C001DBF32 /* EGORefreshTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EGORefreshTableHeaderView.h; path = EGOTableViewPullRefresh/EGORefreshTableHeaderView.h; sourceTree = "<group>"; };
 		326FB7AB17DEAB1C001DBF32 /* EGORefreshTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EGORefreshTableHeaderView.m; path = EGOTableViewPullRefresh/EGORefreshTableHeaderView.m; sourceTree = "<group>"; };
 		326FB7AD17DEB98E001DBF32 /* blackArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blackArrow.png; path = EGOTableViewPullRefresh/blackArrow.png; sourceTree = "<group>"; };
@@ -516,6 +531,7 @@
 				1F620F9B17CCD4FE001ED1C0 /* SystemConfiguration.framework in Frameworks */,
 				1F620F9917CCD4F7001ED1C0 /* QuartzCore.framework in Frameworks */,
 				1F620F9717CCD4F1001ED1C0 /* OpenGLES.framework in Frameworks */,
+				32101E8E17EFD419006F1F7D /* GoogleMapsM4B.framework in Frameworks */,
 				1F620F9517CCD4EA001ED1C0 /* GLKit.framework in Frameworks */,
 				1F620F9317CCD4E2001ED1C0 /* AVFoundation.framework in Frameworks */,
 				1F620F9117CCD4DB001ED1C0 /* CoreData.framework in Frameworks */,
@@ -535,7 +551,6 @@
 				1F0671F117CCD14200BB47CB /* Foundation.framework in Frameworks */,
 				1F0671F317CCD14200BB47CB /* CoreGraphics.framework in Frameworks */,
 				324859A517CD857C00FCFE89 /* libidn.a in Frameworks */,
-				320C9C0517D42C7300F5E9C3 /* GoogleMaps.framework in Frameworks */,
 				320C9C2D17D493FD00F5E9C3 /* libbaidumapapi.a in Frameworks */,
 				32FDCD9F17D6E6A20045FA20 /* libWeChatSDK_armv7_armv7s.a in Frameworks */,
 			);
@@ -573,12 +588,12 @@
 		1F0671ED17CCD14200BB47CB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				32101E8F17EFD421006F1F7D /* GoogleMaps.bundle */,
+				32101E8D17EFD419006F1F7D /* GoogleMapsM4B.framework */,
 				320C9C2C17D493FD00F5E9C3 /* libbaidumapapi.a */,
 				320C9C0C17D486CA00F5E9C3 /* mapapi.bundle */,
-				320C9C0417D42C7300F5E9C3 /* GoogleMaps.framework */,
 				1F62101917CCD611001ED1C0 /* MapKit.framework */,
 				1F620F9017CCD4DB001ED1C0 /* CoreData.framework */,
-				324859A817CD860800FCFE89 /* GoogleMaps.bundle */,
 				1F620F9A17CCD4FE001ED1C0 /* SystemConfiguration.framework */,
 				1F620F9817CCD4F7001ED1C0 /* QuartzCore.framework */,
 				1F620F9617CCD4F1001ED1C0 /* OpenGLES.framework */,
@@ -675,6 +690,8 @@
 				320C9C0717D466B100F5E9C3 /* UserPropertyCoreDataStorageObject.m */,
 				320C9C0917D4678800F5E9C3 /* UserPropertyCoreDataStorage.h */,
 				320C9C0A17D4678800F5E9C3 /* UserPropertyCoreDataStorage.m */,
+				320C09EB17E7EC6000EDB623 /* FriendsPositionViewController.h */,
+				320C09EC17E7EC6100EDB623 /* FriendsPositionViewController.m */,
 			);
 			path = MapDots;
 			sourceTree = "<group>";
@@ -852,6 +869,8 @@
 		324858A617CD857C00FCFE89 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				324F781217E6D32C0085E42B /* XEP-0060 */,
+				324F780817E692650085E42B /* XEP-0080 */,
 				324858A717CD857C00FCFE89 /* CoreDataStorage */,
 				324858AB17CD857C00FCFE89 /* Reconnect */,
 				324858AE17CD857C00FCFE89 /* Roster */,
@@ -1202,6 +1221,28 @@
 			path = libidn;
 			sourceTree = "<group>";
 		};
+		324F780817E692650085E42B /* XEP-0080 */ = {
+			isa = PBXGroup;
+			children = (
+				324F780917E6938F0085E42B /* XMPPPub.h */,
+				324F780A17E6938F0085E42B /* XMPPPub.m */,
+				324F780F17E6A6170085E42B /* XMPPMessage+XEP0080.h */,
+				324F781017E6A6170085E42B /* XMPPMessage+XEP0080.m */,
+			);
+			name = "XEP-0080";
+			sourceTree = "<group>";
+		};
+		324F781217E6D32C0085E42B /* XEP-0060 */ = {
+			isa = PBXGroup;
+			children = (
+				324F781317E6D32C0085E42B /* XMPPIQ+XEP_0060.h */,
+				324F781417E6D32C0085E42B /* XMPPIQ+XEP_0060.m */,
+				324F781517E6D32C0085E42B /* XMPPPubSub.h */,
+				324F781617E6D32C0085E42B /* XMPPPubSub.m */,
+			);
+			path = "XEP-0060";
+			sourceTree = "<group>";
+		};
 		326FB7A917DEAB13001DBF32 /* EGOTableViewPullRefresh */ = {
 			isa = PBXGroup;
 			children = (
@@ -1267,6 +1308,11 @@
 			attributes = {
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = drogranflow;
+				TargetAttributes = {
+					1F0671EA17CCD14200BB47CB = {
+						DevelopmentTeam = E53HR9QLRE;
+					};
+				};
 			};
 			buildConfigurationList = 1F0671E617CCD14200BB47CB /* Build configuration list for PBXProject "MapDots" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1303,13 +1349,13 @@
 				1F62100E17CCD581001ED1C0 /* RoomContextCell.xib in Resources */,
 				1F62101417CCD581001ED1C0 /* Todo.strings in Resources */,
 				3248599F17CD857C00FCFE89 /* README.txt in Resources */,
-				324859A917CD860800FCFE89 /* GoogleMaps.bundle in Resources */,
 				320C9BF717D42A2800F5E9C3 /* iPhone_Icon.png in Resources */,
 				320C9BF917D42A2F00F5E9C3 /* iPhoneRetina_Icon.png in Resources */,
 				320C9BFB17D42A5500F5E9C3 /* iPad_Icon.png in Resources */,
 				320C9BFD17D42A5900F5E9C3 /* iPadRetina_Icon.png in Resources */,
 				320C9C0D17D486CA00F5E9C3 /* mapapi.bundle in Resources */,
 				326FB7B517DEB98E001DBF32 /* blackArrow.png in Resources */,
+				32101E9017EFD421006F1F7D /* GoogleMaps.bundle in Resources */,
 				326FB7B617DEB98E001DBF32 /* blackArrow@2x.png in Resources */,
 				326FB7B717DEB98E001DBF32 /* blueArrow.png in Resources */,
 				326FB7B817DEB98E001DBF32 /* blueArrow@2x.png in Resources */,
@@ -1440,6 +1486,11 @@
 				320C9C0B17D4678800F5E9C3 /* UserPropertyCoreDataStorage.m in Sources */,
 				326FB7AC17DEAB1C001DBF32 /* EGORefreshTableHeaderView.m in Sources */,
 				3271FB8617DF20220004C5BB /* iRate.m in Sources */,
+				324F780B17E6938F0085E42B /* XMPPPub.m in Sources */,
+				324F781117E6A6170085E42B /* XMPPMessage+XEP0080.m in Sources */,
+				324F781717E6D32C0085E42B /* XMPPIQ+XEP_0060.m in Sources */,
+				324F781817E6D32C0085E42B /* XMPPPubSub.m in Sources */,
+				320C09ED17E7EC6100EDB623 /* FriendsPositionViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1517,9 +1568,11 @@
 		1F06720917CCD14300BB47CB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
+					"$(SRCROOT)",
+					"/Users/siteview_mac/Documents/MapChat/Map-Chart/source/MapDots",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MapDots/MapDots-Prefix.pch";
@@ -1545,9 +1598,11 @@
 		1F06720A17CCD14300BB47CB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
+					"$(SRCROOT)",
+					"/Users/siteview_mac/Documents/MapChat/Map-Chart/source/MapDots",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MapDots/MapDots-Prefix.pch";

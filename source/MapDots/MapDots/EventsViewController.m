@@ -18,6 +18,7 @@
 #import "FriendsViewController.h"
 #import "PlaceAnnotation.h"
 #import "UserProperty.h"
+#import "MessageContextViewController.h"
 
 @interface EventsViewController ()
 
@@ -45,8 +46,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 #else
     MKMapView *mapView_;
 #endif
-    CLLocationManager *locationManager;
 #endif
+    CLLocationManager *locationManager;
     CLLocationCoordinate2D position_;
     NSMutableDictionary *onlineMaker_;
     UIBarButtonItem *createEventButton_;
@@ -85,13 +86,13 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.8];
 
     float controlTop = 0;
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
-            controlTop = 65;
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         }
+        controlTop = 55;
     }
     
-    CGRect rect = CGRectMake(0, controlTop, self.view.bounds.size.width, self.view.bounds.size.height);
+    CGRect rect = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - controlTop);
     
     // viewEvents_
     viewEvents_ = [[UIView alloc] initWithFrame:rect];
@@ -191,6 +192,9 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     MKCoordinateRegion region = {coordinate, span};
     //    [mapView_ setRegion:region];
     mapView_.showsUserLocation = YES;
+#endif
+    
+#endif
     
     locationManager = [[CLLocationManager alloc] init];
     if (![CLLocationManager locationServicesEnabled]) {
@@ -205,9 +209,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         [locationManager startUpdatingLocation];
         
     }
-#endif
-    
-#endif
+
     viewPosition_ = mapView_;
     [self.view addSubview:viewPosition_];
     
@@ -319,6 +321,9 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 #else
 
+#endif
+#endif
+
 #pragma mark-
 #pragma locationManagerDelegate methods
 - (void)locationManager:(CLLocationManager *)manager
@@ -333,10 +338,11 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     MKCoordinateSpan span;
     span.latitudeDelta = 0.05;
     span.longitudeDelta = 0.05;
-    
+/*
     MKCoordinateRegion region = {coordinate, span};
     [mapView_ setRegion:region];
     mapView_.showsUserLocation = YES;
+*/ 
 }
 
 - (void)locationmanager:(CLLocationManager *)manager
@@ -344,9 +350,6 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 {
     // 定位失败
 }
-
-#endif
-#endif
 
 - (void)refreshRoom
 {
@@ -815,7 +818,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     //    [self loginRequest];
 }
 
--(void)newRoomsReceived:(NSArray *)roomsContent
+-(void)newRoomsReceived:(XMPPRoom *)roomsContent
 {
     AppDelegate *app = [self appDelegate];
     rooms_ = [app.xmppRoomList_ mutableCopy];
@@ -831,7 +834,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         
         GMSMarker *marker = [GMSMarker markerWithPosition:coordinate];
         marker.title = [NSString stringWithFormat:@"%@", room.roomName];
-        marker.animated = YES;
+//        marker.animated = YES;
         marker.icon = [GMSMarker markerImageWithColor:color];
         marker.map = mapView_;
         
@@ -839,7 +842,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 #else
         PlaceAnnotation *placeAnnotation = [[PlaceAnnotation alloc] init];
         placeAnnotation.coordinate = coordinate;
-        placeAnnotation.title = [NSString stringWithFormat:@"%@", room.name];
+        placeAnnotation.title = [NSString stringWithFormat:@"%@", room.roomName];
         
         [mapView_ addAnnotation:placeAnnotation];
 #endif
@@ -942,10 +945,10 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 {
     PlaceAnnotation *annotation = view.annotation;
     
-    [[self appDelegate].XMPPRoom_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+    [[self appDelegate].xmppRoomList_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         XMPPRoom *rm = obj;
-        if ([rm.name isEqualToString:annotation.title]) {
-            [self joinEvents:rm.jid];
+        if ([rm.roomName isEqualToString:annotation.title]) {
+            [self joinEvents:[rm.roomJID full]];
             *stop = YES;
         }
     }];
@@ -1017,16 +1020,21 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     
     // 广播自己的位置
     [[self appDelegate] updateMyPositionWithRoomName:roomJid];
-    
+
+#ifndef TEST
     FriendsViewController *friendsViewController;
     friendsViewController = [[FriendsViewController alloc] init];
     
     friendsViewController.roomName = roomJid;
+ [friendsViewController setHidesBottomBarWhenPushed:YES];
+ 
+ [self.navigationController pushViewController:friendsViewController animated:YES];
+#else
+    MessageContextViewController *messageContextViewController = [[MessageContextViewController alloc] init];
+    [messageContextViewController setHidesBottomBarWhenPushed:YES];
     
-    [friendsViewController setHidesBottomBarWhenPushed:YES];
-
-    [self.navigationController pushViewController:friendsViewController animated:YES];
-    
+    [self.navigationController pushViewController:messageContextViewController animated:YES];
+#endif
 }
 
 - (void)didJoinRoomFailure:(NSString *)errorMsg

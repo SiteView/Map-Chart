@@ -142,14 +142,14 @@
     
     // viewPosition_
     viewPosition_ = [[UIView alloc] initWithFrame:rect];
-    
+/*
     CGRect rectToolBar = CGRectMake(0,
                                     self.view.bounds.size.height - 40,
                                 self.view.bounds.size.width,
                                 self.view.bounds.size.height - 40 - toolBar.frame.size.height);
 //    toolBar = [[UIToolbar alloc] initWithFrame:rectToolBar];
     toolBar = [[UIToolbar alloc] init];
-    
+ 
     NSMutableArray *myToolBarItems = [NSMutableArray array];
     
     [myToolBarItems addObject:[[UIBarButtonItem alloc]
@@ -159,11 +159,11 @@
                                 action:@selector(actionMembers)]];
     [myToolBarItems addObject:flipListButton_];
     [toolBar setItems:myToolBarItems animated:YES];
-
+*/
     CGRect rectMap = CGRectMake(0,
                                 controlTop,
                                 self.view.bounds.size.width,
-                                self.view.bounds.size.height - 40 - toolBar.frame.size.height);
+                                self.view.bounds.size.height - 40);
     
 
 #ifdef GOOGLE_MAPS
@@ -325,7 +325,7 @@
         app.myLocation = location.coordinate;
         
         mapView_.camera = [GMSCameraPosition cameraWithTarget:location.coordinate
-                                                         zoom:14];
+                                                         zoom:mapView_.camera.zoom];
 //    }
 }
 
@@ -459,7 +459,7 @@
     GMSMarker *marker = [GMSMarker markerWithPosition:coordinate];
     marker.title = title;
 //    marker.snippet = @"Population: 4,605,992";
-    marker.animated = YES;
+//    marker.animated = YES;
     marker.icon = [GMSMarker markerImageWithColor:color];
     marker.map = mapView_;
     
@@ -528,7 +528,7 @@
 {
     NSLog(@"%s", __FUNCTION__);
     AppDelegate *app = [self appDelegate];
-    RoomModel *room = [app.xmppRoomList_ objectForKey:roomName];
+    XMPPRoom *room = [app.xmppRoomList_ objectForKey:roomName];
     if (room.members != nil) {
         [room.members enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
             MemberProperty * member = obj;
@@ -625,16 +625,8 @@
 
 - (void)moveInputBarWithKeyboardHeight:(float)height withDuration:(int)duration
 {
-/*    if ((height > -0.00001) && (height < 0.00001))
-    {
-        [self hideKeyboard];
-    } else {
-        keyboardHeight = height;
-        [self showKeyboard];
-    }
-*/ 
+    
 }
-
 - (void)showKeyboard
 {
 //    keyboardHeight = KEYBOARD_HEIGHT;
@@ -696,13 +688,7 @@
     [self hideKeyboard];
     return YES;
 }
-/*
-- (BOOL)textFieldShouldClear:(UITextField *)textField
-{
-    [self hideKeyboard];
-    return NO;
-}
-*/
+
 - (void)backgroundTap:(id)sender
 {
     [self hideKeyboard];

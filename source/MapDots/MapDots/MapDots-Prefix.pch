@@ -12,7 +12,8 @@
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
     #import <CoreLocation/CoreLocation.h>
-    #import <GoogleMaps/GoogleMaps.h>
+//    #import <GoogleMaps/GoogleMaps.h>
+    #import <GoogleMapsM4B/GoogleMaps.h>
     #import <CoreData/CoreData.h>
     #import <MapKit/MapKit.h>
     #import "BMapKit.h"

@@ -64,6 +64,9 @@
 @property (nonatomic, strong) RoomModel *createRoomModel;
 @property (nonatomic) CLLocationCoordinate2D myLocation;
 
+@property (nonatomic, readonly) BOOL isiOS7;
+@property (nonatomic, readonly) BOOL isiPhone5;
+
 - (NSString*)uuid;
 
 - (NSManagedObjectContext *)managedObjectContext_room;

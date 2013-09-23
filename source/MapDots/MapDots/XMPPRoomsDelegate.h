@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "RoomModel.h"
+#import "XMPPRoom.h"
 
 @protocol XMPPRoomsDelegate <NSObject>
 
 @optional
 
--(void)newRoomsReceived:(RoomModel *)roomsContent;
+-(void)newRoomsReceived:(XMPPRoom *)roomsContent;
 
 - (void)didJoinRoomSuccess:(NSString *)roomJid;
 - (void)didJoinRoomFailure:(NSString *)errorMsg;

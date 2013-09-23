@@ -326,6 +326,18 @@ enum XMPPRoomState
 	}
 }
 
+- (void)setMuc_passwordprotected:(BOOL)newMuc_passwordprotected
+{
+	dispatch_block_t block = ^{
+		muc_passwordprotected = newMuc_passwordprotected;
+	};
+	
+	if (dispatch_get_specific(moduleQueueTag))
+		block();
+	else
+		dispatch_async(moduleQueue, block);
+}
+
 - (BOOL)muc_public
 {
 	if (dispatch_get_specific(moduleQueueTag))
@@ -342,6 +354,19 @@ enum XMPPRoomState
 		
 		return result;
 	}
+}
+
+
+- (void)setMuc_public:(BOOL)newMuc_public
+{
+	dispatch_block_t block = ^{
+		muc_public = newMuc_public;
+	};
+	
+	if (dispatch_get_specific(moduleQueueTag))
+		block();
+	else
+		dispatch_async(moduleQueue, block);
 }
 
 - (BOOL)muc_open
@@ -362,6 +387,18 @@ enum XMPPRoomState
 	}
 }
 
+- (void)setMuc_open:(BOOL)newMuc_open
+{
+	dispatch_block_t block = ^{
+		muc_open = newMuc_open;
+	};
+	
+	if (dispatch_get_specific(moduleQueueTag))
+		block();
+	else
+		dispatch_async(moduleQueue, block);
+}
+
 - (BOOL)muc_unmoderated
 {
 	if (dispatch_get_specific(moduleQueueTag))
@@ -378,6 +415,18 @@ enum XMPPRoomState
 		
 		return result;
 	}
+}
+
+- (void)setMuc_unmoderated:(BOOL)newMuc_unmoderated
+{
+	dispatch_block_t block = ^{
+		muc_unmoderated = newMuc_unmoderated;
+	};
+	
+	if (dispatch_get_specific(moduleQueueTag))
+		block();
+	else
+		dispatch_async(moduleQueue, block);
 }
 
 - (BOOL)muc_semianonymous
@@ -398,6 +447,18 @@ enum XMPPRoomState
 	}
 }
 
+- (void)setMuc_semianonymous:(BOOL)newMuc_semianonymous
+{
+	dispatch_block_t block = ^{
+		muc_semianonymous = newMuc_semianonymous;
+	};
+	
+	if (dispatch_get_specific(moduleQueueTag))
+		block();
+	else
+		dispatch_async(moduleQueue, block);
+}
+
 - (BOOL)muc_persistent
 {
 	if (dispatch_get_specific(moduleQueueTag))
@@ -414,6 +475,18 @@ enum XMPPRoomState
 		
 		return result;
 	}
+}
+
+- (void)setMuc_persistent:(BOOL)newMuc_persistent
+{
+	dispatch_block_t block = ^{
+		muc_persistent = newMuc_persistent;
+	};
+	
+	if (dispatch_get_specific(moduleQueueTag))
+		block();
+	else
+		dispatch_async(moduleQueue, block);
 }
 
 - (CLLocationCoordinate2D)coordinatePosition
@@ -434,6 +507,18 @@ enum XMPPRoomState
 	}
 }
 
+- (void)setCoordinatePosition:(CLLocationCoordinate2D)newCoordinatePosition
+{
+	dispatch_block_t block = ^{
+		coordinatePosition = newCoordinatePosition;
+	};
+	
+	if (dispatch_get_specific(moduleQueueTag))
+		block();
+	else
+		dispatch_async(moduleQueue, block);
+}
+
 - (NSTimeInterval)effectivetimeStart
 {
 	if (dispatch_get_specific(moduleQueueTag))
@@ -452,6 +537,18 @@ enum XMPPRoomState
 	}
 }
 
+- (void)setEffectivetimeStart:(NSTimeInterval)newEffectivetimeStart
+{
+	dispatch_block_t block = ^{
+		effectivetimeStart = newEffectivetimeStart;
+	};
+	
+	if (dispatch_get_specific(moduleQueueTag))
+		block();
+	else
+		dispatch_async(moduleQueue, block);
+}
+
 - (NSTimeInterval)effectivetimeEnd
 {
 	if (dispatch_get_specific(moduleQueueTag))
@@ -468,6 +565,18 @@ enum XMPPRoomState
 		
 		return result;
 	}
+}
+
+- (void)setEffectivetimeEnd:(NSTimeInterval)newEffectivetimeEnd
+{
+	dispatch_block_t block = ^{
+		effectivetimeEnd = newEffectivetimeEnd;
+	};
+	
+	if (dispatch_get_specific(moduleQueueTag))
+		block();
+	else
+		dispatch_async(moduleQueue, block);
 }
 
 - (NSMutableDictionary *)members
@@ -499,6 +608,7 @@ enum XMPPRoomState
 	else
 		dispatch_async(moduleQueue, block);
 }
+
 
 /*
 - (BOOL)isRoomOwner

@@ -21,8 +21,9 @@
 #ifdef BAIDU_MAPS
 BMKMapViewDelegate
 #else
-MKMapViewDelegate, CLLocationManagerDelegate
+MKMapViewDelegate
 #endif
 #endif
-    >
+, CLLocationManagerDelegate
+>
 @end

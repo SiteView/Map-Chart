@@ -104,34 +104,23 @@ typedef enum XMPPStatus XMPPStatus;
 @synthesize xmppRoomList_;
 @synthesize myLocation;
 
+@synthesize isiOS7;
+@synthesize isiPhone5;
+
+/*
 + (void)initialize
 {
-    // 如果用户已评价，可以关闭此提示
-
-    [iRate sharedInstance].applicationName = @"MapDots";
-
     //overriding the default iRate strings
-//    [iRate sharedInstance].messageTitle = NSLocalizedString(@"Rate MyApp", @"iRate message title");
-//    [iRate sharedInstance].message = NSLocalizedString(@"If you like MyApp, please take the time, etc", @"iRate message");
+    [iRate sharedInstance].messageTitle = NSLocalizedString(@"Rate MyApp", @"iRate message title");
+    [iRate sharedInstance].message = NSLocalizedString(@"If you like MyApp, please take the time, etc", @"iRate message");
     [iRate sharedInstance].cancelButtonLabel = NSLocalizedString(@"No, Thanks", @"iRate decline button");
     [iRate sharedInstance].remindButtonLabel = NSLocalizedString(@"Remind Me Later", @"iRate remind button");
     [iRate sharedInstance].rateButtonLabel = NSLocalizedString(@"Rate It Now", @"iRate accept button");
-    
-    //set the bundle ID. normally you wouldn't need to do this
-    //as it is picked up automatically from your Info.plist file
-    //but we want to test with an app that's actually on the store
-    [iRate sharedInstance].applicationBundleID = @"com.drogranflow.MapDots";
-	[iRate sharedInstance].onlyPromptIfLatestVersion = NO;
-    
-    [iRate sharedInstance].daysUntilPrompt = 30;
-#ifdef DEBUG
-    //enable preview mode
-    [iRate sharedInstance].previewMode = YES;
-#endif
 }
-
+*/
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    
 #ifdef GOOGLE_MAPS
     
     if ([APIKey length] == 0) {
@@ -157,6 +146,17 @@ typedef enum XMPPStatus XMPPStatus;
     }
 #endif
 #endif
+    
+    // Setup the timer
+    [self setupTimer];
+    
+    BOOL isRegisterWeiChat = [WXApi registerApp:WXAPIKey];
+    if (isRegisterWeiChat) {
+        NSLog(@"Register WeiChat success.");
+    } else {
+        NSLog(@"Register WeiChat failure.");
+    }
+    
 	// Configure logging framework
 	
 	[DDLog addLogger:[DDTTYLogger sharedInstance]];
@@ -167,28 +167,13 @@ typedef enum XMPPStatus XMPPStatus;
     
 	[self setupStream];
     
-    // Setup the timer
-    [self setupTimer];
-    
-    [WXApi registerApp:WXAPIKey];
-    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-/*
-    PositionViewController *positionViewController = [[PositionViewController alloc] init];
-    positionViewController.title = @"Position";
-    positionViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Position" image:nil tag:101];
-    UINavigationController *positionNavigationController = [[UINavigationController alloc] initWithRootViewController:positionViewController];
-*/
+
     EventsViewController *roomsViewController = [[EventsViewController alloc] init];
     roomsViewController.title = @"Events";
     roomsViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Events" image:nil tag:102];
     UINavigationController *roomsNavigationController = [[UINavigationController alloc] initWithRootViewController:roomsViewController];
     
-/*    messageViewController = [[MessageViewController alloc] init];
-    messageViewController.title = @"Message";
-    messageViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Message" image:nil tag:103];
-    UINavigationController *messageNavigationController = [[UINavigationController alloc] initWithRootViewController:messageViewController];
-*/    
     PreferencesViewController *preferencesViewController = [[PreferencesViewController alloc] init];
     preferencesViewController.title = @"Preferences";
     preferencesViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Preferences" image:nil tag:104];
@@ -198,10 +183,9 @@ typedef enum XMPPStatus XMPPStatus;
     tabBarController = [[UITabBarController alloc] init];
     tabBarController.viewControllers = @[roomsNavigationController, preferencesNavigationController];
     
-//    self.navigationController = [[UINavigationController alloc] initWithRootViewController:positionViewController];
     self.window.rootViewController = tabBarController;
     [self.window makeKeyAndVisible];
-    
+/*    
     // 1、完成推送功能的注册请求，即在程序启动时弹出是否使用推送功能
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound)];
     
@@ -215,6 +199,7 @@ typedef enum XMPPStatus XMPPStatus;
             [alert show];
         }
     }
+*/ 
     return YES;
 }
 
@@ -279,13 +264,18 @@ typedef enum XMPPStatus XMPPStatus;
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
 {
+    NSLog(@"%s", __FUNCTION__);
     return [WXApi handleOpenURL:url delegate:self];
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
+    NSLog(@"%s", __FUNCTION__);
 //    NSString *str = @"test";
-    return [WXApi handleOpenURL:url delegate:self];
+    if ([WXApi handleOpenURL:url delegate:self])
+        return YES;
+    
+    return NO;
 }
 
 // 给应用打分
@@ -336,6 +326,8 @@ typedef enum XMPPStatus XMPPStatus;
 // onReq是微信终端向第三方程序发起请求，要求第三方程序响应。第三方程序响应完后必须调用sendRsp返回。在调用sendRsp返回时，会切回到微信终端程序界面。
 - (void)onReq:(BaseReq *)req
 {
+    NSLog(@"%s", __FUNCTION__);
+
 /*    if([req isKindOfClass:[GetMessageFromWXReq class]])
     {
         [self onRequestAppMessage];
@@ -389,7 +381,9 @@ typedef enum XMPPStatus XMPPStatus;
 
 - (void)dealloc
 {
-    [timer invalidate];
+    if (timer != nil) {
+        [timer invalidate];
+    }
     [self teardownStream];
 }
 
@@ -440,11 +434,9 @@ typedef enum XMPPStatus XMPPStatus;
         //
         // The simulator doesn't support backgrouding yet.
         
-        // 没有实现VOIP，回被Apple reject
-        xmppStream.enableBackgroundingOnSocket = NO;
+        xmppStream.enableBackgroundingOnSocket = YES;
     }
     #endif
-    
 	// Setup reconnect
 	//
 	// The XMPPReconnect module monitors for "accidental disconnections" and
@@ -1031,7 +1023,7 @@ typedef enum XMPPStatus XMPPStatus;
                             NSString *memberJid = [[jid componentsSeparatedByString:@"/"] objectAtIndex:0];
                             
                             if (roomModel.members == nil) {
-                                roomModel.members = [NSDictionary dictionary];
+                                roomModel.members = [NSMutableDictionary dictionary];
                             }
                             MemberProperty *member = [roomModel.members objectForKey:memberJid];
                             if (member == nil) {

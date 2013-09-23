@@ -165,7 +165,7 @@
         firstLocationUpdate_ = YES;
         CLLocation *location = [change objectForKey:NSKeyValueChangeNewKey];
         mapView_.camera = [GMSCameraPosition cameraWithTarget:location.coordinate
-                                                         zoom:14];
+                                                         zoom:mapView_.camera.zoom];
     }
 }
 
@@ -237,12 +237,27 @@
     UIColor *color = [UIColor blueColor];
     
     GMSMarker *marker = [GMSMarker markerWithPosition:coordinate];
-    marker.animated = YES;
+//    marker.animated = YES;
     marker.icon = [GMSMarker markerImageWithColor:color];
     marker.map = mapView_;
     
     position_ = coordinate;
     addressName = marker.title;
+    if ([addressName length] == 0) {
+        CLLocation *location = [[CLLocation alloc] initWithLatitude:position_.latitude longitude:position_.longitude];
+        CLGeocoder *myGeocoder;
+        myGeocoder = [[CLGeocoder alloc] init];
+        [myGeocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
+            if (error == nil && [placemarks count] > 0) {
+                CLPlacemark *placemark = [placemarks objectAtIndex:0];
+                addressName = placemark.locality;
+            } else if (error == nil && [placemarks count] == 0) {
+                NSLog(@"No results were returned.");
+            } else if (error != nil) {
+                NSLog(@"An error occurred = %@", error);
+            }
+        }];
+    }
 }
 #else
 

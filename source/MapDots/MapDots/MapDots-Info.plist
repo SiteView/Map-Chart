@@ -22,7 +22,7 @@
 		</dict>
 	</dict>
 	<key>CFBundleIdentifier</key>
-	<string>drogranflow.${PRODUCT_NAME:rfc1034identifier}</string>
+	<string>dragonflow.${PRODUCT_NAME:rfc1034identifier}</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -36,11 +36,27 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLIconFile</key>
+			<string>iPhone_Icon</string>
 			<key>CFBundleURLName</key>
-			<string></string>
+			<string>com.dragonflow.com</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>wx72da2aefd1ffab74</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLIconFile</key>
+			<string>iPhone_Icon</string>
+			<key>CFBundleURLName</key>
+			<string>weichat</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>27da62db08a63f39641e72fa48225ee2</string>
 			</array>
 		</dict>
 	</array>
