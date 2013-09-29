@@ -10,11 +10,12 @@
 #import "XMPPAuthenticateDelegate.h"
 #import "XMPPChatDelegate.h"
 #import "XMPPRoomsDelegate.h"
+#import "EGORefreshTableHeaderView.h"
 
 @interface EventsViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate,
     EGORefreshTableHeaderDelegate,
 //            NSFetchedResultsControllerDelegate,
-    XMPPAuthenticateDelegate, XMPPChatDelegate, XMPPRoomsDelegate, 
+    XMPPAuthenticateDelegate, XMPPRoomsDelegate,
 #ifdef GOOGLE_MAPS
     GMSMapViewDelegate
 #else

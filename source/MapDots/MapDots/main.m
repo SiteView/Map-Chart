@@ -27,8 +27,8 @@ int main(int argc, char *argv[])
     // fix: xcode5 ios7beta产生如下log：
     // ～AssertMacros: queueEntry, file: /SourceCache/IOKitUser_Sim/IOKitUser-920.1.11/hid.subproj/IOHIDEven
     // 虽然程序能运行，但是看起来很不爽～
-    _oldStdWrite = stderr->_write;
-    stderr->_write = __pyStderrWrite;
+//    _oldStdWrite = stderr->_write;
+//    stderr->_write = __pyStderrWrite;
     
     @autoreleasepool {
         return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));

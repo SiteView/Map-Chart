@@ -41,11 +41,12 @@
     self.title = @"Create Events";
     
     view_ = [[UIControl alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
+    view_.backgroundColor = [UIColor whiteColor];
     [view_ addTarget:self action:@selector(backgroundTap:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:view_];
     
-    self.view.backgroundColor =
-    [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.8];
+//    self.view.backgroundColor =
+//    [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.8];
     
     dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm"];
@@ -59,26 +60,34 @@
     float serverWidth = 180;
     float alignRight = 110;
     float rightWidth = 200;
+//    float summitBtnLeft = 16;
+//    float cancelBtnLeft = 148;
     
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
-            controlTop = 60;
-        }
-        ptNickName.x = 120;
-        ptNickName.y = 16;
+    sizeAccount.height = 29;
+    ptNickName.x = 120;
+    ptNickName.y = 16;
+
+    if ([self appDelegate].isiOS7) {
+        controlTop = STATUS_BAR_HEIGHT + NAVIGATION_BAR_HEIGHT;
+    }
+    
+    if ([self appDelegate].isiPAD) {
+        sizeAccount.width = 600;
+        
+        passwordWidth = 600;
+        serverWidth = 600;
+        
+        rightWidth = 600;
+        
+//        summitBtnLeft = 110;
+//        cancelBtnLeft = 300;
+        
+    } else {
         sizeAccount.width = rightWidth;
-        sizeAccount.height = 29;
         
         passwordWidth = rightWidth;
-    } else {
-        ptNickName.x = 120;
-        ptNickName.y = 16;
-        sizeAccount.width = 400;
-        sizeAccount.height = 29;
-        
-        passwordWidth = 400;
-        serverWidth = 400;
     }
+    
     // Room Name label.
     UILabel *roomLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, 16 + controlTop, 200, 29)];
     roomLabel.text = @"Events";
@@ -196,9 +205,9 @@
     }
     actionSheet_.actionSheetStyle = UIActionSheetStyleDefault;
     actionSheet_.destructiveButtonIndex = 3;
-    
+/*
     UIButton *submitBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    submitBtn.frame = CGRectMake(16, 304 + controlTop, 90, 30);
+    submitBtn.frame = CGRectMake(summitBtnLeft, 304 + controlTop, 90, 30);
     submitBtn.titleLabel.font = [UIFont boldSystemFontOfSize:18.0f];
     [submitBtn setTitle:@"Submit" forState:UIControlStateNormal];
     submitBtn.titleLabel.textAlignment = NSTextAlignmentLeft;
@@ -208,7 +217,7 @@
     [self.view addSubview:submitBtn];
     
     UIButton *cancelBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    cancelBtn.frame = CGRectMake(148, 304 + controlTop, 90, 30);
+    cancelBtn.frame = CGRectMake(cancelBtnLeft, 304 + controlTop, 90, 30);
     [cancelBtn setTitle:@"Cancel" forState:UIControlStateNormal];
     cancelBtn.titleLabel.font = [UIFont boldSystemFontOfSize:18.0f];
     cancelBtn.titleLabel.textAlignment = NSTextAlignmentLeft;
@@ -216,11 +225,22 @@
                   action:@selector(cancelBtnPress)
         forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:cancelBtn];
-    
+*/
+    UIBarButtonItem *submitBtn = [[UIBarButtonItem alloc] initWithTitle:@"Summit"
+                                                       style:UIBarButtonItemStyleBordered
+                                                      target:self
+                                                      action:@selector(submitBtnPress)];
+    [self.navigationItem setRightBarButtonItem:submitBtn];
+
     selectDateTimeViewController = [[SelectDateTimeViewController alloc] init];
 
     AppDelegate *app = [self appDelegate];
     app.createRoomDelegate = self;
+}
+
+-(AppDelegate *)appDelegate
+{
+    return (AppDelegate *)[[UIApplication sharedApplication] delegate];
 }
 
 - (void)didReceiveMemoryWarning
@@ -263,11 +283,6 @@
     [discriptionTextField_ resignFirstResponder];
 }
 
--(AppDelegate *)appDelegate{
-    
-    return (AppDelegate *)[[UIApplication sharedApplication] delegate];
-}
-
 -(XMPPStream *)xmppStream{
     
     return [[self appDelegate] xmppStream];
@@ -278,7 +293,6 @@
 
 - (void)submitBtnPress
 {
-    AppDelegate *app = [self appDelegate];
     RoomModel *room = [[RoomModel alloc] init];
     room.roomName = roomTextField_.text;
     room.password = roomPasswordTextField_.text;
@@ -298,6 +312,8 @@
         [alertView show];
         return;
     }
+
+    AppDelegate *app = [self appDelegate];
     if ((coordinate.latitude > -0.000001 && coordinate.longitude < 0.000001) &&
         (coordinate.longitude > -0.000001 && coordinate.longitude < 0.000001))
     {

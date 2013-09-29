@@ -9,8 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "XMPPChatDelegate.h"
 #import "LoginViewController.h"
+#import "touchTableView.h"
 
-@interface FriendsViewController : UIViewController<UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, NSFetchedResultsControllerDelegate,
+@interface FriendsViewController : UIViewController<UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, NSFetchedResultsControllerDelegate, UIAlertViewDelegate,
+    TouchTableViewDelegate,
     XMPPChatDelegate,
 #ifdef GOOGLE_MAPS
 GMSMapViewDelegate
@@ -25,6 +27,11 @@ CLLocationManagerDelegate
     >
 
 @property (nonatomic, strong) NSString *roomName;
+@property (nonatomic, strong) NSString *roomJid;
+@property (nonatomic, strong) NSString *roomPassword;
+
+@property (nonatomic, strong) UIView *backgroundView;
+@property (nonatomic, strong) NSMutableArray *screenShotsList;
 
 - (void)addCoordinate:(NSString *)title coordinate:(CLLocationCoordinate2D)coordinate color:(UIColor *)color;
 

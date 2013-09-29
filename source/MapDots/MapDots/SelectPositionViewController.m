@@ -8,6 +8,7 @@
 
 #import "SelectPositionViewController.h"
 #import "PlaceAnnotation.h"
+#import "AppDelegate.h"
 
 @interface SelectPositionViewController ()
 
@@ -16,6 +17,7 @@
 @implementation SelectPositionViewController
 {
     BOOL firstLocationUpdate_;
+    CGFloat zoom_;
 #ifdef GOOGLE_MAPS
 
     GMSMapView *mapView_;
@@ -42,6 +44,11 @@
     CGRect rectMap = CGRectMake(0, 0,
                                    self.view.bounds.size.width,
                                    self.view.bounds.size.height);
+    zoom_ = 14;
+    if ([self appDelegate].isiPAD)
+    {
+        zoom_ = 18;
+    }
 #ifdef GOOGLE_MAPS
 
     GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:28.17523
@@ -69,14 +76,14 @@
 #else
 #ifdef BAIDU_MAPS
     mapView_ = [[BMKMapView alloc] initWithFrame:self.view.bounds];
+    mapView_.zoomEnabled = YES;
     mapView_.delegate = self;
     //实现旋转、俯视的3D效果
     //    mapView_.rotate = 90;
     mapView_.overlooking = -30;
-    //开启定位功能
-    mapView_.showsUserLocation = NO;
-    mapView_.userTrackingMode = BMKUserTrackingModeFollow;
-    mapView_.showsUserLocation = YES;
+    
+    // 加入点击手势
+    
 #else
     mapView_ = [[MKMapView alloc] initWithFrame:rectMap];
     mapView_.mapType = MKMapTypeStandard;
@@ -106,9 +113,6 @@
     [mapView_ setUserInteractionEnabled:YES];
     [mapView_ addGestureRecognizer:fingerTaps];
 
-    annotation_ = [[PlaceAnnotation alloc] init];
-    [mapView_ addAnnotation:annotation_];
-
     locationManager = [[CLLocationManager alloc] init];
     if (![CLLocationManager locationServicesEnabled]) {
         NSLog(@"定位不可用");
@@ -124,6 +128,8 @@
     }
 
 #endif
+    annotation_ = [[PlaceAnnotation alloc] init];
+    [mapView_ addAnnotation:annotation_];
 #endif
  
 //    [self.view addSubview:mapView_];
@@ -142,13 +148,57 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)dealloc {
+- (void)viewWillAppear:(BOOL)animated
+{
+#ifdef GOOGLE_MAPS
+    // Listen to the myLocation property of GMSMapView.
+    [mapView_ addObserver:self
+               forKeyPath:@"myLocation"
+                  options:NSKeyValueObservingOptionNew
+                  context:NULL];
+    
+    //    firstLocationUpdate_ = NO;
+    
+    
+    // Ask for My Location data after the map has already been added to the UI.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        mapView_.myLocationEnabled = YES;
+    });
+#else
+#ifdef BAIDU_MAPS
+    if (mapView_ != nil) {
+        //开启定位功能
+        mapView_.showsUserLocation = NO;
+        mapView_.userTrackingMode = BMKUserTrackingModeFollow;
+        mapView_.showsUserLocation = YES;
+        mapView_.delegate = self;
+    }
+#endif
+#endif
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
 #ifdef GOOGLE_MAPS
 
     [mapView_ removeObserver:self
                   forKeyPath:@"myLocation"
                      context:NULL];
+#else
+#ifdef BAIDU_MAPS
+    if (mapView_ != nil) {
+        //开启定位功能
+        mapView_.showsUserLocation = NO;
+        mapView_.delegate = nil;
+    }
 #endif
+#endif
+}
+
+-(AppDelegate *)appDelegate
+{
+    return (AppDelegate *)[[UIApplication sharedApplication] delegate];
 }
 
 #ifdef GOOGLE_MAPS
@@ -184,7 +234,7 @@
     span.longitudeDelta = 0.05;
     
     BMKCoordinateRegion region = {coordinate, span};
-    [mapView_ setRegion:[mapView_ regionThatFits:region]];
+//    [mapView_ setRegion:[mapView_ regionThatFits:region]];
     mapView_.showsUserLocation = YES;
 }
 
@@ -271,6 +321,20 @@
     [self confirmPosition];
     
 }
+
+- (void)mapView:(BMKMapView *)mapView onClickedMapBlank:(CLLocationCoordinate2D)coordinate
+{
+    position_ = coordinate;
+    annotation_.coordinate = coordinate;
+    
+    CLLocation *location = [[CLLocation alloc] initWithLatitude:coordinate.latitude longitude:coordinate.longitude];
+    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+    [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
+        CLPlacemark *placemark = [placemarks lastObject];
+        annotation_.title = placemark.name;
+    }];
+
+}
 #else
 - (void)fingerTapAction:(UIGestureRecognizer*)gestureRecognizer
 {
@@ -280,6 +344,7 @@
     
     position_ = coordinate;
     addressName = annotation.title;
+    annotation_.coordinate = coordinate;
 
 //    [mapView_ removeAnnotation:annotation_];
     // add the single annotation to our map
@@ -288,7 +353,6 @@
     CLGeocoder *geocoder = [[CLGeocoder alloc] init];
     [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
         CLPlacemark *placemark = [placemarks lastObject];
-        annotation_.coordinate = coordinate;
         annotation_.title = placemark.name;
     }];
 //    [mapView_ addAnnotation:annotation_];

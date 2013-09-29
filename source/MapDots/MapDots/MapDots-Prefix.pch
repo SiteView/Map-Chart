@@ -20,5 +20,5 @@
     #import "EGORefreshTableHeaderView.h"
 #endif
 
-#define GOOGLE_MAPS
-//#define BAIDU_MAPS
+//#define GOOGLE_MAPS
+#define BAIDU_MAPS

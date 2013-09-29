@@ -100,14 +100,11 @@
 #else
 #ifdef BAIDU_MAPS
     mapView_ = [[BMKMapView alloc] initWithFrame:self.view.bounds];
+    mapView_.zoomLevel = 18;
     mapView_.delegate = self;
     //实现旋转、俯视的3D效果
     //    mapView_.rotate = 90;
     mapView_.overlooking = -30;
-    //开启定位功能
-    mapView_.showsUserLocation = NO;
-    mapView_.userTrackingMode = BMKUserTrackingModeFollow;
-    mapView_.showsUserLocation = YES;
     
     if (self.mapItemList.count == 1)
     {
@@ -210,7 +207,17 @@
                   options:NSKeyValueObservingOptionNew
                   context:NULL];
     
-
+#else
+#ifdef BAIDU_MAPS
+    if (mapView_ != nil) {
+        //开启定位功能
+        mapView_.showsUserLocation = NO;
+        mapView_.userTrackingMode = BMKUserTrackingModeFollow;
+        mapView_.showsUserLocation = YES;
+        
+        mapView_.delegate = self;
+    }
+#endif
 #endif
 }
 - (void)viewDidDisappear:(BOOL)animated
@@ -221,6 +228,14 @@
                   forKeyPath:@"myLocation"
                      context:NULL];
 #else
+#ifdef BAIDU_MAPS
+    if (mapView_ != nil) {
+        //开启定位功能
+        mapView_.showsUserLocation = NO;
+        
+        mapView_.delegate = self;
+    }
+#endif
     [mapView_ removeAnnotations:mapView_.annotations];
 #endif
 }

@@ -65,18 +65,51 @@
 		1F62101517CCD581001ED1C0 /* UserProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F620FE517CCD581001ED1C0 /* UserProperty.m */; };
 		1F62101817CCD5E0001ED1C0 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F62101717CCD5E0001ED1C0 /* MapViewController.m */; };
 		1F62101A17CCD611001ED1C0 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F62101917CCD611001ED1C0 /* MapKit.framework */; };
+		3202A91917F2989C00CB940F /* GuideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3202A91817F2989B00CB940F /* GuideViewController.m */; };
+		3206FA5F17F15BC000D2E68B /* RespForWeChatViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3206FA5D17F15BC000D2E68B /* RespForWeChatViewController.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		3206FA6217F15C0E00D2E68B /* TextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3206FA6017F15C0E00D2E68B /* TextViewController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		320C09ED17E7EC6100EDB623 /* FriendsPositionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 320C09EC17E7EC6100EDB623 /* FriendsPositionViewController.m */; };
-		320C9BF717D42A2800F5E9C3 /* iPhone_Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 320C9BF617D42A2800F5E9C3 /* iPhone_Icon.png */; };
-		320C9BF917D42A2F00F5E9C3 /* iPhoneRetina_Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 320C9BF817D42A2F00F5E9C3 /* iPhoneRetina_Icon.png */; };
-		320C9BFB17D42A5500F5E9C3 /* iPad_Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 320C9BFA17D42A5500F5E9C3 /* iPad_Icon.png */; };
-		320C9BFD17D42A5900F5E9C3 /* iPadRetina_Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 320C9BFC17D42A5900F5E9C3 /* iPadRetina_Icon.png */; };
 		320C9C0817D466B100F5E9C3 /* UserPropertyCoreDataStorageObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 320C9C0717D466B100F5E9C3 /* UserPropertyCoreDataStorageObject.m */; };
 		320C9C0B17D4678800F5E9C3 /* UserPropertyCoreDataStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 320C9C0A17D4678800F5E9C3 /* UserPropertyCoreDataStorage.m */; };
 		320C9C0D17D486CA00F5E9C3 /* mapapi.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 320C9C0C17D486CA00F5E9C3 /* mapapi.bundle */; };
 		320C9C2D17D493FD00F5E9C3 /* libbaidumapapi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 320C9C2C17D493FD00F5E9C3 /* libbaidumapapi.a */; };
-		32101E8E17EFD419006F1F7D /* GoogleMapsM4B.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32101E8D17EFD419006F1F7D /* GoogleMapsM4B.framework */; };
-		32101E9017EFD421006F1F7D /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 32101E8F17EFD421006F1F7D /* GoogleMaps.bundle */; };
-		321E4FDB17E02247007F7B1B /* iRate.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 321E4FDA17E02247007F7B1B /* iRate.bundle */; };
+		3216F97817F3C446005C96A5 /* libWeChatSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3216F97717F3C446005C96A5 /* libWeChatSDK.a */; };
+		3216F99317F3D0BA005C96A5 /* ipad-768-1024.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F97A17F3D0BA005C96A5 /* ipad-768-1024.png */; };
+		3216F99417F3D0BA005C96A5 /* ipad-1024-768.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F97B17F3D0BA005C96A5 /* ipad-1024-768.png */; };
+		3216F99517F3D0BA005C96A5 /* ipad-1004-768.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F97C17F3D0BA005C96A5 /* ipad-1004-768.png */; };
+		3216F99617F3D0BA005C96A5 /* ipad6.1-1004-768.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F97D17F3D0BA005C96A5 /* ipad6.1-1004-768.png */; };
+		3216F99717F3D0BA005C96A5 /* ipad-768-1004.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F97E17F3D0BA005C96A5 /* ipad-768-1004.png */; };
+		3216F99817F3D0BA005C96A5 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F97F17F3D0BA005C96A5 /* Default.png */; };
+		3216F99917F3D0BA005C96A5 /* ipad-748-1024.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F98017F3D0BA005C96A5 /* ipad-748-1024.png */; };
+		3216F99A17F3D0BA005C96A5 /* ipad6.1-748-1024.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F98117F3D0BA005C96A5 /* ipad6.1-748-1024.png */; };
+		3216F99B17F3D0BA005C96A5 /* ipad-1024-748.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F98217F3D0BA005C96A5 /* ipad-1024-748.png */; };
+		3216F99C17F3D0BA005C96A5 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F98317F3D0BA005C96A5 /* Default-Landscape~ipad.png */; };
+		3216F99E17F3D0BA005C96A5 /* ipad6.1-2008-1536.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F98517F3D0BA005C96A5 /* ipad6.1-2008-1536.png */; };
+		3216F99F17F3D0BA005C96A5 /* ipad2008-1536.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F98617F3D0BA005C96A5 /* ipad2008-1536.png */; };
+		3216F9A017F3D0BA005C96A5 /* Default~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F98717F3D0BA005C96A5 /* Default~ipad.png */; };
+		3216F9A117F3D0BA005C96A5 /* ipad1536 2008.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F98817F3D0BA005C96A5 /* ipad1536 2008.png */; };
+		3216F9A217F3D0BA005C96A5 /* ipad6.1-1496-2048.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F98917F3D0BA005C96A5 /* ipad6.1-1496-2048.png */; };
+		3216F9A317F3D0BA005C96A5 /* ipad1496-2048.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F98A17F3D0BA005C96A5 /* ipad1496-2048.png */; };
+		3216F9A417F3D0BA005C96A5 /* ipad 1536-2048.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F98B17F3D0BA005C96A5 /* ipad 1536-2048.png */; };
+		3216F9A517F3D0BA005C96A5 /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F98C17F3D0BA005C96A5 /* Default-Landscape@2x~ipad.png */; };
+		3216F9A617F3D0BA005C96A5 /* ipad2048-1496.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F98D17F3D0BA005C96A5 /* ipad2048-1496.png */; };
+		3216F9A717F3D0BA005C96A5 /* ipad-2048-1536.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F98E17F3D0BA005C96A5 /* ipad-2048-1536.png */; };
+		3216F9A817F3D0BA005C96A5 /* iphone6.1 640-1136.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F98F17F3D0BA005C96A5 /* iphone6.1 640-1136.png */; };
+		3216F9BA17F3D0C3005C96A5 /* iphone6.1_57.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F9AC17F3D0C3005C96A5 /* iphone6.1_57.png */; };
+		3216F9BB17F3D0C3005C96A5 /* ipad6.1_72.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F9AD17F3D0C3005C96A5 /* ipad6.1_72.png */; };
+		3216F9BC17F3D0C3005C96A5 /* ipad6.1_76.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F9AE17F3D0C3005C96A5 /* ipad6.1_76.png */; };
+		3216F9BD17F3D0C3005C96A5 /* iphone6.1_114.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F9AF17F3D0C3005C96A5 /* iphone6.1_114.png */; };
+		3216F9BE17F3D0C3005C96A5 /* iphone6.1_120.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F9B017F3D0C3005C96A5 /* iphone6.1_120.png */; };
+		3216F9BF17F3D0C3005C96A5 /* ipad6.1_144.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F9B117F3D0C3005C96A5 /* ipad6.1_144.png */; };
+		3216F9C017F3D0C3005C96A5 /* ipad6.1_152.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F9B217F3D0C3005C96A5 /* ipad6.1_152.png */; };
+		3216F9C117F3D0C3005C96A5 /* ipad_152.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F9B317F3D0C3005C96A5 /* ipad_152.png */; };
+		3216F9C217F3D0C3005C96A5 /* ipad_76.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F9B417F3D0C3005C96A5 /* ipad_76.png */; };
+		3216F9C317F3D0C3005C96A5 /* ipad_144.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F9B517F3D0C3005C96A5 /* ipad_144.png */; };
+		3216F9C417F3D0C3005C96A5 /* ipad_72.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F9B617F3D0C3005C96A5 /* ipad_72.png */; };
+		3216F9C517F3D0C3005C96A5 /* iphone_57.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F9B717F3D0C3005C96A5 /* iphone_57.png */; };
+		3216F9C617F3D0C3005C96A5 /* iphone_114.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F9B817F3D0C3005C96A5 /* iphone_114.png */; };
+		3216F9C717F3D0C3005C96A5 /* iphone_120.png in Resources */ = {isa = PBXBuildFile; fileRef = 3216F9B917F3D0C3005C96A5 /* iphone_120.png */; };
+		3217FBCA17F56FBC002AD2E8 /* defaultPerson.png in Resources */ = {isa = PBXBuildFile; fileRef = 3217FBC917F56FBC002AD2E8 /* defaultPerson.png */; };
 		3248595117CD857C00FCFE89 /* XMPPAnonymousAuthentication.m in Sources */ = {isa = PBXBuildFile; fileRef = 3248587A17CD857C00FCFE89 /* XMPPAnonymousAuthentication.m */; };
 		3248595217CD857C00FCFE89 /* XMPPDeprecatedDigestAuthentication.m in Sources */ = {isa = PBXBuildFile; fileRef = 3248587D17CD857C00FCFE89 /* XMPPDeprecatedDigestAuthentication.m */; };
 		3248595317CD857C00FCFE89 /* XMPPDeprecatedPlainAuthentication.m in Sources */ = {isa = PBXBuildFile; fileRef = 3248588017CD857C00FCFE89 /* XMPPDeprecatedPlainAuthentication.m */; };
@@ -174,8 +207,11 @@
 		326FB7BA17DEB98E001DBF32 /* grayArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 326FB7B217DEB98E001DBF32 /* grayArrow@2x.png */; };
 		326FB7BB17DEB98E001DBF32 /* whiteArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 326FB7B317DEB98E001DBF32 /* whiteArrow.png */; };
 		326FB7BC17DEB98E001DBF32 /* whiteArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 326FB7B417DEB98E001DBF32 /* whiteArrow@2x.png */; };
-		3271FB8617DF20220004C5BB /* iRate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3271FB8417DF20220004C5BB /* iRate.m */; };
-		32FDCD9F17D6E6A20045FA20 /* libWeChatSDK_armv7_armv7s.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32FDCD9C17D6E6A20045FA20 /* libWeChatSDK_armv7_armv7s.a */; };
+		3280BC1717F18A15001881C7 /* touchTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3280BC1617F18A15001881C7 /* touchTableView.m */; };
+		3280BC1B17F1949B001881C7 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3280BC1917F1949B001881C7 /* AboutViewController.m */; };
+		3280BC1C17F1949B001881C7 /* AboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3280BC1A17F1949B001881C7 /* AboutViewController.xib */; };
+		32E7A50F17F2E65000F1B4F5 /* GoogleMapsM4B.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32E7A50E17F2E65000F1B4F5 /* GoogleMapsM4B.framework */; };
+		32E7A51117F2E65600F1B4F5 /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 32E7A51017F2E65600F1B4F5 /* GoogleMaps.bundle */; };
 		32FE443517CED66500FC54CE /* UserProperty.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 32FE443317CED66500FC54CE /* UserProperty.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
@@ -273,12 +309,14 @@
 		1F62101617CCD5E0001ED1C0 /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
 		1F62101717CCD5E0001ED1C0 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
 		1F62101917CCD611001ED1C0 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		3202A91717F2989B00CB940F /* GuideViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuideViewController.h; sourceTree = "<group>"; };
+		3202A91817F2989B00CB940F /* GuideViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuideViewController.m; sourceTree = "<group>"; };
+		3206FA5D17F15BC000D2E68B /* RespForWeChatViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RespForWeChatViewController.mm; sourceTree = "<group>"; };
+		3206FA5E17F15BC000D2E68B /* RespForWeChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RespForWeChatViewController.h; sourceTree = "<group>"; };
+		3206FA6017F15C0E00D2E68B /* TextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextViewController.m; sourceTree = "<group>"; };
+		3206FA6117F15C0E00D2E68B /* TextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextViewController.h; sourceTree = "<group>"; };
 		320C09EB17E7EC6000EDB623 /* FriendsPositionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendsPositionViewController.h; sourceTree = "<group>"; };
 		320C09EC17E7EC6100EDB623 /* FriendsPositionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendsPositionViewController.m; sourceTree = "<group>"; };
-		320C9BF617D42A2800F5E9C3 /* iPhone_Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPhone_Icon.png; sourceTree = "<group>"; };
-		320C9BF817D42A2F00F5E9C3 /* iPhoneRetina_Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPhoneRetina_Icon.png; sourceTree = "<group>"; };
-		320C9BFA17D42A5500F5E9C3 /* iPad_Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPad_Icon.png; sourceTree = "<group>"; };
-		320C9BFC17D42A5900F5E9C3 /* iPadRetina_Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPadRetina_Icon.png; sourceTree = "<group>"; };
 		320C9C0617D466B100F5E9C3 /* UserPropertyCoreDataStorageObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserPropertyCoreDataStorageObject.h; sourceTree = "<group>"; };
 		320C9C0717D466B100F5E9C3 /* UserPropertyCoreDataStorageObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserPropertyCoreDataStorageObject.m; sourceTree = "<group>"; };
 		320C9C0917D4678800F5E9C3 /* UserPropertyCoreDataStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserPropertyCoreDataStorage.h; sourceTree = "<group>"; };
@@ -314,10 +352,44 @@
 		320C9C2A17D4888D00F5E9C3 /* BMKUserLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BMKUserLocation.h; path = inc/BMKUserLocation.h; sourceTree = "<group>"; };
 		320C9C2B17D4888D00F5E9C3 /* BMKVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BMKVersion.h; path = inc/BMKVersion.h; sourceTree = "<group>"; };
 		320C9C2C17D493FD00F5E9C3 /* libbaidumapapi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbaidumapapi.a; path = "libs/Release-iphonesimulator/libbaidumapapi.a"; sourceTree = "<group>"; };
-		32101E8D17EFD419006F1F7D /* GoogleMapsM4B.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMapsM4B.framework; sourceTree = "<group>"; };
-		32101E8F17EFD421006F1F7D /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = GoogleMapsM4B.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
+		3216F97717F3C446005C96A5 /* libWeChatSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libWeChatSDK.a; path = WeiChat.framework/libWeChatSDK.a; sourceTree = "<group>"; };
+		3216F97A17F3D0BA005C96A5 /* ipad-768-1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ipad-768-1024.png"; sourceTree = "<group>"; };
+		3216F97B17F3D0BA005C96A5 /* ipad-1024-768.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ipad-1024-768.png"; sourceTree = "<group>"; };
+		3216F97C17F3D0BA005C96A5 /* ipad-1004-768.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ipad-1004-768.png"; sourceTree = "<group>"; };
+		3216F97D17F3D0BA005C96A5 /* ipad6.1-1004-768.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ipad6.1-1004-768.png"; sourceTree = "<group>"; };
+		3216F97E17F3D0BA005C96A5 /* ipad-768-1004.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ipad-768-1004.png"; sourceTree = "<group>"; };
+		3216F97F17F3D0BA005C96A5 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		3216F98017F3D0BA005C96A5 /* ipad-748-1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ipad-748-1024.png"; sourceTree = "<group>"; };
+		3216F98117F3D0BA005C96A5 /* ipad6.1-748-1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ipad6.1-748-1024.png"; sourceTree = "<group>"; };
+		3216F98217F3D0BA005C96A5 /* ipad-1024-748.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ipad-1024-748.png"; sourceTree = "<group>"; };
+		3216F98317F3D0BA005C96A5 /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
+		3216F98517F3D0BA005C96A5 /* ipad6.1-2008-1536.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ipad6.1-2008-1536.png"; sourceTree = "<group>"; };
+		3216F98617F3D0BA005C96A5 /* ipad2008-1536.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ipad2008-1536.png"; sourceTree = "<group>"; };
+		3216F98717F3D0BA005C96A5 /* Default~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default~ipad.png"; sourceTree = "<group>"; };
+		3216F98817F3D0BA005C96A5 /* ipad1536 2008.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ipad1536 2008.png"; sourceTree = "<group>"; };
+		3216F98917F3D0BA005C96A5 /* ipad6.1-1496-2048.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ipad6.1-1496-2048.png"; sourceTree = "<group>"; };
+		3216F98A17F3D0BA005C96A5 /* ipad1496-2048.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ipad1496-2048.png"; sourceTree = "<group>"; };
+		3216F98B17F3D0BA005C96A5 /* ipad 1536-2048.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ipad 1536-2048.png"; sourceTree = "<group>"; };
+		3216F98C17F3D0BA005C96A5 /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
+		3216F98D17F3D0BA005C96A5 /* ipad2048-1496.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ipad2048-1496.png"; sourceTree = "<group>"; };
+		3216F98E17F3D0BA005C96A5 /* ipad-2048-1536.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ipad-2048-1536.png"; sourceTree = "<group>"; };
+		3216F98F17F3D0BA005C96A5 /* iphone6.1 640-1136.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iphone6.1 640-1136.png"; sourceTree = "<group>"; };
+		3216F9AC17F3D0C3005C96A5 /* iphone6.1_57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iphone6.1_57.png; sourceTree = "<group>"; };
+		3216F9AD17F3D0C3005C96A5 /* ipad6.1_72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ipad6.1_72.png; sourceTree = "<group>"; };
+		3216F9AE17F3D0C3005C96A5 /* ipad6.1_76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ipad6.1_76.png; sourceTree = "<group>"; };
+		3216F9AF17F3D0C3005C96A5 /* iphone6.1_114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iphone6.1_114.png; sourceTree = "<group>"; };
+		3216F9B017F3D0C3005C96A5 /* iphone6.1_120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iphone6.1_120.png; sourceTree = "<group>"; };
+		3216F9B117F3D0C3005C96A5 /* ipad6.1_144.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ipad6.1_144.png; sourceTree = "<group>"; };
+		3216F9B217F3D0C3005C96A5 /* ipad6.1_152.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ipad6.1_152.png; sourceTree = "<group>"; };
+		3216F9B317F3D0C3005C96A5 /* ipad_152.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ipad_152.png; sourceTree = "<group>"; };
+		3216F9B417F3D0C3005C96A5 /* ipad_76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ipad_76.png; sourceTree = "<group>"; };
+		3216F9B517F3D0C3005C96A5 /* ipad_144.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ipad_144.png; sourceTree = "<group>"; };
+		3216F9B617F3D0C3005C96A5 /* ipad_72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ipad_72.png; sourceTree = "<group>"; };
+		3216F9B717F3D0C3005C96A5 /* iphone_57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iphone_57.png; sourceTree = "<group>"; };
+		3216F9B817F3D0C3005C96A5 /* iphone_114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iphone_114.png; sourceTree = "<group>"; };
+		3216F9B917F3D0C3005C96A5 /* iphone_120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iphone_120.png; sourceTree = "<group>"; };
+		3217FBC917F56FBC002AD2E8 /* defaultPerson.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = defaultPerson.png; sourceTree = "<group>"; };
 		321E4FD517E02114007F7B1B /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
-		321E4FDA17E02247007F7B1B /* iRate.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = iRate.bundle; path = iRate/iRate.bundle; sourceTree = "<group>"; };
 		3248587917CD857C00FCFE89 /* XMPPAnonymousAuthentication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPAnonymousAuthentication.h; sourceTree = "<group>"; };
 		3248587A17CD857C00FCFE89 /* XMPPAnonymousAuthentication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPAnonymousAuthentication.m; sourceTree = "<group>"; };
 		3248587C17CD857C00FCFE89 /* XMPPDeprecatedDigestAuthentication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPDeprecatedDigestAuthentication.h; sourceTree = "<group>"; };
@@ -514,9 +586,13 @@
 		326FB7B217DEB98E001DBF32 /* grayArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "grayArrow@2x.png"; path = "EGOTableViewPullRefresh/grayArrow@2x.png"; sourceTree = "<group>"; };
 		326FB7B317DEB98E001DBF32 /* whiteArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = whiteArrow.png; path = EGOTableViewPullRefresh/whiteArrow.png; sourceTree = "<group>"; };
 		326FB7B417DEB98E001DBF32 /* whiteArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "whiteArrow@2x.png"; path = "EGOTableViewPullRefresh/whiteArrow@2x.png"; sourceTree = "<group>"; };
-		3271FB8317DF20220004C5BB /* iRate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iRate.h; path = iRate/iRate.h; sourceTree = "<group>"; };
-		3271FB8417DF20220004C5BB /* iRate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = iRate.m; path = iRate/iRate.m; sourceTree = "<group>"; };
-		32FDCD9C17D6E6A20045FA20 /* libWeChatSDK_armv7_armv7s.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libWeChatSDK_armv7_armv7s.a; path = WeiChat.framework/libWeChatSDK_armv7_armv7s.a; sourceTree = "<group>"; };
+		3280BC1517F18A14001881C7 /* touchTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = touchTableView.h; sourceTree = "<group>"; };
+		3280BC1617F18A15001881C7 /* touchTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = touchTableView.m; sourceTree = "<group>"; };
+		3280BC1817F1949B001881C7 /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
+		3280BC1917F1949B001881C7 /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
+		3280BC1A17F1949B001881C7 /* AboutViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AboutViewController.xib; sourceTree = "<group>"; };
+		32E7A50E17F2E65000F1B4F5 /* GoogleMapsM4B.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMapsM4B.framework; sourceTree = "<group>"; };
+		32E7A51017F2E65600F1B4F5 /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = GoogleMapsM4B.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
 		32FDCD9D17D6E6A20045FA20 /* WXApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WXApi.h; path = WeiChat.framework/WXApi.h; sourceTree = "<group>"; };
 		32FDCD9E17D6E6A20045FA20 /* WXApiObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WXApiObject.h; path = WeiChat.framework/WXApiObject.h; sourceTree = "<group>"; };
 		32FE443417CED66500FC54CE /* UserProperty.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UserProperty.xcdatamodel; sourceTree = "<group>"; };
@@ -531,7 +607,7 @@
 				1F620F9B17CCD4FE001ED1C0 /* SystemConfiguration.framework in Frameworks */,
 				1F620F9917CCD4F7001ED1C0 /* QuartzCore.framework in Frameworks */,
 				1F620F9717CCD4F1001ED1C0 /* OpenGLES.framework in Frameworks */,
-				32101E8E17EFD419006F1F7D /* GoogleMapsM4B.framework in Frameworks */,
+				32E7A50F17F2E65000F1B4F5 /* GoogleMapsM4B.framework in Frameworks */,
 				1F620F9517CCD4EA001ED1C0 /* GLKit.framework in Frameworks */,
 				1F620F9317CCD4E2001ED1C0 /* AVFoundation.framework in Frameworks */,
 				1F620F9117CCD4DB001ED1C0 /* CoreData.framework in Frameworks */,
@@ -546,13 +622,13 @@
 				1F620F7F17CCD48B001ED1C0 /* CFNetwork.framework in Frameworks */,
 				1F620F7D17CCD481001ED1C0 /* Security.framework in Frameworks */,
 				1F620F7B17CCD475001ED1C0 /* libsqlite3.dylib in Frameworks */,
+				3216F97817F3C446005C96A5 /* libWeChatSDK.a in Frameworks */,
 				1F620F7917CCD46C001ED1C0 /* libc++.dylib in Frameworks */,
 				1F0671EF17CCD14200BB47CB /* UIKit.framework in Frameworks */,
 				1F0671F117CCD14200BB47CB /* Foundation.framework in Frameworks */,
 				1F0671F317CCD14200BB47CB /* CoreGraphics.framework in Frameworks */,
 				324859A517CD857C00FCFE89 /* libidn.a in Frameworks */,
 				320C9C2D17D493FD00F5E9C3 /* libbaidumapapi.a in Frameworks */,
-				32FDCD9F17D6E6A20045FA20 /* libWeChatSDK_armv7_armv7s.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -562,14 +638,10 @@
 		1F0671E217CCD14200BB47CB = {
 			isa = PBXGroup;
 			children = (
-				3271FB8117DF200B0004C5BB /* iRate */,
+				3216F97917F3D0A9005C96A5 /* icon */,
 				326FB7A917DEAB13001DBF32 /* EGOTableViewPullRefresh */,
 				32FDCD9B17D6E6940045FA20 /* WeiChat */,
 				320C9C0E17D4883300F5E9C3 /* baidu */,
-				320C9BFC17D42A5900F5E9C3 /* iPadRetina_Icon.png */,
-				320C9BFA17D42A5500F5E9C3 /* iPad_Icon.png */,
-				320C9BF817D42A2F00F5E9C3 /* iPhoneRetina_Icon.png */,
-				320C9BF617D42A2800F5E9C3 /* iPhone_Icon.png */,
 				3248587617CD857C00FCFE89 /* XMPP */,
 				1F0671F417CCD14200BB47CB /* MapDots */,
 				1F0671ED17CCD14200BB47CB /* Frameworks */,
@@ -588,10 +660,8 @@
 		1F0671ED17CCD14200BB47CB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				32101E8F17EFD421006F1F7D /* GoogleMaps.bundle */,
-				32101E8D17EFD419006F1F7D /* GoogleMapsM4B.framework */,
-				320C9C2C17D493FD00F5E9C3 /* libbaidumapapi.a */,
-				320C9C0C17D486CA00F5E9C3 /* mapapi.bundle */,
+				32E7A51017F2E65600F1B4F5 /* GoogleMaps.bundle */,
+				32E7A50E17F2E65000F1B4F5 /* GoogleMapsM4B.framework */,
 				1F62101917CCD611001ED1C0 /* MapKit.framework */,
 				1F620F9017CCD4DB001ED1C0 /* CoreData.framework */,
 				1F620F9A17CCD4FE001ED1C0 /* SystemConfiguration.framework */,
@@ -621,11 +691,17 @@
 		1F0671F417CCD14200BB47CB /* MapDots */ = {
 			isa = PBXGroup;
 			children = (
+				3217FBC917F56FBC002AD2E8 /* defaultPerson.png */,
+				3202A91617F2899600CB940F /* XMPP */,
+				3280BC1517F18A14001881C7 /* touchTableView.h */,
+				3280BC1617F18A15001881C7 /* touchTableView.m */,
+				3206FA6017F15C0E00D2E68B /* TextViewController.m */,
+				3206FA6117F15C0E00D2E68B /* TextViewController.h */,
+				3206FA5D17F15BC000D2E68B /* RespForWeChatViewController.mm */,
+				3206FA5E17F15BC000D2E68B /* RespForWeChatViewController.h */,
 				1F62101617CCD5E0001ED1C0 /* MapViewController.h */,
 				1F62101717CCD5E0001ED1C0 /* MapViewController.m */,
 				1F620F9C17CCD580001ED1C0 /* APIKey.h */,
-				1F620F9D17CCD580001ED1C0 /* aqua.png */,
-				1F620F9E17CCD580001ED1C0 /* BlueBubble2.png */,
 				1F620F9F17CCD580001ED1C0 /* ChatViewController.h */,
 				1F620FA017CCD580001ED1C0 /* ChatViewController.m */,
 				1F620FA117CCD580001ED1C0 /* CreateEventViewController.h */,
@@ -640,7 +716,6 @@
 				1F620FB817CCD580001ED1C0 /* EventsViewController.m */,
 				1F620FB917CCD580001ED1C0 /* FriendsViewController.h */,
 				1F620FBA17CCD580001ED1C0 /* FriendsViewController.m */,
-				1F620FBB17CCD580001ED1C0 /* GreenBubble2.png */,
 				1F620FC017CCD581001ED1C0 /* MemberProperty.h */,
 				1F620FC117CCD581001ED1C0 /* MemberProperty.m */,
 				1F620FC217CCD581001ED1C0 /* MessageContextCell.h */,
@@ -655,12 +730,10 @@
 				1F620FCB17CCD581001ED1C0 /* MessageViewController.m */,
 				1F620FCC17CCD581001ED1C0 /* NdUncaughtExceptionHandler.h */,
 				1F620FCD17CCD581001ED1C0 /* NdUncaughtExceptionHandler.m */,
-				1F620FCE17CCD581001ED1C0 /* orange.png */,
 				1F620FCF17CCD581001ED1C0 /* PlaceAnnotation.h */,
 				1F620FD017CCD581001ED1C0 /* PlaceAnnotation.m */,
 				1F620FD317CCD581001ED1C0 /* PreferencesViewController.h */,
 				1F620FD417CCD581001ED1C0 /* PreferencesViewController.m */,
-				1F620FD517CCD581001ED1C0 /* room_lock.png */,
 				1F620FD617CCD581001ED1C0 /* RoomContextCell.h */,
 				1F620FD717CCD581001ED1C0 /* RoomContextCell.m */,
 				1F620FD817CCD581001ED1C0 /* RoomContextCell.xib */,
@@ -675,13 +748,6 @@
 				1F620FE317CCD581001ED1C0 /* Todo.strings */,
 				1F620FE417CCD581001ED1C0 /* UserProperty.h */,
 				1F620FE517CCD581001ED1C0 /* UserProperty.m */,
-				1F620FE617CCD581001ED1C0 /* XMPPAuthenticateDelegate.h */,
-				1F620FE717CCD581001ED1C0 /* XMPPChatDelegate.h */,
-				1F620FE817CCD581001ED1C0 /* XMPPCreateRoomDelegate.h */,
-				1F620FE917CCD581001ED1C0 /* XMPPFramework.h */,
-				1F620FEA17CCD581001ED1C0 /* XMPPMessageDelegate.h */,
-				1F620FEB17CCD581001ED1C0 /* XMPPRoomMessageDelegate.h */,
-				1F620FEC17CCD581001ED1C0 /* XMPPRoomsDelegate.h */,
 				1F0671FD17CCD14200BB47CB /* AppDelegate.h */,
 				1F0671FE17CCD14200BB47CB /* AppDelegate.m */,
 				1F0671F517CCD14200BB47CB /* Supporting Files */,
@@ -692,6 +758,11 @@
 				320C9C0A17D4678800F5E9C3 /* UserPropertyCoreDataStorage.m */,
 				320C09EB17E7EC6000EDB623 /* FriendsPositionViewController.h */,
 				320C09EC17E7EC6100EDB623 /* FriendsPositionViewController.m */,
+				3280BC1817F1949B001881C7 /* AboutViewController.h */,
+				3280BC1917F1949B001881C7 /* AboutViewController.m */,
+				3280BC1A17F1949B001881C7 /* AboutViewController.xib */,
+				3202A91717F2989B00CB940F /* GuideViewController.h */,
+				3202A91817F2989B00CB940F /* GuideViewController.m */,
 			);
 			path = MapDots;
 			sourceTree = "<group>";
@@ -699,6 +770,11 @@
 		1F0671F517CCD14200BB47CB /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				1F620F9D17CCD580001ED1C0 /* aqua.png */,
+				1F620F9E17CCD580001ED1C0 /* BlueBubble2.png */,
+				1F620FBB17CCD580001ED1C0 /* GreenBubble2.png */,
+				1F620FCE17CCD581001ED1C0 /* orange.png */,
+				1F620FD517CCD581001ED1C0 /* room_lock.png */,
 				1F0671F617CCD14200BB47CB /* MapDots-Info.plist */,
 				1F0671F717CCD14200BB47CB /* InfoPlist.strings */,
 				1F0671FA17CCD14200BB47CB /* main.m */,
@@ -710,9 +786,25 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		3202A91617F2899600CB940F /* XMPP */ = {
+			isa = PBXGroup;
+			children = (
+				1F620FE617CCD581001ED1C0 /* XMPPAuthenticateDelegate.h */,
+				1F620FE717CCD581001ED1C0 /* XMPPChatDelegate.h */,
+				1F620FE817CCD581001ED1C0 /* XMPPCreateRoomDelegate.h */,
+				1F620FE917CCD581001ED1C0 /* XMPPFramework.h */,
+				1F620FEA17CCD581001ED1C0 /* XMPPMessageDelegate.h */,
+				1F620FEB17CCD581001ED1C0 /* XMPPRoomMessageDelegate.h */,
+				1F620FEC17CCD581001ED1C0 /* XMPPRoomsDelegate.h */,
+			);
+			name = XMPP;
+			sourceTree = "<group>";
+		};
 		320C9C0E17D4883300F5E9C3 /* baidu */ = {
 			isa = PBXGroup;
 			children = (
+				320C9C0C17D486CA00F5E9C3 /* mapapi.bundle */,
+				320C9C2C17D493FD00F5E9C3 /* libbaidumapapi.a */,
 				320C9C0F17D4888D00F5E9C3 /* BMapKit.h */,
 				320C9C1017D4888D00F5E9C3 /* BMKAnnotation.h */,
 				320C9C1117D4888D00F5E9C3 /* BMKAnnotationView.h */,
@@ -744,6 +836,48 @@
 				320C9C2B17D4888D00F5E9C3 /* BMKVersion.h */,
 			);
 			name = baidu;
+			sourceTree = "<group>";
+		};
+		3216F97917F3D0A9005C96A5 /* icon */ = {
+			isa = PBXGroup;
+			children = (
+				3216F9AC17F3D0C3005C96A5 /* iphone6.1_57.png */,
+				3216F9AD17F3D0C3005C96A5 /* ipad6.1_72.png */,
+				3216F9AE17F3D0C3005C96A5 /* ipad6.1_76.png */,
+				3216F9AF17F3D0C3005C96A5 /* iphone6.1_114.png */,
+				3216F9B017F3D0C3005C96A5 /* iphone6.1_120.png */,
+				3216F9B117F3D0C3005C96A5 /* ipad6.1_144.png */,
+				3216F9B217F3D0C3005C96A5 /* ipad6.1_152.png */,
+				3216F9B317F3D0C3005C96A5 /* ipad_152.png */,
+				3216F9B417F3D0C3005C96A5 /* ipad_76.png */,
+				3216F9B517F3D0C3005C96A5 /* ipad_144.png */,
+				3216F9B617F3D0C3005C96A5 /* ipad_72.png */,
+				3216F9B717F3D0C3005C96A5 /* iphone_57.png */,
+				3216F9B817F3D0C3005C96A5 /* iphone_114.png */,
+				3216F9B917F3D0C3005C96A5 /* iphone_120.png */,
+				3216F97A17F3D0BA005C96A5 /* ipad-768-1024.png */,
+				3216F97B17F3D0BA005C96A5 /* ipad-1024-768.png */,
+				3216F97C17F3D0BA005C96A5 /* ipad-1004-768.png */,
+				3216F97D17F3D0BA005C96A5 /* ipad6.1-1004-768.png */,
+				3216F97E17F3D0BA005C96A5 /* ipad-768-1004.png */,
+				3216F97F17F3D0BA005C96A5 /* Default.png */,
+				3216F98017F3D0BA005C96A5 /* ipad-748-1024.png */,
+				3216F98117F3D0BA005C96A5 /* ipad6.1-748-1024.png */,
+				3216F98217F3D0BA005C96A5 /* ipad-1024-748.png */,
+				3216F98317F3D0BA005C96A5 /* Default-Landscape~ipad.png */,
+				3216F98517F3D0BA005C96A5 /* ipad6.1-2008-1536.png */,
+				3216F98617F3D0BA005C96A5 /* ipad2008-1536.png */,
+				3216F98717F3D0BA005C96A5 /* Default~ipad.png */,
+				3216F98817F3D0BA005C96A5 /* ipad1536 2008.png */,
+				3216F98917F3D0BA005C96A5 /* ipad6.1-1496-2048.png */,
+				3216F98A17F3D0BA005C96A5 /* ipad1496-2048.png */,
+				3216F98B17F3D0BA005C96A5 /* ipad 1536-2048.png */,
+				3216F98C17F3D0BA005C96A5 /* Default-Landscape@2x~ipad.png */,
+				3216F98D17F3D0BA005C96A5 /* ipad2048-1496.png */,
+				3216F98E17F3D0BA005C96A5 /* ipad-2048-1536.png */,
+				3216F98F17F3D0BA005C96A5 /* iphone6.1 640-1136.png */,
+			);
+			name = icon;
 			sourceTree = "<group>";
 		};
 		3248587617CD857C00FCFE89 /* XMPP */ = {
@@ -1260,20 +1394,10 @@
 			name = EGOTableViewPullRefresh;
 			sourceTree = "<group>";
 		};
-		3271FB8117DF200B0004C5BB /* iRate */ = {
-			isa = PBXGroup;
-			children = (
-				321E4FDA17E02247007F7B1B /* iRate.bundle */,
-				3271FB8317DF20220004C5BB /* iRate.h */,
-				3271FB8417DF20220004C5BB /* iRate.m */,
-			);
-			name = iRate;
-			sourceTree = "<group>";
-		};
 		32FDCD9B17D6E6940045FA20 /* WeiChat */ = {
 			isa = PBXGroup;
 			children = (
-				32FDCD9C17D6E6A20045FA20 /* libWeChatSDK_armv7_armv7s.a */,
+				3216F97717F3C446005C96A5 /* libWeChatSDK.a */,
 				32FDCD9D17D6E6A20045FA20 /* WXApi.h */,
 				32FDCD9E17D6E6A20045FA20 /* WXApiObject.h */,
 			);
@@ -1311,6 +1435,11 @@
 				TargetAttributes = {
 					1F0671EA17CCD14200BB47CB = {
 						DevelopmentTeam = E53HR9QLRE;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -1338,32 +1467,64 @@
 			buildActionMask = 2147483647;
 			files = (
 				1F0671F917CCD14200BB47CB /* InfoPlist.strings in Resources */,
+				3216F9A317F3D0BA005C96A5 /* ipad1496-2048.png in Resources */,
+				3216F99617F3D0BA005C96A5 /* ipad6.1-1004-768.png in Resources */,
+				3216F9BE17F3D0C3005C96A5 /* iphone6.1_120.png in Resources */,
+				3216F9A417F3D0BA005C96A5 /* ipad 1536-2048.png in Resources */,
+				3216F9A017F3D0BA005C96A5 /* Default~ipad.png in Resources */,
+				3216F9A217F3D0BA005C96A5 /* ipad6.1-1496-2048.png in Resources */,
+				3216F9A617F3D0BA005C96A5 /* ipad2048-1496.png in Resources */,
+				3216F99717F3D0BA005C96A5 /* ipad-768-1004.png in Resources */,
 				1F06720117CCD14300BB47CB /* Default.png in Resources */,
 				1F06720317CCD14300BB47CB /* Default@2x.png in Resources */,
+				3216F9C617F3D0C3005C96A5 /* iphone_114.png in Resources */,
+				3216F99417F3D0BA005C96A5 /* ipad-1024-768.png in Resources */,
+				3216F99B17F3D0BA005C96A5 /* ipad-1024-748.png in Resources */,
 				1F06720517CCD14300BB47CB /* Default-568h@2x.png in Resources */,
+				3217FBCA17F56FBC002AD2E8 /* defaultPerson.png in Resources */,
 				1F620FED17CCD581001ED1C0 /* aqua.png in Resources */,
 				1F620FEE17CCD581001ED1C0 /* BlueBubble2.png in Resources */,
 				1F620FFE17CCD581001ED1C0 /* GreenBubble2.png in Resources */,
 				1F62100817CCD581001ED1C0 /* orange.png in Resources */,
+				3216F9BA17F3D0C3005C96A5 /* iphone6.1_57.png in Resources */,
+				3216F9A817F3D0BA005C96A5 /* iphone6.1 640-1136.png in Resources */,
+				3216F9C417F3D0C3005C96A5 /* ipad_72.png in Resources */,
+				3216F9C317F3D0C3005C96A5 /* ipad_144.png in Resources */,
+				3216F9C717F3D0C3005C96A5 /* iphone_120.png in Resources */,
+				3216F9C217F3D0C3005C96A5 /* ipad_76.png in Resources */,
+				3216F99317F3D0BA005C96A5 /* ipad-768-1024.png in Resources */,
 				1F62100C17CCD581001ED1C0 /* room_lock.png in Resources */,
 				1F62100E17CCD581001ED1C0 /* RoomContextCell.xib in Resources */,
+				3216F99C17F3D0BA005C96A5 /* Default-Landscape~ipad.png in Resources */,
+				3216F99F17F3D0BA005C96A5 /* ipad2008-1536.png in Resources */,
 				1F62101417CCD581001ED1C0 /* Todo.strings in Resources */,
 				3248599F17CD857C00FCFE89 /* README.txt in Resources */,
-				320C9BF717D42A2800F5E9C3 /* iPhone_Icon.png in Resources */,
-				320C9BF917D42A2F00F5E9C3 /* iPhoneRetina_Icon.png in Resources */,
-				320C9BFB17D42A5500F5E9C3 /* iPad_Icon.png in Resources */,
-				320C9BFD17D42A5900F5E9C3 /* iPadRetina_Icon.png in Resources */,
+				3280BC1C17F1949B001881C7 /* AboutViewController.xib in Resources */,
+				3216F9C017F3D0C3005C96A5 /* ipad6.1_152.png in Resources */,
+				3216F9BD17F3D0C3005C96A5 /* iphone6.1_114.png in Resources */,
+				3216F9BF17F3D0C3005C96A5 /* ipad6.1_144.png in Resources */,
 				320C9C0D17D486CA00F5E9C3 /* mapapi.bundle in Resources */,
+				3216F9C517F3D0C3005C96A5 /* iphone_57.png in Resources */,
+				3216F9A717F3D0BA005C96A5 /* ipad-2048-1536.png in Resources */,
+				3216F99817F3D0BA005C96A5 /* Default.png in Resources */,
+				3216F9BC17F3D0C3005C96A5 /* ipad6.1_76.png in Resources */,
+				32E7A51117F2E65600F1B4F5 /* GoogleMaps.bundle in Resources */,
 				326FB7B517DEB98E001DBF32 /* blackArrow.png in Resources */,
-				32101E9017EFD421006F1F7D /* GoogleMaps.bundle in Resources */,
 				326FB7B617DEB98E001DBF32 /* blackArrow@2x.png in Resources */,
 				326FB7B717DEB98E001DBF32 /* blueArrow.png in Resources */,
 				326FB7B817DEB98E001DBF32 /* blueArrow@2x.png in Resources */,
+				3216F9BB17F3D0C3005C96A5 /* ipad6.1_72.png in Resources */,
 				326FB7B917DEB98E001DBF32 /* grayArrow.png in Resources */,
+				3216F99517F3D0BA005C96A5 /* ipad-1004-768.png in Resources */,
+				3216F9A517F3D0BA005C96A5 /* Default-Landscape@2x~ipad.png in Resources */,
+				3216F99917F3D0BA005C96A5 /* ipad-748-1024.png in Resources */,
+				3216F9A117F3D0BA005C96A5 /* ipad1536 2008.png in Resources */,
+				3216F99E17F3D0BA005C96A5 /* ipad6.1-2008-1536.png in Resources */,
 				326FB7BA17DEB98E001DBF32 /* grayArrow@2x.png in Resources */,
+				3216F9C117F3D0C3005C96A5 /* ipad_152.png in Resources */,
+				3216F99A17F3D0BA005C96A5 /* ipad6.1-748-1024.png in Resources */,
 				326FB7BB17DEB98E001DBF32 /* whiteArrow.png in Resources */,
 				326FB7BC17DEB98E001DBF32 /* whiteArrow@2x.png in Resources */,
-				321E4FDB17E02247007F7B1B /* iRate.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1385,8 +1546,10 @@
 				1F620FFD17CCD581001ED1C0 /* FriendsViewController.m in Sources */,
 				1F62100117CCD581001ED1C0 /* MemberProperty.m in Sources */,
 				1F62100217CCD581001ED1C0 /* MessageContextCell.m in Sources */,
+				3206FA6217F15C0E00D2E68B /* TextViewController.m in Sources */,
 				1F62100317CCD581001ED1C0 /* MessageContextViewController.m in Sources */,
 				1F62100417CCD581001ED1C0 /* MessageDatabase.m in Sources */,
+				3280BC1717F18A15001881C7 /* touchTableView.m in Sources */,
 				1F62100517CCD581001ED1C0 /* MessageListCell.m in Sources */,
 				1F62100617CCD581001ED1C0 /* MessageViewController.m in Sources */,
 				1F62100717CCD581001ED1C0 /* NdUncaughtExceptionHandler.m in Sources */,
@@ -1438,10 +1601,13 @@
 				3248597517CD857C00FCFE89 /* XMPPRoomMemoryStorage.m in Sources */,
 				3248597617CD857C00FCFE89 /* XMPPRoomMessageMemoryStorageObject.m in Sources */,
 				3248597717CD857C00FCFE89 /* XMPPRoomOccupantMemoryStorageObject.m in Sources */,
+				3280BC1B17F1949B001881C7 /* AboutViewController.m in Sources */,
 				3248597817CD857C00FCFE89 /* XMPPMessage+XEP0045.m in Sources */,
+				3202A91917F2989C00CB940F /* GuideViewController.m in Sources */,
 				3248597917CD857C00FCFE89 /* XMPPMUC.m in Sources */,
 				3248597A17CD857C00FCFE89 /* XMPPRoom.m in Sources */,
 				3248597B17CD857C00FCFE89 /* XMPPvCard.xcdatamodeld in Sources */,
+				3206FA5F17F15BC000D2E68B /* RespForWeChatViewController.mm in Sources */,
 				3248597C17CD857C00FCFE89 /* XMPPvCardAvatarCoreDataStorageObject.m in Sources */,
 				3248597D17CD857C00FCFE89 /* XMPPvCardCoreDataStorage.m in Sources */,
 				3248597E17CD857C00FCFE89 /* XMPPvCardCoreDataStorageObject.m in Sources */,
@@ -1485,7 +1651,6 @@
 				320C9C0817D466B100F5E9C3 /* UserPropertyCoreDataStorageObject.m in Sources */,
 				320C9C0B17D4678800F5E9C3 /* UserPropertyCoreDataStorage.m in Sources */,
 				326FB7AC17DEAB1C001DBF32 /* EGORefreshTableHeaderView.m in Sources */,
-				3271FB8617DF20220004C5BB /* iRate.m in Sources */,
 				324F780B17E6938F0085E42B /* XMPPPub.m in Sources */,
 				324F781117E6A6170085E42B /* XMPPMessage+XEP0080.m in Sources */,
 				324F781717E6D32C0085E42B /* XMPPIQ+XEP_0060.m in Sources */,
@@ -1581,10 +1746,10 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/XMPP/Vendor/libidn\"",
+					"/Users/siteview_mac/Documents/MapChat/Map-Chart/source/MapDots/WeiChat.framework",
+					"/Users/siteview_mac/Documents/MapChat/Map-Chart/source/MapDots/XMPP/Vendor/libidn",
+					"/Users/siteview_mac/Documents/MapChat/Map-Chart/source/MapDots/baidu",
 					"$(SRCROOT)/libs/Release$(EFFECTIVE_PLATFORM_NAME)",
-					"\"$(SRCROOT)/libs/Release-iphonesimulator\"",
-					"\"$(SRCROOT)/WeiChat.framework\"",
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
@@ -1611,10 +1776,10 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/XMPP/Vendor/libidn\"",
+					"/Users/siteview_mac/Documents/MapChat/Map-Chart/source/MapDots/WeiChat.framework",
+					"/Users/siteview_mac/Documents/MapChat/Map-Chart/source/MapDots/XMPP/Vendor/libidn",
+					"/Users/siteview_mac/Documents/MapChat/Map-Chart/source/MapDots/baidu",
 					"$(SRCROOT)/libs/Release$(EFFECTIVE_PLATFORM_NAME)",
-					"\"$(SRCROOT)/libs/Release-iphonesimulator\"",
-					"\"$(SRCROOT)/WeiChat.framework\"",
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";

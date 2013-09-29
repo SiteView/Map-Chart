@@ -19,7 +19,8 @@
 #import "DDLog.h"
 #import "DDTTYLogger.h"
 #import "UserProperty.h"
-#import "iRate.h"
+
+//#import "iRate.h"
 
 // Log levels: off, error, warn, info, verbose
 #if DEBUG
@@ -62,6 +63,10 @@ typedef enum XMPPStatus XMPPStatus;
     NSTimer *timer;
     
     BMKMapManager* _mapManager;
+    
+    BOOL isWeiChatStartup;
+    NSString *roomJID;
+    NSString *roomPassword;
 }
 
 #define DISCO_INFO  @"http://jabber.org/protocol/disco#info"
@@ -69,6 +74,8 @@ typedef enum XMPPStatus XMPPStatus;
 #define PROTOCOL_MUC_PASSWORDPROTECTED       @"muc_passwordprotected"
 #define DISCO_ITEMS     @"http://jabber.org/protocol/disco#items"
 #define XMPP_PROPERTIES @"http://www.jivesoftware.com/xmlns/xmpp/properties"
+
+@synthesize tabBarController;
 
 @synthesize xmppStream;
 @synthesize xmppReconnect;
@@ -106,6 +113,7 @@ typedef enum XMPPStatus XMPPStatus;
 
 @synthesize isiOS7;
 @synthesize isiPhone5;
+@synthesize isiPAD;
 
 /*
 + (void)initialize
@@ -120,6 +128,27 @@ typedef enum XMPPStatus XMPPStatus;
 */
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
+        isiOS7 = YES;
+    } else {
+        isiOS7 = NO;
+    }
+    
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        isiPAD = YES;
+    } else {
+        isiPAD = NO;
+    }
+    
+    if ([UIScreen instancesRespondToSelector:@selector(currentMode)]) {
+        if (CGSizeEqualToSize(CGSizeMake(640, 1136), [[UIScreen mainScreen] currentMode].size)) {
+            isiPhone5 = YES;
+        } else {
+            isiPhone5 = NO;
+        }
+    } else {
+        isiPhone5 = NO;
+    }
     
 #ifdef GOOGLE_MAPS
     
@@ -134,13 +163,18 @@ typedef enum XMPPStatus XMPPStatus;
                                        reason:reason
                                      userInfo:nil];
     }
+//    NSLog(@"APIKey=%@", APIKey);
+    
     [GMSServices provideAPIKey:(NSString *)APIKey];
+//    [GMSServices openSourceLicenseInfo];
+    
+//    [GMSServices provideAPIKey:@"AIzaSyBVceMTZye2Y6gL-FXfMUullK5MP8gp-Sc"];
 #else
 #ifdef BAIDU_MAPS
     // 要使用百度地图，请先启动BaiduMapManager
     _mapManager = [[BMKMapManager alloc]init];
     // 如果要关注网络及授权验证事件，请设定     generalDelegate参数
-    BOOL ret = [_mapManager start:BaiduAPIKey  generalDelegate:nil];
+    BOOL ret = [_mapManager start:BaiduAPIKey generalDelegate:nil];
     if (!ret) {
         NSLog(@"manager start failed!");
     }
@@ -150,13 +184,14 @@ typedef enum XMPPStatus XMPPStatus;
     // Setup the timer
     [self setupTimer];
     
-    BOOL isRegisterWeiChat = [WXApi registerApp:WXAPIKey];
-    if (isRegisterWeiChat) {
+    BOOL isRegisterWeiChat = NO;
+    isRegisterWeiChat = [WXApi registerApp:WXAPIKey];
+/*    if (isRegisterWeiChat) {
         NSLog(@"Register WeiChat success.");
     } else {
         NSLog(@"Register WeiChat failure.");
     }
-    
+*/    
 	// Configure logging framework
 	
 	[DDLog addLogger:[DDTTYLogger sharedInstance]];
@@ -169,23 +204,49 @@ typedef enum XMPPStatus XMPPStatus;
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
-    EventsViewController *roomsViewController = [[EventsViewController alloc] init];
-    roomsViewController.title = @"Events";
-    roomsViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Events" image:nil tag:102];
-    UINavigationController *roomsNavigationController = [[UINavigationController alloc] initWithRootViewController:roomsViewController];
-    
-    PreferencesViewController *preferencesViewController = [[PreferencesViewController alloc] init];
-    preferencesViewController.title = @"Preferences";
-    preferencesViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Preferences" image:nil tag:104];
-    UINavigationController *preferencesNavigationController = [[UINavigationController alloc] initWithRootViewController:preferencesViewController];
-    
-    UITabBarController *tabBarController;
-    tabBarController = [[UITabBarController alloc] init];
-    tabBarController.viewControllers = @[roomsNavigationController, preferencesNavigationController];
-    
-    self.window.rootViewController = tabBarController;
+/*    if (isiPAD) {
+        // This is an iPad; configure a split-view controller that contains the
+        // the 'master' list of samples on the left side, and the current displayed
+        // sample on the right (begins empty).
+        UINavigationController *masterNavigationController =
+        [[UINavigationController alloc] initWithRootViewController:master];
+        
+        UIViewController *empty = [[UIViewController alloc] init];
+        UINavigationController *detailNavigationController =
+        [[UINavigationController alloc] initWithRootViewController:empty];
+        
+        // Force non-translucent navigation bar for consistency of demo between
+        // iOS 6 and iOS 7.
+        detailNavigationController.navigationBar.translucent = NO;
+        
+        self.splitViewController = [[UISplitViewController alloc] init];
+        self.splitViewController.delegate = master;
+        self.splitViewController.viewControllers =
+        @[masterNavigationController, detailNavigationController];
+        self.splitViewController.presentsWithGesture = NO;
+        
+        self.window.rootViewController = self.splitViewController;
+
+    } else 
+*/ 
+    {
+        EventsViewController *roomsViewController = [[EventsViewController alloc] init];
+        roomsViewController.title = @"Events";
+        roomsViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Events" image:nil tag:102];
+        UINavigationController *roomsNavigationController = [[UINavigationController alloc] initWithRootViewController:roomsViewController];
+        
+        PreferencesViewController *preferencesViewController = [[PreferencesViewController alloc] init];
+        preferencesViewController.title = @"Preferences";
+        preferencesViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Preferences" image:nil tag:104];
+        UINavigationController *preferencesNavigationController = [[UINavigationController alloc] initWithRootViewController:preferencesViewController];
+        
+        tabBarController = [[UITabBarController alloc] init];
+        tabBarController.viewControllers = @[roomsNavigationController, preferencesNavigationController];
+        
+        self.window.rootViewController = tabBarController;
+    }
     [self.window makeKeyAndVisible];
-/*    
+/*
     // 1、完成推送功能的注册请求，即在程序启动时弹出是否使用推送功能
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound)];
     
@@ -213,6 +274,11 @@ typedef enum XMPPStatus XMPPStatus;
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    // 断开XMPP服务器
+    if (xmppStream != nil) {
+        [xmppStream disconnect];
+    }
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -223,6 +289,11 @@ typedef enum XMPPStatus XMPPStatus;
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+    // 连接XMPP服务器
+    if (xmppStream != nil) {
+        [self loginRequest];
+    }
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -300,12 +371,58 @@ typedef enum XMPPStatus XMPPStatus;
     req.text = nsText;
     req.scene = WXSceneSession;
     
+    BOOL bRet = [WXApi sendReq:req];
+    if (bRet) {
+        NSLog(@"Send success");
+    } else {
+        NSLog(@"Send failure");
+    }
+}
+
+- (void) sendAppContent:(NSString*)nsText roomJID:(NSString *)jid password:(NSString *)password
+{
+    // 发送内容给微信
+    WXMediaMessage *message = [WXMediaMessage message];
+    message.title = @"邀请";
+    message.description = nsText;
+    
+    WXAppExtendObject *ext = [WXAppExtendObject object];
+    
+    NSString *extInfo = [NSString stringWithFormat:@"%@:%@", jid, password];
+    ext.extInfo = extInfo;
+    
+    message.mediaObject = ext;
+    
+    SendMessageToWXReq* req = [[SendMessageToWXReq alloc] init];
+    req.bText = NO;
+    req.message = message;
+    req.scene = WXSceneSession;
+    
     [WXApi sendReq:req];
+}
+
+- (void) viewContent:(WXMediaMessage *) msg
+{
+    //显示微信传过来的内容
+    WXAppExtendObject *obj = msg.mediaObject;
+/*
+    NSString *strTitle = [NSString stringWithFormat:@"消息来自微信"];
+    NSString *strMsg = [NSString stringWithFormat:@"标题：%@ \n内容：%@ \n附带信息：%@ \n缩略图:%u bytes\n\n", msg.title, msg.description, obj.extInfo, msg.thumbData.length];
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:strTitle message:strMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+    [alert show];
+*/
+    NSString *strMsg = obj.extInfo;
+    NSArray *array = [strMsg componentsSeparatedByString:@":"];
+    
+    isWeiChatStartup = YES;
+    
+    roomJID = [array objectAtIndex:0];
+    roomPassword = [array lastObject];
 }
 
 #pragma make WXApiDelegate
 
-/*
 -(void) onShowMediaMessage:(WXMediaMessage *) message
 {
     // 微信启动， 有消息内容。
@@ -316,28 +433,27 @@ typedef enum XMPPStatus XMPPStatus;
 {
     // 微信请求App提供内容， 需要app提供内容后使用sendRsp返回
     
-    RespForWeChatViewController* controller = [[RespForWeChatViewController alloc]autorelease];
+    RespForWeChatViewController* controller = [RespForWeChatViewController alloc];
     controller.delegate = self;
-    [self.viewController presentModalViewController:controller animated:YES];
+    [self.tabBarController presentViewController:controller animated:YES completion:NULL];
     
 }
-*/
 
 // onReq是微信终端向第三方程序发起请求，要求第三方程序响应。第三方程序响应完后必须调用sendRsp返回。在调用sendRsp返回时，会切回到微信终端程序界面。
 - (void)onReq:(BaseReq *)req
 {
     NSLog(@"%s", __FUNCTION__);
 
-/*    if([req isKindOfClass:[GetMessageFromWXReq class]])
+    if([req isKindOfClass:[GetMessageFromWXReq class]])
     {
-        [self onRequestAppMessage];
+//        [self onRequestAppMessage];
     }
     else if([req isKindOfClass:[ShowMessageFromWXReq class]])
     {
         ShowMessageFromWXReq* temp = (ShowMessageFromWXReq*)req;
         [self onShowMediaMessage:temp.message];
     }
-*/ 
+ 
 }
 
 // 如果第三方程序向微信发送了sendReq的请求，那么onResp会被回调。sendReq请求调用后，会切到微信终端程序界面。
@@ -346,12 +462,17 @@ typedef enum XMPPStatus XMPPStatus;
     if([resp isKindOfClass:[SendMessageToWXResp class]])
     {
         NSString *strTitle = [NSString stringWithFormat:@"发送结果"];
-        NSString *strMsg = [NSString stringWithFormat:@"发送媒体消息结果:%d", resp.errCode];
+        NSString *strMsg;
+        if (resp.errCode == 0) {
+            strMsg = [NSString stringWithFormat:@"已经成功发送邀请"];
+        } else {
+            strMsg = [NSString stringWithFormat:@"真不好意思，邀请失败了，可能是%@", resp.errStr];
+        }
         
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:strTitle message:strMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
         [alert show];
     }
-    else if([resp isKindOfClass:[SendAuthResp class]])
+/*    else if([resp isKindOfClass:[SendAuthResp class]])
     {
         NSString *strTitle = [NSString stringWithFormat:@"Auth结果"];
         NSString *strMsg = [NSString stringWithFormat:@"Auth结果:%d", resp.errCode];
@@ -359,8 +480,19 @@ typedef enum XMPPStatus XMPPStatus;
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:strTitle message:strMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
         [alert show];
     }
-
+*/
 }
+
+
+-(void) RespTextContent:(NSString *)nsText
+{
+    GetMessageFromWXResp* resp = [[GetMessageFromWXResp alloc] init];
+    resp.text = nsText;
+    resp.bText = YES;
+    
+    [WXApi sendResp:resp];
+}
+
 #pragma make UITabBarControllerDelegate
 
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
@@ -532,6 +664,40 @@ typedef enum XMPPStatus XMPPStatus;
     [xmppStream sendElement:presence];
 }
 
+- (void)loginRequest
+{
+    NSLog(@"%s", __FUNCTION__);
+    NSString *nickName = [UserProperty sharedInstance].nickName;
+    NSString *account = [UserProperty sharedInstance].account;
+    NSString *password = [UserProperty sharedInstance].password;
+    //    NSString *serverName = [UserProperty sharedInstance].serverName;
+    //    NSString *serverAddress = [UserProperty sharedInstance].serverAddress;
+    if (account == nil || password == nil)
+    {
+        NSString *uuid = [[self uuid] substringToIndex:8];
+        account = uuid;
+        password = uuid;
+        //        serverAddress = DOMAIN_NAME;
+        //        serverName = DOMAIN_NAME;
+        
+        [UserProperty sharedInstance].nickName = account;
+        [UserProperty sharedInstance].account = account;
+        [UserProperty sharedInstance].password = password;
+        [[UserProperty sharedInstance] save];
+    }
+    
+    if ([nickName length] == 0) {
+        [UserProperty sharedInstance].nickName = account;
+        [[UserProperty sharedInstance] save];
+    }
+    
+    NSString *jabberID = [NSString stringWithFormat:@"%@@%@", account, DOMAIN_NAME];
+    
+    // 用户的登录
+    [self connect:jabberID password:password];// serverName:serverName server:serverAddress];
+    
+}
+
 - (BOOL)registery:(NSString *)userId password:(NSString *)password //serverName:(NSString *)serverName server:(NSString *)server
 {
     NSLog(@"%s", __FUNCTION__);
@@ -594,7 +760,7 @@ typedef enum XMPPStatus XMPPStatus;
 
 - (BOOL)connect:(NSString *)userId password:(NSString *)password
 {
-    NSLog(@"%s", __FUNCTION__);
+//    NSLog(@"%s", __FUNCTION__);
 
     status_ = STATUS_LOGIN;
 
@@ -969,24 +1135,24 @@ typedef enum XMPPStatus XMPPStatus;
              */
             
             NSString *presenceFromUser = [presence fromStr];
-            NSString *roomJID = [[presenceFromUser componentsSeparatedByString:@"/"] objectAtIndex:0];
+            NSString *roomJid = [[presenceFromUser componentsSeparatedByString:@"/"] objectAtIndex:0];
 
 //            NSString *name = [[presence from] user];
-            NSString *roomName = [[roomJID componentsSeparatedByString:@"@"] objectAtIndex:0];
+            NSString *roomName = [[roomJid componentsSeparatedByString:@"@"] objectAtIndex:0];
 
-            NSMutableArray *messageArray = [messageList objectForKey:roomJID];
+            NSMutableArray *messageArray = [messageList objectForKey:roomJid];
             if (messageArray == nil) {
                 messageArray = [NSMutableArray array];
                 
-                [messageList setObject:messageArray forKey:roomJID];
+                [messageList setObject:messageArray forKey:roomJid];
             }
             
-            XMPPRoom *roomModel = [xmppRoomList_ objectForKey:roomJID];
+            XMPPRoom *roomModel = [xmppRoomList_ objectForKey:roomJid];
             if (roomModel.isJoined)
             {
                 roomModel.roomName = roomName;
                 
-                [roomsDelegate didJoinRoomSuccess:[roomModel.roomJID full]];
+                [roomsDelegate didJoinRoomSuccess:roomModel];
             }
             /*
              // 房间成员
@@ -1254,6 +1420,11 @@ typedef enum XMPPStatus XMPPStatus;
 - (void)querySupportMUC
 {
     NSLog(@"%@:%@", THIS_FILE, THIS_METHOD);
+    
+    
+    if (isWeiChatStartup) {
+        [self joinRoom:roomJID password:roomPassword nickName:[UserProperty sharedInstance].nickName];
+    }
     
     status_ = STATUS_GET_ROOMS;
     [self searchRoomWithConference];
@@ -1661,12 +1832,20 @@ typedef enum XMPPStatus XMPPStatus;
     NSLog(@"%s", __FUNCTION__);
     status_ = STATUS_JOIN_ROOM;
 
-//    XMPPRoom *xmppRoom = [xmppRoomJoin objectForKey:roomjid];
-//    if (xmppRoom == nil) {
-        XMPPRoom *xmppRoom = [xmppRoomList_ objectForKey:roomjid];
-        [xmppRoom joinRoomUsingNickname:jabberID_ history:nil password:password];
-//        [xmppRoomJoin setObject:xmppRoom forKey:roomjid];
-//    }
+    XMPPRoom *xmppRoom = [xmppRoomList_ objectForKey:roomjid];
+    if (xmppRoom == nil) {
+        XMPPRoom *room = [[XMPPRoom alloc] initWithRoomStorage:xmppRoomStorage jid:[XMPPJID jidWithString:roomjid] dispatchQueue:dispatch_get_main_queue()];
+        
+        XMPPStream *stream = [self xmppStream];
+        [room activate:stream];
+        [room joinRoomUsingNickname:nickName history:nil password:password];
+        [room addDelegate:self delegateQueue:dispatch_get_main_queue()];
+        
+        [xmppRoomList_ setObject:room forKey:roomjid];
+
+    } else {
+        [xmppRoom joinRoomUsingNickname:nickName history:nil password:password];
+    }
 }
 
 - (void)leaveRoom:(NSString *)roomjid
@@ -2003,7 +2182,7 @@ typedef enum XMPPStatus XMPPStatus;
 	NSLog(@"%s", __FUNCTION__);
     [sender fetchMembersList];
     
-    [roomsDelegate didJoinRoomSuccess:[sender.roomJID full]];
+    [roomsDelegate didJoinRoomSuccess:sender];
 //    [sender fetchModeratorsList];
     /*
      <iq to='staff158@chat.fayfox'

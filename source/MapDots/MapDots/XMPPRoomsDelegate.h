@@ -15,7 +15,7 @@
 
 -(void)newRoomsReceived:(XMPPRoom *)roomsContent;
 
-- (void)didJoinRoomSuccess:(NSString *)roomJid;
+- (void)didJoinRoomSuccess:(XMPPRoom *)xmppRoom;
 - (void)didJoinRoomFailure:(NSString *)errorMsg;
 
 @end

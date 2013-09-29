@@ -423,7 +423,7 @@
                                               size.width + padding,
                                               size.height + padding)];
         
-        cell.senderAndTimeLabel.textAlignment = UITextAlignmentLeft;
+        cell.senderAndTimeLabel.textAlignment = NSTextAlignmentLeft;
         cell.senderAndTimeLabel.text = [NSString stringWithFormat:@"%@\n%@", strTitle, time];
         //    cell.senderAndTimeLabel.text = [NSString stringWithFormat:@"%@", time];
     }else {
@@ -440,7 +440,7 @@
                                               size.width + padding,
                                               size.height + padding)];
 
-        cell.senderAndTimeLabel.textAlignment = UITextAlignmentRight;
+        cell.senderAndTimeLabel.textAlignment = NSTextAlignmentRight;
         cell.senderAndTimeLabel.text = [NSString stringWithFormat:@"%@\n%@", strTitle, time];
         //    cell.senderAndTimeLabel.text = [NSString stringWithFormat:@"%@", time];
     }

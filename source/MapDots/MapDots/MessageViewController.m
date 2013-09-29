@@ -357,7 +357,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 - (IBAction)closeButton:(id)sender {
     
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
 -(AppDelegate *)appDelegate{

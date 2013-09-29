@@ -31,7 +31,19 @@
 {
     [super viewDidLoad];
     
-    CGRect rectSearch = CGRectMake(0, 0,
+    float controlTop = 0;
+    float navigationTop = 0;
+    float bottomHeight = 0;
+    if ([self appDelegate].isiOS7) {
+//        if ([self appDelegate].isiPAD)
+        {
+            controlTop = STATUS_BAR_HEIGHT;
+            navigationTop = NAVIGATION_BAR_HEIGHT;
+            bottomHeight = TAB_BAR_HEIGHT;
+        }
+    }
+
+    CGRect rectSearch = CGRectMake(0, controlTop + navigationTop,
                                    self.view.bounds.size.width,
                                    SEARCH_HEIGH);
     
@@ -42,7 +54,8 @@
     search_.delegate = self;
     [self.view addSubview:search_];
     
-    table_ = [[UITableView alloc] initWithFrame:CGRectMake(0, SEARCH_HEIGH, self.view.bounds.size.width, self.view.bounds.size.height - SEARCH_HEIGH)];
+    table_ = [[UITableView alloc] initWithFrame:CGRectMake(0, controlTop + navigationTop + SEARCH_HEIGH, self.view.bounds.size.width, self.view.bounds.size.height - controlTop - navigationTop - SEARCH_HEIGH)];
+    
     table_.dataSource = self;
     table_.delegate = self;
     table_.separatorStyle = UITableViewCellSeparatorStyleSingleLine;

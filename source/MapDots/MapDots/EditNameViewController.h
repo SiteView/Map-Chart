@@ -8,13 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-@interface EditNameViewController : UIViewController<UITextFieldDelegate>
+@interface EditNameViewController : UIViewController<UITextFieldDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 {
     id m_target_edit;
     SEL m_selector_edit;
 }
 
 @property (nonatomic, strong) NSString *nickName;
+@property (nonatomic, strong) NSString *account;
 
 - (void)setEditFinish:(id)target callback:(SEL)selector;
 

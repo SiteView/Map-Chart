@@ -12,6 +12,10 @@
 #import "EditNameViewController.h"
 #import "EditSexViewController.h"
 #import "AppDelegate.h"
+#import "AboutViewController.h"
+#import "GuideViewController.h"
+
+#define VERSION_INFO    @"0.8.6"
 
 @interface PreferencesViewController ()
 
@@ -21,7 +25,6 @@
 {
     UIImageView *image_;
     UITableView *table_;
-    NSMutableArray *message;
     BOOL isEditMode;
     UIBarButtonItem *cancelButton;
     UIBarButtonItem *saveButton;
@@ -32,6 +35,8 @@
 {
     [super viewDidLoad];
 
+    self.view.backgroundColor = [UIColor lightGrayColor];
+    
     editButton =
     [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Edit", @"Edit")
                                      style:UIBarButtonItemStyleBordered
@@ -57,15 +62,17 @@
     table_.delegate = self;
     table_.autoresizesSubviews = YES;
     table_.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+    table_.backgroundColor = [UIColor lightGrayColor];
+    
     [self.view addSubview:table_];
+/*
     
+    UILabel *version = [[UILabel alloc] initWithFrame:CGRectMake(self.view.bounds.size.width / 3, table_.frame.size.height + 15, 100, 40)];
+    version.text = [NSString stringWithFormat:@"版本 %@", VERSION_INFO];
+    version.backgroundColor = [UIColor lightGrayColor];
+    [self.view addSubview:version];
+*/    
     isEditMode = NO;
-    
-    NSDictionary *nickName = @{@"Nick Name":@"测试"};
-    NSDictionary *sex = @{@"Sex":@"Male"};
-    message = [NSMutableArray array];
-    [message addObject:nickName];
-    [message addObject:sex];
 }
 
 - (void)didReceiveMemoryWarning
@@ -74,16 +81,52 @@
     // Dispose of any resources that can be recreated.
 }
 
+
+- (void)configurePhoto:(UITableViewCell *)cell
+{
+    // [UserProperty sharedInstance].nickName
+    UIImage *image = nil;
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *documentsDirectory = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
+    NSString *fileName = [NSString stringWithFormat:@"%@/%@.jpg", documentsDirectory, [UserProperty sharedInstance].account];
+    
+    BOOL isDir = NO;
+    if ([fileManager fileExistsAtPath:fileName isDirectory:&isDir]) {
+        if (!isDir) {
+            image = [UIImage imageWithContentsOfFile:fileName];
+        }
+    }
+    
+	if (image != nil)
+	{
+		cell.imageView.image = image;
+	}
+	else
+	{
+        cell.imageView.image = [UIImage imageNamed:@"defaultPerson"];
+	}
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [message count];
+    NSInteger count = 0;
+    switch (section) {
+        case 0:
+            count = 2;
+            break;
+        case 1:
+            count = 1;
+            break;
+    }
+    return count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -101,19 +144,48 @@
         cell.accessoryType = UITableViewCellAccessoryNone;
     }
 
-    switch ([indexPath row])
-    {
+    switch ([indexPath section]) {
         case 0:
         {
-            cell.textLabel.text = NICK_NAME;
-            cell.detailTextLabel.text = [UserProperty sharedInstance].nickName ;
+            switch ([indexPath row])
+            {
+                case 0:
+                {
+                    cell.textLabel.text = NICK_NAME;
+                    cell.detailTextLabel.text = [UserProperty sharedInstance].nickName ;
+                    [self configurePhoto:cell];
+                }
+                    break;
+                case 1:
+                {
+                    cell.textLabel.text = PEOPLE_SEX;
+                    cell.detailTextLabel.text = [UserProperty sharedInstance].sex ;
+                }
+                    break;
+                default:
+                    break;
+            }
+
         }
             break;
         case 1:
         {
-            cell.textLabel.text = PEOPLE_SEX;
-            cell.detailTextLabel.text = [UserProperty sharedInstance].sex ;
+            switch ([indexPath row])
+            {
+                case 0:
+/*                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    cell.textLabel.text = @"功能介绍";
+                    break;
+                    
+                case 1:
+*/
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    cell.textLabel.text = @"关于 MapDots";
+                    break;
+            }
+
         }
+            break;
         default:
             break;
     }
@@ -123,36 +195,62 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (!isEditMode)
-    {
-        return;
-    }
-    
-    int row = [indexPath row];
-    switch (row) {
-        case 0:
+    int section = [indexPath section];
+    if (section == 0) {
+        if (!isEditMode)
         {
-            EditNameViewController *editNameViewController = [[EditNameViewController alloc] init];
-            editNameViewController.nickName = [UserProperty sharedInstance].nickName;
-            [editNameViewController setEditFinish:self callback:@selector(editOpCallback:)];
-            
-            [editNameViewController setHidesBottomBarWhenPushed:YES];
-            [self.navigationController pushViewController:editNameViewController animated:YES];
+            return;
         }
-            break;
-        case 1:
-        {
-            EditSexViewController *editSexViewController = [[EditSexViewController alloc] init];
-            editSexViewController.sex = [UserProperty sharedInstance].sex;
-            [editSexViewController setEditFinish:self callback:@selector(editSexOpCallback:)];
+        
+        switch ([indexPath row]) {
+            case 0:
+            {
+                EditNameViewController *editNameViewController = [[EditNameViewController alloc] init];
+                editNameViewController.nickName = [UserProperty sharedInstance].nickName;
+                editNameViewController.account = [UserProperty sharedInstance].account;
+                [editNameViewController setEditFinish:self callback:@selector(editOpCallback:)];
+                
+                [editNameViewController setHidesBottomBarWhenPushed:YES];
+                [self.navigationController pushViewController:editNameViewController animated:YES];
+            }
+                break;
+            case 1:
+            {
+                EditSexViewController *editSexViewController = [[EditSexViewController alloc] init];
+                editSexViewController.sex = [UserProperty sharedInstance].sex;
+                [editSexViewController setEditFinish:self callback:@selector(editSexOpCallback:)];
 
-            [editSexViewController setHidesBottomBarWhenPushed:YES];
-            [self.navigationController pushViewController:editSexViewController animated:YES];
+                [editSexViewController setHidesBottomBarWhenPushed:YES];
+                [self.navigationController pushViewController:editSexViewController animated:YES];
+            }
+                break;
+                
+            default:
+                break;
         }
-            break;
-            
-        default:
-            break;
+    } else if (section == 1)
+    {
+        switch ([indexPath row]) {
+            case 0:
+/*            {
+                GuideViewController *guideViewController = [[GuideViewController alloc] init];
+                
+                [guideViewController setHidesBottomBarWhenPushed:YES];
+                [self.navigationController pushViewController:guideViewController animated:YES];
+            }
+                break;
+                
+            case 1:
+*/
+            {
+                // About MapDots
+                AboutViewController *aboutViewController = [[AboutViewController alloc] init];
+                
+                [aboutViewController setHidesBottomBarWhenPushed:YES];
+                [self.navigationController pushViewController:aboutViewController animated:YES];
+            }
+                break;
+        }
     }
 }
 

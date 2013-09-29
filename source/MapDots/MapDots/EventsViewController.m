@@ -38,8 +38,10 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     UIView *viewEvents_;
     
     // viewPosition_
+    CGFloat zoom_;
 #ifdef GOOGLE_MAPS
     GMSMapView *mapView_;
+    
 #else
 #ifdef BAIDU_MAPS
     BMKMapView *mapView_;
@@ -86,21 +88,41 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.8];
 
     float controlTop = 0;
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+    float navigationTop = 0;
+    float bottomHeight = 0;
+    float bottom = 0;
+    
+    if ([self appDelegate].isiOS7) {
+        if ([self appDelegate].isiPAD)
+        {
+            controlTop = STATUS_BAR_HEIGHT;
+            navigationTop = NAVIGATION_BAR_HEIGHT;
+            bottomHeight = TAB_BAR_HEIGHT + 8;
+        } else {
+            controlTop = STATUS_BAR_HEIGHT;
+            navigationTop = NAVIGATION_BAR_HEIGHT - 8;
+            bottomHeight = TAB_BAR_HEIGHT;
+            bottom = 10;
         }
-        controlTop = 55;
     }
     
-    CGRect rect = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - controlTop);
+    zoom_ = 14;
+    if ([self appDelegate].isiPAD)
+    {
+        zoom_ = 15;
+    }
+    CGRect rect = CGRectMake(0, controlTop, self.view.bounds.size.width, self.view.bounds.size.height - controlTop - bottomHeight);
     
     // viewEvents_
     viewEvents_ = [[UIView alloc] initWithFrame:rect];
 /*
     indicator_ = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     indicatorButton_ = [[UIBarButtonItem alloc] initWithCustomView:indicator_];
-*/    
-    table_ = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - 10 - controlTop)];
+*/
+    CGRect rectContext = CGRectMake(0, navigationTop, rect.size.width, rect.size.height - navigationTop);
+    
+    
+    table_ = [[UITableView alloc] initWithFrame:rectContext];
     table_.dataSource = self;
     table_.delegate = self;
     table_.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
@@ -110,8 +132,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
     refreshHeaderView = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - table_.bounds.size.height, table_.bounds.size.width, table_.bounds.size.height)];
     refreshHeaderView.delegate = self;
-    [table_ addSubview:refreshHeaderView];
     [refreshHeaderView refreshLastUpdatedDate];
+    [table_ addSubview:refreshHeaderView];
     
     roomPassword_ = nil;
     
@@ -154,9 +176,9 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     
     GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:28.17523
                                                             longitude:112.9803
-                                                                 zoom:14];
+                                                                 zoom:zoom_];
     
-    mapView_ = [GMSMapView mapWithFrame:rect camera:camera];
+    mapView_ = [GMSMapView mapWithFrame:rectContext camera:camera];
     mapView_.buildingsEnabled = YES;
     mapView_.delegate = self;
     mapView_.autoresizingMask =
@@ -167,17 +189,16 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     
 #else
 #ifdef BAIDU_MAPS
-    mapView_ = [[BMKMapView alloc] initWithFrame:self.view.bounds];
-    mapView_.delegate = self;
+    mapView_ = [[BMKMapView alloc] initWithFrame:rectContext];
+    mapView_.zoomLevel = zoom_;
+    NSLog(@"zoom: %.1f", zoom_);
+//    mapView_.compassPosition = CGPointMake(10, 10);
+    mapView_.zoomEnabled = YES;
     //实现旋转、俯视的3D效果
-//    mapView_.rotate = 90;
+    mapView_.rotation = 90;
     mapView_.overlooking = -30;
-    //开启定位功能
-    mapView_.showsUserLocation = NO;
-    mapView_.userTrackingMode = BMKUserTrackingModeFollow;
-    mapView_.showsUserLocation = YES;
 #else
-    mapView_ = [[MKMapView alloc] initWithFrame:self.view.bounds];
+    mapView_ = [[MKMapView alloc] initWithFrame:rectContext];
     mapView_.mapType = MKMapTypeStandard;
     mapView_.delegate = self;
     
@@ -201,16 +222,17 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         NSLog(@"定位不可用");
     } else {
         [locationManager setDelegate:self];
-        [locationManager setDesiredAccuracy:kCLLocationAccuracyKilometer];
+        [locationManager setDesiredAccuracy:kCLLocationAccuracyBest];
         
         // Set the optional distance filter
-        locationManager.distanceFilter = 5.0f;
+//        locationManager.distanceFilter = 5.0f;
         
         [locationManager startUpdatingLocation];
         
     }
 
-    viewPosition_ = mapView_;
+    [viewPosition_ addSubview:mapView_];
+    
     [self.view addSubview:viewPosition_];
     
     onlineMaker_ = [NSMutableDictionary dictionary];
@@ -223,13 +245,13 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     AppDelegate *app = [self appDelegate];
     app.authenticateDelegate = self;
     
-    [self loginRequest];
+    [[self appDelegate] loginRequest];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     AppDelegate *app = [self appDelegate];
-    app.chatDelegate = self;
+//    app.chatDelegate = self;
     app.roomsDelegate = self;
     
     rooms_ = [app.xmppRoomList_ mutableCopy];
@@ -247,20 +269,42 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     dispatch_async(dispatch_get_main_queue(), ^{
         mapView_.myLocationEnabled = YES;
     });
-    
+#else
+#ifdef BAIDU_MAPS
+    if (mapView_ != nil) {
+        [mapView_ viewWillAppear];
+        //开启定位功能
+        mapView_.showsUserLocation = NO;
+        mapView_.userTrackingMode = BMKUserTrackingModeFollow;
+        mapView_.showsUserLocation = YES;
+        mapView_.delegate = self;
+
+    }
+#endif
 #endif
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     AppDelegate *app = [self appDelegate];
-    app.chatDelegate = self;
+//    app.chatDelegate = nil;
     app.roomsDelegate = nil;
 #ifdef GOOGLE_MAPS
     
     [mapView_ removeObserver:self
                   forKeyPath:@"myLocation"
                      context:NULL];
+#else
+#ifdef BAIDU_MAPS
+    if (mapView_ != nil) {
+        mapView_.zoomLevel = zoom_;
+        NSLog(@"%s  zoom: %.1f", __FUNCTION__, zoom_);
+        //开启定位功能
+        mapView_.showsUserLocation = NO;
+        mapView_.delegate = nil;
+
+    }
+#endif
 #endif
 }
 
@@ -270,102 +314,21 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     // Dispose of any resources that can be recreated.
 }
 
-- (void)dealloc
-{
-}
-#ifdef GOOGLE_MAPS
-
-#pragma mark - KVO updates
-
-- (void)observeValueForKeyPath:(NSString *)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary *)change
-                       context:(void *)context {
-    //    if (!firstLocationUpdate_) {
-    // If the first location update has not yet been recieved, then jump to that
-    // location.
-    //        firstLocationUpdate_ = YES;
-    CLLocation *location = [change objectForKey:NSKeyValueChangeNewKey];
-    
-    AppDelegate *app = [self appDelegate];
-    app.myLocation = location.coordinate;
-    
-    mapView_.camera = [GMSCameraPosition cameraWithTarget:location.coordinate
-                                                     zoom:mapView_.camera.zoom];
-    //    }
-}
-
-#else
-#ifdef BAIDU_MAPS
-
-- (void)mapView:(BMKMapView *)mapView didUpdateUserLocation:(BMKUserLocation *)userLocation
-{
-    CLLocationCoordinate2D coordinate;
-    coordinate = [userLocation coordinate];
-    
-    position_ = coordinate;
-    
-    BMKCoordinateSpan span;
-    span.latitudeDelta = 0.05;
-    span.longitudeDelta = 0.05;
-    
-    BMKCoordinateRegion region = {coordinate, span};
-//    [mapView_ setRegion:[mapView_ regionThatFits:region]];
-    mapView_.showsUserLocation = YES;
-}
-
-- (void)mapView:(BMKMapView *)mapView didFailToLocateUserWithError:(NSError *)error
-{
-    
-}
-
-#else
-
-#endif
-#endif
-
-#pragma mark-
-#pragma locationManagerDelegate methods
-- (void)locationManager:(CLLocationManager *)manager
-    didUpdateToLocation:(CLLocation *)newLocation
-           fromLocation:(CLLocation *)oldLocation
-{
-    CLLocationCoordinate2D coordinate;
-    coordinate = [newLocation coordinate];
-    
-    position_ = coordinate;
-    
-    MKCoordinateSpan span;
-    span.latitudeDelta = 0.05;
-    span.longitudeDelta = 0.05;
-/*
-    MKCoordinateRegion region = {coordinate, span};
-    [mapView_ setRegion:region];
-    mapView_.showsUserLocation = YES;
-*/ 
-}
-
-- (void)locationmanager:(CLLocationManager *)manager
-       didFailWithError:(NSError *)error
-{
-    // 定位失败
-}
-
 - (void)refreshRoom
 {
-/*    [indicator_ startAnimating];
-    self.navigationItem.leftBarButtonItem = indicatorButton_;
-*/
+    /*    [indicator_ startAnimating];
+     self.navigationItem.leftBarButtonItem = indicatorButton_;
+     */
     AppDelegate *app = [self appDelegate];
     rooms_ = [app.xmppRoomList_ mutableCopy];
     [table_ reloadData];
-/*
-    [indicator_ stopAnimating];
-    self.navigationItem.leftBarButtonItem = refreshButton_;
-*/
+    /*
+     [indicator_ stopAnimating];
+     self.navigationItem.leftBarButtonItem = refreshButton_;
+     */
     // 没有新的房间，服务器不更新
-//    app.roomsDelegate = self;
-//    [app querySupportMUC];
+    //    app.roomsDelegate = self;
+    //    [app querySupportMUC];
 }
 
 - (void)flipView
@@ -388,7 +351,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     
     if (isViewPosition_) {
         isViewPosition_ = NO;
-
+        
         [self refreshRoom];
         
         [self.navigationItem setLeftBarButtonItem:nil];
@@ -401,6 +364,201 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         [self.navigationItem setRightBarButtonItem:flipListButton_];
     }
 }
+#ifdef GOOGLE_MAPS
+
+#pragma mark - GOOGLE_MAPS
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context {
+    //    if (!firstLocationUpdate_) {
+    // If the first location update has not yet been recieved, then jump to that
+    // location.
+    //        firstLocationUpdate_ = YES;
+/*    CLLocation *location = [change objectForKey:NSKeyValueChangeNewKey];
+    position_ = location.coordinate;
+    NSLog(@"GOOGLE_MAPS: %lf,%lf", position_.latitude, position_.longitude);
+
+    AppDelegate *app = [self appDelegate];
+    app.myLocation = location.coordinate;
+    
+    mapView_.camera = [GMSCameraPosition cameraWithTarget:location.coordinate
+                                                     zoom:mapView_.camera.zoom];
+    //    }
+*/
+}
+
+
+// 和好友聊天
+- (void)mapView:(GMSMapView *)mapView didTapInfoWindowOfMarker:(GMSMarker *)marker
+{
+    strTitle = marker.title;
+    // 有UITabBar遮挡
+    //    [actionSheet_ showInView:self.view];
+    [actionSheet_ showInView:[UIApplication sharedApplication].keyWindow];
+    /*
+     [[self appDelegate].XMPPRoom_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+     XMPPRoom *rm = obj;
+     if ([rm.name isEqualToString:strTitle]) {
+     [self joinEvents:rm.jid];
+     *stop = YES;
+     }
+     }];
+     */
+}
+#else
+#ifdef BAIDU_MAPS
+
+#pragma mark - BAIDU_MAPS
+
+- (void)mapView:(BMKMapView *)mapView didUpdateUserLocation:(BMKUserLocation *)userLocation
+{
+    CLLocationCoordinate2D coordinate;
+    coordinate = [userLocation coordinate];
+    
+    position_ = coordinate;
+    
+    BMKCoordinateSpan span;
+    span.latitudeDelta = 0.05;
+    span.longitudeDelta = 0.05;
+    
+    BMKCoordinateRegion region = {coordinate, span};
+//    [mapView_ setRegion:[mapView_ regionThatFits:region]];
+    mapView_.showsUserLocation = YES;
+    mapView_.zoomLevel = zoom_;
+    NSLog(@"%s: %.1f", __FUNCTION__, zoom_);
+
+}
+
+- (void)mapView:(BMKMapView *)mapView didFailToLocateUserWithError:(NSError *)error
+{
+    
+}
+
+- (void)mapView:(BMKMapView *)mapView annotationViewForBubble:(BMKAnnotationView *)view
+{
+    PlaceAnnotation *annotation = view.annotation;
+    
+    [[self appDelegate].xmppRoomList_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        XMPPRoom *rm = obj;
+        if ([rm.roomName isEqualToString:annotation.title]) {
+            [self joinEvents:[rm.roomJID full]];
+            *stop = YES;
+        }
+    }];
+    
+}
+
+- (void)mapView:(BMKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
+{
+    zoom_ = mapView_.zoomLevel;
+    NSLog(@"%s: %.1f", __FUNCTION__, zoom_);
+    
+    mapView_.showsUserLocation = YES;
+
+}
+
+- (void)mapView:(BMKMapView *)mapView regionWillChangeAnimated:(BOOL)animated
+{
+    mapView_.showsUserLocation = NO;
+}
+#else
+
+- (void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views
+{
+    for (MKPinAnnotationView *place in views) {
+        place.canShowCallout = YES;
+        //        MKPinAnnotationView *mkaview = place;
+        //        mkaview.pinColor = MKPinAnnotationColorPurple;
+    }
+}
+
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
+{
+    MKPinAnnotationView *pinView = nil;
+    if (annotation != mapView_.userLocation) {
+        static NSString *defaultPinID = @"PIN";
+        pinView = (MKPinAnnotationView *)[mapView_ dequeueReusableAnnotationViewWithIdentifier:defaultPinID];
+        
+        if (pinView == nil) {
+            pinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:defaultPinID];
+        }
+        pinView.pinColor = MKPinAnnotationColorPurple;
+        pinView.animatesDrop = YES;
+        pinView.canShowCallout = YES;
+        pinView.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+    }
+    return pinView;
+}
+
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
+{
+    PlaceAnnotation *annotation = view.annotation;
+    
+    [[self appDelegate].XMPPRoom_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        XMPPRoom *rm = obj;
+        if ([rm.name isEqualToString:annotation.title]) {
+            [self joinEvents:rm.jid];
+            *stop = YES;
+        }
+    }];
+    
+}
+/*
+ - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
+ {
+ if ([view.annotation isKindOfClass:[PlaceAnnotation class]]) {
+ PlaceAnnotation *placeAnnotation = view.annotation;
+ 
+ }
+ }
+ */
+#endif
+#endif
+
+#pragma mark - CLLocationManagerDelegate
+
+- (void)locationManager:(CLLocationManager *)manager
+    didUpdateToLocation:(CLLocation *)newLocation
+           fromLocation:(CLLocation *)oldLocation
+{
+    CLLocationCoordinate2D coordinate;
+    coordinate = [newLocation coordinate];
+    
+    position_ = coordinate;
+    
+    NSLog(@"locationManager: %.8f,%.8f", position_.latitude, position_.longitude);
+    
+    MKCoordinateSpan span;
+    span.latitudeDelta = 0.05;
+    span.longitudeDelta = 0.05;
+    /*
+
+    MKCoordinateRegion region = {coordinate, span};
+    [mapView_ setRegion:region];
+    mapView_.showsUserLocation = YES;
+     */
+
+    AppDelegate *app = [self appDelegate];
+    app.myLocation = coordinate;
+#ifdef GOOGLE_MAPS
+    
+    mapView_.camera = [GMSCameraPosition cameraWithTarget:coordinate
+                                                     zoom:mapView_.camera.zoom];
+#else
+#ifdef BAIDU_MAPS
+//    [mapView_ setCenterCoordinate:coordinate animated:YES];
+#endif
+#endif
+}
+
+- (void)locationmanager:(CLLocationManager *)manager
+       didFailWithError:(NSError *)error
+{
+    // 定位失败
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Accessors
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -546,8 +704,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 }
 
-#pragma mark - 
-#pragma mark Data Source Loading / Reloading Methods
+#pragma mark - Data Source Loading / Reloading Methods
 
 // 刷新开始时调用
 - (void)reloadTableViewDataSource
@@ -630,29 +787,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 }
 
 #pragma mark -
-#pragma mark IBAction
-
-- (void)CreateRoom
-{
-    if (createRoomViewController == nil) {
-        createRoomViewController = [[CreateEventViewController alloc] init];
-    }
-    [createRoomViewController setHidesBottomBarWhenPushed:YES];
-    [self.navigationController pushViewController:createRoomViewController animated:YES];
-    
-}
-
-- (void)showRoomPasswordAlertView
-{
-    UIAlertView *alertView = [[UIAlertView alloc]
-                              initWithTitle:@"Room password"
-                              message:@"Enter room password"
-                              delegate:self
-                              cancelButtonTitle:@"Cancel"
-                              otherButtonTitles:@"OK", nil];
-    alertView.alertViewStyle = UIAlertViewStyleSecureTextInput;
-    [alertView show];
-}
+#pragma mark alertView
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
@@ -700,6 +835,31 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     return YES;
 }
 
+#pragma mark -
+#pragma mark IBAction
+
+- (void)CreateRoom
+{
+    if (createRoomViewController == nil) {
+        createRoomViewController = [[CreateEventViewController alloc] init];
+    }
+    [createRoomViewController setHidesBottomBarWhenPushed:YES];
+    [self.navigationController pushViewController:createRoomViewController animated:YES];
+    
+}
+
+- (void)showRoomPasswordAlertView
+{
+    UIAlertView *alertView = [[UIAlertView alloc]
+                              initWithTitle:@"Room password"
+                              message:@"Enter room password"
+                              delegate:self
+                              cancelButtonTitle:@"Cancel"
+                              otherButtonTitles:@"OK", nil];
+    alertView.alertViewStyle = UIAlertViewStyleSecureTextInput;
+    [alertView show];
+}
+
 - (void)didAuthenticate:(XMPPStream *)sender {
     // 获得聊天室列表
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -713,7 +873,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 - (void)didConnect:(XMPPStream *)sender
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self loginRequest];
+        [[self appDelegate] loginRequest];
     });
 }
 
@@ -760,41 +920,6 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     
 }
 
-- (void)loginRequest
-{
-    NSLog(@"%s", __FUNCTION__);
-    NSString *nickName = [UserProperty sharedInstance].nickName;
-    NSString *account = [UserProperty sharedInstance].account;
-    NSString *password = [UserProperty sharedInstance].password;
-    //    NSString *serverName = [UserProperty sharedInstance].serverName;
-    //    NSString *serverAddress = [UserProperty sharedInstance].serverAddress;
-    if (account == nil || password == nil)
-    {
-        AppDelegate *app = [self appDelegate];
-        
-        NSString *uuid = [[app uuid] substringToIndex:8];
-        account = uuid;
-        password = uuid;
-        //        serverAddress = DOMAIN_NAME;
-        //        serverName = DOMAIN_NAME;
-        
-        [UserProperty sharedInstance].nickName = account;
-        [UserProperty sharedInstance].account = account;
-        [UserProperty sharedInstance].password = password;
-        [[UserProperty sharedInstance] save];
-    }
-    
-    if ([nickName length] == 0) {
-        [UserProperty sharedInstance].nickName = account;
-        [[UserProperty sharedInstance] save];
-    }
-    
-    NSString *jabberID = [NSString stringWithFormat:@"%@@%@", account, DOMAIN_NAME];
-    
-    // 用户的登录
-    [[self appDelegate] connect:jabberID password:password];// serverName:serverName server:serverAddress];
-    
-}
 
 - (void)didNotAuthenticate:(NSXMLElement *)authResponse
 {
@@ -808,7 +933,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     [[self appDelegate] disconnect];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self loginRequest];
+        [[self appDelegate] loginRequest];
     });
 }
 
@@ -859,9 +984,9 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     // 是否为已加入房间
     NSDictionary *roomJoined = [app.xmppRoomList_ copy];
     XMPPRoom* roomJoin = [roomJoined objectForKey:roomJid];
-    if (roomJoin != nil)
+    if (roomJoin.isJoined)
     {
-        [self didJoinRoomSuccess:roomJid];
+        [self didJoinRoomSuccess:roomJoin];
         return;
     }
     
@@ -890,8 +1015,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 }
 
 
-#pragma make -
-#pragma make UIActionSheetDelegate
+#pragma make - UIActionSheetDelegate
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
@@ -920,97 +1044,10 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     }
 }
 
-#ifdef GOOGLE_MAPS
-
-// 和好友聊天
-- (void)mapView:(GMSMapView *)mapView didTapInfoWindowOfMarker:(GMSMarker *)marker
-{
-    strTitle = marker.title;
-    // 有UITabBar遮挡
-    //    [actionSheet_ showInView:self.view];
-    [actionSheet_ showInView:[UIApplication sharedApplication].keyWindow];
-/*
-    [[self appDelegate].XMPPRoom_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        XMPPRoom *rm = obj;
-        if ([rm.name isEqualToString:strTitle]) {
-            [self joinEvents:rm.jid];
-            *stop = YES;
-        }
-    }];
-*/ 
-}
-#else
-#ifdef BAIDU_MAPS
-- (void)mapView:(BMKMapView *)mapView annotationViewForBubble:(BMKAnnotationView *)view
-{
-    PlaceAnnotation *annotation = view.annotation;
-    
-    [[self appDelegate].xmppRoomList_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        XMPPRoom *rm = obj;
-        if ([rm.roomName isEqualToString:annotation.title]) {
-            [self joinEvents:[rm.roomJID full]];
-            *stop = YES;
-        }
-    }];
-
-}
-#else
-- (void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views
-{
-    for (MKPinAnnotationView *place in views) {
-        place.canShowCallout = YES;
-        //        MKPinAnnotationView *mkaview = place;
-        //        mkaview.pinColor = MKPinAnnotationColorPurple;
-    }
-}
-
-- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
-{
-    MKPinAnnotationView *pinView = nil;
-    if (annotation != mapView_.userLocation) {
-        static NSString *defaultPinID = @"PIN";
-        pinView = (MKPinAnnotationView *)[mapView_ dequeueReusableAnnotationViewWithIdentifier:defaultPinID];
-        
-        if (pinView == nil) {
-            pinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:defaultPinID];
-        }
-        pinView.pinColor = MKPinAnnotationColorPurple;
-        pinView.animatesDrop = YES;
-        pinView.canShowCallout = YES;
-        pinView.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-    }
-    return pinView;
-}
-
-- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
-{
-    PlaceAnnotation *annotation = view.annotation;
-    
-    [[self appDelegate].XMPPRoom_ enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        XMPPRoom *rm = obj;
-        if ([rm.name isEqualToString:annotation.title]) {
-            [self joinEvents:rm.jid];
-            *stop = YES;
-        }
-    }];
-
-}
-/*
- - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
- {
- if ([view.annotation isKindOfClass:[PlaceAnnotation class]]) {
- PlaceAnnotation *placeAnnotation = view.annotation;
- 
- }
- }
- */
-#endif
-#endif
-
 
 #pragma mark XMPPRoomsDelegate
 
-- (void)didJoinRoomSuccess:(NSString *)roomJid
+- (void)didJoinRoomSuccess:(XMPPRoom *)xmppRoom
 {
     /*    UITabBarController *tabBarController;
      tabBarController = (UITabBarController *)self.parentViewController.parentViewController;
@@ -1019,13 +1056,16 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
      */
     
     // 广播自己的位置
-    [[self appDelegate] updateMyPositionWithRoomName:roomJid];
+    [[self appDelegate] updateMyPositionWithRoomName:[xmppRoom.roomJID full]];
 
 #ifndef TEST
     FriendsViewController *friendsViewController;
     friendsViewController = [[FriendsViewController alloc] init];
     
-    friendsViewController.roomName = roomJid;
+    friendsViewController.roomName = xmppRoom.roomName;
+    friendsViewController.roomJid = [xmppRoom.roomJID full];
+    friendsViewController.roomPassword = xmppRoom.password;
+    
  [friendsViewController setHidesBottomBarWhenPushed:YES];
  
  [self.navigationController pushViewController:friendsViewController animated:YES];

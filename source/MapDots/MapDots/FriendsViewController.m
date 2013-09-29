@@ -29,6 +29,7 @@
     UIToolbar *toolBar;
     
     // viewPosition_
+    CGFloat zoom_;
 #ifdef GOOGLE_MAPS
     BOOL firstLocationUpdate_;
     GMSMapView *mapView_;
@@ -42,13 +43,16 @@
 #endif
     CLLocationCoordinate2D position_;
 
+    UIBarButtonItem *sharedButton_;
+    
     // GSMaker
     NSMutableDictionary *onlineMaker_;
     UIBarButtonItem *messageButton_;
+    NSArray *messageButtons_;
     BOOL isMapView_;
     
     // viewMessages_
-    UITableView *tView;
+    touchTableView *tView;
     UITextField *messageTextField;
     UIControl* messageControl_;
     UIButton *sendBtn;
@@ -59,15 +63,30 @@
 
     float keyboardHeight;
 //    MessageContextViewController* messageContextViewController;
+    
+    NSString *sharedWeiChatMessage;
+    
+    CGPoint startTouchPoint;
+    BOOL isBackMoving;
+    BOOL isMoving;
+    UIView *blackMask;
+    UIImageView *lastScreenShotView;
+
 }
 
 @synthesize roomName;
+@synthesize roomJid;
+@synthesize roomPassword;
+
+@synthesize backgroundView;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
     self.title = roomName;
+    self.view.backgroundColor = [UIColor clearColor];
+    
     dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     
@@ -82,21 +101,29 @@
                                                      action:@selector(flipView)];
 
     
+    sharedButton_ = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(sharedWeiChat)];
+    
     // viewMessages_
     float controlTop = 0;
 
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
+    if ([self appDelegate].isiOS7) {
         controlTop = 30;
+        
+        if ([self appDelegate].isiPAD) {
+            controlTop = 30;
+        }
     }
 
     viewMessages_ = [[UIView alloc] initWithFrame:rect];
-    
+    viewMessages_.backgroundColor = [UIColor clearColor];
+
     CGFloat tableBottom = self.view.bounds.size.height - 80;
     CGFloat textTop = tableBottom + 5;
     
     float messageTextFieldWidth = 229;
     float sendBtnLeft = 235;
     messageRightPosition = 320;
+    
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         messageTextFieldWidth = 610;
         sendBtnLeft = 615;
@@ -109,10 +136,12 @@
     [messageControl_ addTarget:self action:@selector(backgroundTap:) forControlEvents:UIControlEventTouchDown];
     [viewMessages_ addSubview:messageControl_];
 */    
-    tView = [[UITableView alloc] initWithFrame:CGRectMake(0, controlTop, self.view.bounds.size.width, tableBottom)];
+    tView = [[touchTableView alloc] initWithFrame:CGRectMake(0, controlTop, self.view.bounds.size.width, tableBottom)];
     tView.delegate = self;
     tView.dataSource = self;
     tView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    tView.touchDelegate = self;
+
     [viewMessages_ addSubview:tView];
     
     
@@ -142,6 +171,7 @@
     
     // viewPosition_
     viewPosition_ = [[UIView alloc] initWithFrame:rect];
+    viewPosition_.backgroundColor = [UIColor clearColor];
 /*
     CGRect rectToolBar = CGRectMake(0,
                                     self.view.bounds.size.height - 40,
@@ -166,10 +196,15 @@
                                 self.view.bounds.size.height - 40);
     
 
+    zoom_ = 14;
+    if ([self appDelegate].isiPAD)
+    {
+        zoom_ = 18;
+    }
 #ifdef GOOGLE_MAPS
     GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:28.17523
                                                             longitude:112.9803
-                                                                 zoom:10];
+                                                                 zoom:zoom_];
     mapView_ = [GMSMapView mapWithFrame:rectMap camera:camera];
     mapView_.buildingsEnabled = YES;
     mapView_.delegate = self;
@@ -182,14 +217,10 @@
 #else
 #ifdef BAIDU_MAPS
     mapView_ = [[BMKMapView alloc] initWithFrame:self.view.bounds];
-    mapView_.delegate = self;
+    mapView_.zoomEnabled = YES;
     //实现旋转、俯视的3D效果
-    //    mapView_.rotate = 90;
+    mapView_.rotation = 90;
     mapView_.overlooking = -30;
-    //开启定位功能
-    mapView_.showsUserLocation = NO;
-    mapView_.userTrackingMode = BMKUserTrackingModeFollow;
-    mapView_.showsUserLocation = YES;
 #else
     mapView_ = [[MKMapView alloc] initWithFrame:rect];
     mapView_.mapType = MKMapTypeStandard;
@@ -232,12 +263,10 @@
     [self.view addSubview:viewPosition_];
     
     isViewPosition_ = YES;
-    
-//    [self.navigationItem setLeftBarButtonItem:createEventButton_];
-    [self.navigationItem setRightBarButtonItem:flipListButton_];
-//    [self.navigationItem setRightBarButtonItem:toolBar];
 
-//    [self.navigationController.visibleViewController.navigationController.navigationBar addSubview:toolBar];
+    messageButtons_ = [[NSArray alloc] initWithObjects:flipListButton_, sharedButton_, nil];
+    [self.navigationItem setRightBarButtonItems:messageButtons_];
+
     dispatch_async(dispatch_get_main_queue(), ^{
         [self showFriendsPosition];
     });
@@ -287,6 +316,19 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         mapView_.myLocationEnabled = YES;
     });
+#else
+#ifdef BAIDU_MAPS
+    if (mapView_ != nil) {
+        [mapView_ viewWillAppear];
+        //开启定位功能
+        mapView_.showsUserLocation = NO;
+        mapView_.userTrackingMode = BMKUserTrackingModeFollow;
+        mapView_.showsUserLocation = YES;
+        
+        mapView_.delegate = self;
+        
+    }
+#endif
 #endif
     
 }
@@ -304,6 +346,14 @@
     [mapView_ removeObserver:self
                   forKeyPath:@"myLocation"
                      context:NULL];
+#else
+#ifdef BAIDU_MAPS
+    if (mapView_ != nil) {
+        //开启定位功能
+        mapView_.showsUserLocation = NO;
+        mapView_.delegate = nil;
+    }
+#endif
 #endif
 }
 
@@ -331,6 +381,36 @@
 
 #else
 #ifdef BAIDU_MAPS
+
+
+- (void)mapView:(BMKMapView *)mapView didUpdateUserLocation:(BMKUserLocation *)userLocation
+{
+    CLLocationCoordinate2D coordinate;
+    coordinate = [userLocation coordinate];
+    
+    position_ = coordinate;
+    
+    BMKCoordinateSpan span;
+    span.latitudeDelta = 0.05;
+    span.longitudeDelta = 0.05;
+    
+    BMKCoordinateRegion region = {coordinate, span};
+    //    [mapView_ setRegion:[mapView_ regionThatFits:region]];
+    mapView_.showsUserLocation = YES;
+    mapView_.zoomLevel = zoom_;
+    
+}
+
+- (void)mapView:(BMKMapView *)mapView didFailToLocateUserWithError:(NSError *)error
+{
+    
+}
+
+- (void)mapView:(BMKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
+{
+    zoom_ = mapView_.zoomLevel;
+}
+
 #else
 
 
@@ -528,7 +608,7 @@
 {
     NSLog(@"%s", __FUNCTION__);
     AppDelegate *app = [self appDelegate];
-    XMPPRoom *room = [app.xmppRoomList_ objectForKey:roomName];
+    XMPPRoom *room = [app.xmppRoomList_ objectForKey:roomJid];
     if (room.members != nil) {
         [room.members enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
             MemberProperty * member = obj;
@@ -714,7 +794,7 @@
         if ([roomName length] == 0) {
             predicate = [[NSPredicate alloc] init];
         } else {
-            predicate = [NSPredicate predicateWithFormat:@"roomJIDStr == %@", roomName];
+            predicate = [NSPredicate predicateWithFormat:@"roomJIDStr == %@", roomJid];
         }
         
         NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
@@ -788,38 +868,61 @@
     {
         //背景图
         bgImage = [[UIImage imageNamed:@"BlueBubble2.png"] stretchableImageWithLeftCapWidth:20 topCapHeight:15];
-        [cell.messageContentView setFrame:CGRectMake(padding,
-                                                     padding*2,
-                                                     size.width + 5,
-                                                     size.height)];
-
-        [cell.bgImageView setFrame:CGRectMake(cell.messageContentView.frame.origin.x - padding/2,
-                                              cell.messageContentView.frame.origin.y - padding/2,
-                                              size.width + padding,
-                                              size.height + padding)];
         
-        cell.senderAndTimeLabel.textAlignment = UITextAlignmentLeft;
-        cell.senderAndTimeLabel.text = [NSString stringWithFormat:@"%@\n%@", strTitle, time];
-        //    cell.senderAndTimeLabel.text = [NSString stringWithFormat:@"%@", time];
+        if ([self appDelegate].isiOS7) {
+            [cell.messageContentView setFrame:CGRectMake(padding,
+                                                         padding,
+                                                         size.width + 5,
+                                                         size.height + padding)];
+            
+            [cell.bgImageView setFrame:CGRectMake(cell.messageContentView.frame.origin.x - padding/2,
+                                                  cell.messageContentView.frame.origin.y,
+                                                  size.width + padding,
+                                                  size.height + padding)];
+        } else {
+            [cell.messageContentView setFrame:CGRectMake(padding,
+                                                         padding * 2,
+                                                         size.width + 5,
+                                                         size.height)];
+            
+            [cell.bgImageView setFrame:CGRectMake(cell.messageContentView.frame.origin.x - padding/2,
+                                                  cell.messageContentView.frame.origin.y,
+                                                  size.width + padding,
+                                                  size.height + padding)];
+
+        }
+        cell.senderAndTimeLabel.textAlignment = NSTextAlignmentLeft;
     }else {
         
         bgImage = [[UIImage imageNamed:@"GreenBubble2.png"] stretchableImageWithLeftCapWidth:14 topCapHeight:15];
         
-        [cell.messageContentView setFrame:CGRectMake(messageRightPosition - size.width - padding,
-                                                     padding*2,
+        if ([self appDelegate].isiOS7) {
+
+            [cell.messageContentView setFrame:CGRectMake(messageRightPosition - size.width - padding,
+                                                     padding,
                                                      size.width + 5,
-                                                     size.height)];
-        
-        [cell.bgImageView setFrame:CGRectMake(cell.messageContentView.frame.origin.x - padding/2,
-                                              cell.messageContentView.frame.origin.y - padding/2,
+                                                     size.height + padding)];
+
+            [cell.bgImageView setFrame:CGRectMake(cell.messageContentView.frame.origin.x - padding/2,
+                                              cell.messageContentView.frame.origin.y,
                                               size.width + padding,
                                               size.height + padding)];
-
-        cell.senderAndTimeLabel.textAlignment = UITextAlignmentRight;
-        cell.senderAndTimeLabel.text = [NSString stringWithFormat:@"%@\n%@", strTitle, time];
-        //    cell.senderAndTimeLabel.text = [NSString stringWithFormat:@"%@", time];
+        } else {
+            [cell.messageContentView setFrame:CGRectMake(messageRightPosition - size.width - padding,
+                                                         padding * 2,
+                                                         size.width + 5,
+                                                         size.height)];
+            
+            [cell.bgImageView setFrame:CGRectMake(cell.messageContentView.frame.origin.x - padding/2,
+                                                  cell.messageContentView.frame.origin.y - padding/2,
+                                                  size.width + padding,
+                                                  size.height + padding)];
+        }
+        cell.senderAndTimeLabel.textAlignment = NSTextAlignmentRight;
     }
     
+    
+    cell.senderAndTimeLabel.text = [NSString stringWithFormat:@"%@  %@", strTitle, time];
     cell.bgImageView.image = bgImage;
 }
 
@@ -907,12 +1010,155 @@
     NSString *message = messageTextField.text;
     
     if (message.length > 0) {
-        [[self appDelegate] sendRoomMessage:roomName message:message];
+        [[self appDelegate] sendRoomMessage:roomJid message:message];
         
         messageTextField.text = @"";
         [messageTextField resignFirstResponder];
         [self hideKeyboard];
     }
+}
+
+- (void)sharedWeiChat
+{
+    sharedWeiChatMessage = [NSString stringWithFormat:@"%@邀请您参加%@活动", [UserProperty sharedInstance].nickName, roomName];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"分享到微信" message:sharedWeiChatMessage delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"分享", nil];
+    [alert show];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    switch (buttonIndex) {
+        case 1:
+            // 分享到微信
+            [[self appDelegate] sendAppContent:sharedWeiChatMessage roomJID:roomJid password:roomPassword];
+            break;
+            
+        default:
+            break;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark TouchTableViewDelegate
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+- (void)tableView:(UITableView *)tableView touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    [super touchesMoved:touches withEvent:event];
+    tView.scrollEnabled=NO;
+    [super touchesBegan:touches withEvent:event];
+    if(self.navigationController.viewControllers.count <= 1) return;
+    
+    isMoving = NO;
+    isBackMoving = NO;
+    startTouchPoint = [((UITouch *)[touches anyObject])locationInView:[[UIApplication sharedApplication] keyWindow]];
+    
+}
+
+//
+
+- (void)tableView:(UITableView *)tableView touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    tView.scrollEnabled = YES;
+    [super touchesCancelled:touches withEvent:event];
+    if (self.navigationController.viewControllers.count <= 1) return;
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        [self moveViewWithX:0];
+    } completion:^(BOOL finished) {
+        isMoving = NO;
+    }];
+    
+    //  [super touchesCancelled: touches withEvent:event];
+}
+- (void)tableView:(UITableView *)tableView touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    tView.scrollEnabled = YES;
+    [super touchesEnded:touches withEvent:event];
+    CGPoint endTouch = [((UITouch *)[touches anyObject])locationInView:[[UIApplication sharedApplication] keyWindow]];
+    
+    if (endTouch.x - startTouchPoint.x >50)
+    {
+        
+        [UIView animateWithDuration:0.3 animations:^{
+            [self moveViewWithX:320.0f];
+        }completion:^(BOOL finished) {
+            [self.navigationController popViewControllerAnimated:NO];
+            CGRect frame = self.view.frame;
+            frame.origin.x = 0;
+            self.view.frame = frame;
+            isMoving = NO;
+        }];
+    }
+    else
+    {
+        [UIView animateWithDuration:0.3 animations:^{
+            [self moveViewWithX:0];
+        } completion:^(BOOL finished) {
+            isMoving =NO;
+        }];
+    }
+    
+    
+}
+- (void)tableView:(UITableView *)tableView touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    [super touchesMoved:touches withEvent:event];
+    CGPoint moveTouch = [((UITouch *)[touches anyObject])locationInView:[[UIApplication sharedApplication] keyWindow]];
+    if (!isMoving)
+    {
+        if (moveTouch.x - startTouchPoint.x > 10)
+        {
+            isMoving = YES;
+            if (!self.backgroundView)
+            {
+                CGRect frame = self.view.frame;
+                
+                self.backgroundView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, frame.size.width , frame.size.height)];
+                [self.view.superview insertSubview:self.backgroundView belowSubview:self.view];
+                blackMask = [[UIView alloc]initWithFrame:CGRectMake(0, 0, frame.size.width , frame.size.height)];
+                blackMask.backgroundColor = [UIColor blackColor];
+                [self.backgroundView addSubview:blackMask];
+            }
+            if (lastScreenShotView) [lastScreenShotView removeFromSuperview];
+            
+            UIImage *lastScreenShot = [self.screenShotsList lastObject];
+            lastScreenShotView = [[UIImageView alloc]initWithImage:lastScreenShot];
+            [self.backgroundView insertSubview:lastScreenShotView belowSubview:blackMask];
+            
+        }
+        
+    }
+    
+    
+    
+    if (isMoving) {
+        
+        [UIView animateWithDuration:0.3 animations:^{
+            [self moveViewWithX:moveTouch.x - startTouchPoint.x];
+            
+        } completion:^(BOOL finished) {
+            
+        }];
+    }
+    
+    
+}
+-(void)moveViewWithX:(CGFloat)x
+{
+    x = x>320?320:x;
+    x = x<0?0:x;
+    
+    CGRect frame = self.view.frame;
+    frame.origin.x = x;
+    self.view.frame = frame;
+    
+    float scale = (x/6400)+0.95;
+    float alpha = 0.4 - (x/800);
+    
+    lastScreenShotView.transform = CGAffineTransformMakeScale(scale, scale);
+    blackMask.alpha = alpha;
 }
 
 @end
